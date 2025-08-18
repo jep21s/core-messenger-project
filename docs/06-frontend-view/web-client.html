@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MVP Мессенджер</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        }
+
+        header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        }
+
+        #chat {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background-color: white;
+        }
+
+        .message {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        max-width: 70%;
+        }
+
+        .input-area {
+        display: flex;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #ccc;
+        }
+
+        #messageInput {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        }
+
+        #sendBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-left: 10px;
+        }
+
+        #sendBtn:hover {
+        background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Core Messenger</h1>
+</header>
+
+<div id="chat">
+    <!-- Сообщения будут появляться здесь -->
+</div>
+
+<div class="input-area">
+    <input type="text" id="messageInput" placeholder="Введите сообщение..."/>
+    <button id="sendBtn">Отправить</button>
+</div>
+
+<script>
+    const chat = document.getElementById('chat');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click', () => {
+    const text = messageInput.value.trim();
+    if (text === '') return;
+
+    const message = document.createElement('div');
+    message.classList.add('message');
+    message.textContent = `Вы: ${text} (${new Date().toLocaleTimeString()})`;
+
+    chat.appendChild(message);
+    messageInput.value = '';
+    chat.scrollTop = chat.scrollHeight; // Прокрутка вниз
+    });
+
+    // Отправка по Enter
+    messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+    sendBtn.click();
+    }
+    });
+</script>
+
+</body>
+</html>
