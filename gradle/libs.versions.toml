@@ -1,0 +1,13 @@
+[versions]
+kotlinVersion = "2.1.21"
+jvm-language = "21"
+jvm-compiler = "21"
+
+binaryCompabilityValidator = "0.13.2"
+
+[libraries]
+plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
+plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }

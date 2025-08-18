@@ -1,12 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
-}
-
-group = "org.jep21s.messenger.core"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
+    id("build-jvm")
 }
 
 dependencies {
