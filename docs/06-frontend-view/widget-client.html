@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Виджет мессенджера</title>
+    <style>
+        /* Скрытый виджет чата */
+        #chatWidget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999;
+        transition: transform 0.3s ease;
+        transform: translateY(100%);
+        }
+
+        #chatWidget.open {
+        transform: translateY(0);
+        }
+
+        /* Заголовок виджета */
+        #chatHeader {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        }
+
+        #chatHeader button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        }
+
+        /* Область сообщений */
+        #chatMessages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+        }
+
+        .message {
+        margin: 5px 0;
+        padding: 8px 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        max-width: 80%;
+        }
+
+        .message.you {
+        align-self: flex-end;
+        background-color: #d4edda;
+        }
+
+        .message.bot {
+        align-self: flex-start;
+        background-color: #e2e3e5;
+        }
+
+        /* Форма ввода */
+        #chatInputArea {
+        display: flex;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #ccc;
+        }
+
+        #chatInput {
+        flex: 1;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        }
+
+        #chatSendBtn {
+        padding: 8px 12px;
+        font-size: 14px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-left: 8px;
+        cursor: pointer;
+        }
+
+        #chatSendBtn:hover {
+        background-color: #0056b3;
+        }
+
+        /* Кнопка чата (иконка) */
+        #chatToggleBtn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background-color: #007bff;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 9998;
+        transition: background-color 0.3s ease;
+        }
+
+        #chatToggleBtn:hover {
+        background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Кнопка для открытия виджета -->
+<div id="chatToggleBtn" onclick="toggleChat()">💬</div>
+
+<!-- Виджет чата -->
+<div id="chatWidget">
+    <div id="chatHeader">
+        <span>Core messenger</span>
+        <button onclick="toggleChat()">✖</button>
+    </div>
+    <div id="chatMessages"></div>
+    <div id="chatInputArea">
+        <input type="text" id="chatInput" placeholder="Введите сообщение..."/>
+        <button id="chatSendBtn" onclick="sendMessage()">Отправить</button>
+    </div>
+</div>
+
+<script>
+    const widget = document.getElementById('chatWidget');
+    const messages = document.getElementById('chatMessages');
+    const input = document.getElementById('chatInput');
+
+    function toggleChat() {
+    widget.classList.toggle('open');
+    }
+
+    function sendMessage() {
+    const text = input.value.trim();
+    if (text === '') return;
+
+    const message = document.createElement('div');
+    message.classList.add('message', 'you');
+    message.textContent = text + ' (' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) +
+    ')';
+    messages.appendChild(message);
+
+    // Сохраняем сообщение в localStorage
+    saveMessage(text, 'you');
+
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
+
+    // Имитация ответа
+    setTimeout(() => {
+    const botMessage = document.createElement('div');
+    botMessage.classList.add('message', 'bot');
+    botMessage.textContent = 'Вы написали: ' + text + ' (' + new Date().toLocaleTimeString([], { hour: '2-digit',
+    minute: '2-digit' }) + ')';
+    messages.appendChild(botMessage);
+    saveMessage(botMessage.textContent, 'bot');
+    messages.scrollTop = messages.scrollHeight;
+    }, 500);
+    }
+
+    function saveMessage(text, type) {
+    const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    history.push({ type, text });
+    localStorage.setItem('chatHistory', JSON.stringify(history));
+    }
+
+    function loadMessages() {
+    const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    history.forEach(msg => {
+    const message = document.createElement('div');
+    message.classList.add('message', msg.type);
+    message.textContent = msg.text;
+    messages.appendChild(message);
+    });
+    messages.scrollTop = messages.scrollHeight;
+    }
+
+    // Загрузка истории при открытии
+    document.getElementById('chatToggleBtn').addEventListener('click', () => {
+    if (!widget.classList.contains('open')) {
+    loadMessages();
+    }
+    });
+</script>
+
+</body>
+</html>
