@@ -3,11 +3,22 @@ kotlinVersion = "2.1.21"
 jvm-language = "21"
 jvm-compiler = "21"
 
+assertj = "3.27.4"
 binaryCompabilityValidator = "0.13.2"
+jackson = "2.18.3"
+openapi-generator = "7.14.0"
 
 [libraries]
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlinVersion" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
 
+[bundles]
+junit = [ "junit-kotlin", "assertj" ]
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }

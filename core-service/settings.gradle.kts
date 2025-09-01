@@ -18,5 +18,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "core-messenger"
-include("core-service")
+rootProject.name = "core-service"
+include("core-service-api-v1")
