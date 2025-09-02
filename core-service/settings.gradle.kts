@@ -3,6 +3,7 @@ pluginManagement {
     plugins {
         id("build-jvm") apply false
         id("build-kmp") apply false
+        id("konvert") apply false
     }
     repositories {
         mavenCentral()
@@ -18,5 +19,11 @@ dependencyResolutionManagement {
     }
 }
 
+// Включает вот такую конструкцию
+//implementation(projects.m2l5Gradle.sub1.ssub1)
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "core-service"
 include("core-service-api-v1")
+include("core-service-common")
+include("core-service-api-v1-mapper")

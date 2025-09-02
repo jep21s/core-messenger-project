@@ -163,6 +163,14 @@ components:
         - LESS
         - GREATER
 
+    ComparableFilterReq:
+      type: object
+      properties:
+        value:
+          type: long
+        direction:
+          $ref: '#/components/schemas/ConditionTypeDto'
+
     ChatResp:
       type: object
       properties:
@@ -242,12 +250,7 @@ components:
               items:
                 type: string
             latestMessageDate:
-              type: object
-              properties:
-                value:
-                  type: long
-                direction:
-                  $ref: '#/components/schemas/ConditionTypeDto'
+              $ref: '#/components/schemas/ComparableFilterReq'
         sort:
           type: object
           properties:
@@ -259,7 +262,6 @@ components:
               $ref: '#/components/schemas/OrderTypeDto'
         limit:
           type: integer
-
 
     ChatSearchResp:
       type: object
@@ -395,18 +397,11 @@ components:
             partOfBody:
               type: string
             sentDate:
-              type: object
-              properties:
-                value:
-                  type: long
-                direction:
-                  $ref: '#/components/schemas/ConditionTypeDto'
+              $ref: '#/components/schemas/ComparableFilterReq'
         order:
           $ref: '#/components/schemas/OrderTypeDto'
         limit:
           type: integer
-
-
 
     MessageSearchResp:
       type: object

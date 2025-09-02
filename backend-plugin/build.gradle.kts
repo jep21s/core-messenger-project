@@ -12,6 +12,10 @@ gradlePlugin {
             id = "build-kmp"
             implementationClass = "org.jep21s.messenger.core.plugins.BuildPluginMultiplatform"
         }
+        register("konvert") {
+            id = "konvert"
+            implementationClass = "org.jep21s.messenger.core.plugins.KonvertPlugin"
+        }
     }
 }
 
