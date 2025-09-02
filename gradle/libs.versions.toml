@@ -5,19 +5,29 @@ jvm-compiler = "21"
 
 assertj = "3.27.4"
 binaryCompabilityValidator = "0.13.2"
+coroutines = "1.9.0"
 jackson = "2.18.3"
 konvert = "4.2.0"
 kotlinx-datetime = "0.6.2"
+logback = "1.5.3"
+logback-appenders = "1.8.8"
+logback-logstash = "7.4"
+logger-fluentd = "0.3.4"
 openapi-generator = "7.14.0"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlinVersion" }
 konvert-lib = { module = "io.mcarle:konvert", version.ref = "konvert" }
 konvert-api = { module = "io.mcarle:konvert-api", version.ref = "konvert" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-appenders = { module = "com.sndyuk:logback-more-appenders", version.ref = "logback-appenders" }
+logback-logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-logstash" }
+logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-fluentd" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
 

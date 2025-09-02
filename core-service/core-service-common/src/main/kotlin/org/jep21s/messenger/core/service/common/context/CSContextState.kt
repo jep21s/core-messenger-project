@@ -1,5 +1,7 @@
 package org.jep21s.messenger.core.service.common.context
 
+import org.jep21s.messenger.core.lib.logging.common.LogLevel
+
 sealed class CSContextState {
   abstract val type: CSContextStateType
 
@@ -34,6 +36,6 @@ data class CSError(
   val group: String,
   val field: String,
   val message: String,
-//TODO  val level: CMLogLevel = CMLogLevel.ERROR,
+  val level: LogLevel = LogLevel.ERROR,
   val exception: Throwable? = null,
 )
