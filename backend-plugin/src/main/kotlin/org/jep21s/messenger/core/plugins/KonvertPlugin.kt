@@ -37,6 +37,7 @@ class KonvertPlugin : Plugin<Project> {
     project.dependencies {
       add("implementation", libs.konvert.api)
       add("ksp", libs.konvert.lib)
+      add("implementation" ,"org.jep21s.messenger.core.libs:core-messenger-lib-konvert")
     }
 
     logger.lifecycle("Konvert plugin: added dependencies with version ${libs.konvert.lib.get()}")
@@ -46,7 +47,7 @@ class KonvertPlugin : Plugin<Project> {
     val generatedDir = file("build/generated/ksp")
     if (!generatedDir.exists()) return
 
-    val customImport = "import org.jep21s.messenger.core.service.api.v1.mapper.konvert.config.requireNotNull"
+    val customImport = "import org.jep21s.messenger.core.lib.konvert.requireNotNull"
 
     generatedDir.walk()
       .filter { it.isFile && it.extension == "kt" }

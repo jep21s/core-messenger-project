@@ -11,3 +11,4 @@ plugins {
 
 rootProject.name = "core-messenger-project"
 includeBuild("core-service")
+includeBuild("core-messenger-libs")
