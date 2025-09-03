@@ -66,8 +66,14 @@ class KonvertPlugin : Plugin<Project> {
         val pattern = """([\w\[\]().]+?(?:\.\w+)*)!!""".toRegex()
         content = pattern.replace(content) { match ->
           val expr = match.groupValues[1]
-          val fieldName = expr.substringAfterLast('.').takeIf { it.isNotEmpty() } ?: expr
+//          val fieldName = expr.substringAfterLast('.').takeIf { it.isNotEmpty() } ?: expr
           "$expr.requireNotNull(fieldName = \"$expr\")"
+        }
+
+        // Заменяем окончания функций на requireNotNull
+        val patternFunction = """}!!""".toRegex()
+        content = patternFunction.replace(content) { match ->
+          "}.requireNotNull()"
         }
 
         file.writeText(content)

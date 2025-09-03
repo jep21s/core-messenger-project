@@ -3,16 +3,16 @@ package org.jep21s.messenger.core.service.common.context
 sealed class CSWorkMode {
   abstract val type: CSWorkModeType
 
-  class Prod : CSWorkMode() {
+  object Prod : CSWorkMode() {
     override val type = CSWorkModeType.PROD
   }
 
-  class Test : CSWorkMode() {
+  object Test : CSWorkMode() {
     override val type = CSWorkModeType.TEST
   }
 
   data class Stub(
-    val stubCase: CSStubs,
+    val stubCase: CSStub,
   ) : CSWorkMode() {
     override val type = CSWorkModeType.STUB
   }
@@ -24,8 +24,7 @@ enum class CSWorkModeType {
   STUB,
 }
 
-enum class CSStubs {
-  NONE,
+enum class CSStub {
   SUCCESS,
   NOT_FOUND,
   DB_ERROR,

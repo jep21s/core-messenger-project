@@ -4,19 +4,18 @@ data class CSContext<Req, Resp>(
   val command: CSContextCommand,
   val state: CSContextState,
   val workMode: CSWorkMode,
-  val request: Req,
-  val response: Resp,
+  val modelReq: Req,
+  val modelResp: Resp,
 )
 
 enum class CSContextCommand {
-  NONE,
-  CREATE,
-  READ,
-  UPDATE,
-  DELETE,
-  SEARCH,
-  OFFERS,
-  INIT,
-  FINISH,
+  CREATE_CHAT,
+  DELETE_CHAT,
+  SEARCH_CHAT,
+  CREATE_MESSAGE,
+  DELETE_MESSAGE,
+  SEARCH_MESSAGE,
+  UPDATE_STATUS_MESSAGE,
+  ;
 }
 

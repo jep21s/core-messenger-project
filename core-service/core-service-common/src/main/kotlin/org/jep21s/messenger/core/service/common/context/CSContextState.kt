@@ -5,15 +5,15 @@ import org.jep21s.messenger.core.lib.logging.common.LogLevel
 sealed class CSContextState {
   abstract val type: CSContextStateType
 
-  class None : CSContextState() {
+  object None : CSContextState() {
     override val type = CSContextStateType.NONE
   }
 
-  class Running : CSContextState() {
+  object Running : CSContextState() {
     override val type = CSContextStateType.RUNNING
   }
 
-  class Finishing : CSContextState() {
+  object Finishing : CSContextState() {
     override val type = CSContextStateType.FINISHING
   }
 
