@@ -1,10 +1,13 @@
 package org.jep21s.messenger.core.service.api.v1.mapper
 
 import io.mcarle.konvert.api.Konfig
+import io.mcarle.konvert.api.Konvert
 import io.mcarle.konvert.api.Konverter
+import io.mcarle.konvert.api.Mapping
 import org.jep21s.messenger.core.service.api.v1.models.MessageCreateReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageDeleteReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageDeleteResp
+import org.jep21s.messenger.core.service.api.v1.models.MessageDeleteRespAllOfContent
 import org.jep21s.messenger.core.service.api.v1.models.MessageResp
 import org.jep21s.messenger.core.service.api.v1.models.MessageSearchReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageSearchReqAllOfChatFilter
@@ -18,7 +21,7 @@ import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 @Konverter(
   options = [
     Konfig(key = "konvert.enforce-not-null", value = "true"),
-    Konfig(key = "konvert.invalid-mapping-strategy", value = "fail")
+    Konfig(key = "konvert.invalid-mapping-strategy", value = "fail"),
   ]
 )
 interface MessageMapper {
@@ -28,7 +31,19 @@ interface MessageMapper {
 
   fun mapToModel(request: MessageDeleteReq): MessageDeletion
 
+  @Konvert(
+    mappings = [
+      Mapping(
+        target = "result",
+        constant = "org.jep21s.messenger.core.service.api.v1.models.ResponseResult.SUCCESS"
+      ),
+      Mapping(target = "errors", ignore = true),
+      Mapping(target = "content", expression = "mapToDeleteContentResponse(model)"),
+    ]
+  )
   fun mapToResponse(model: MessageDeleted): MessageDeleteResp
+
+  fun mapToDeleteContentResponse(model: MessageDeleted): MessageDeleteRespAllOfContent
 
   fun mapToModel(request: MessageSearchReq): MessageSearch
 

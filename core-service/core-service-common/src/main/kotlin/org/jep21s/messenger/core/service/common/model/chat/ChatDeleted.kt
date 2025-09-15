@@ -4,5 +4,6 @@ import java.util.UUID
 
 data class ChatDeleted(
   val id: UUID,
-  val communicationType: String
+  val externalId: String?,
+  val communicationType: String,
 )

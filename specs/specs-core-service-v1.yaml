@@ -310,6 +310,8 @@ components:
                   format: uuid
                 externalId:
                   type: string
+                communicationType:
+                  type: string
 
     ChatSearchReq:
       allOf:
