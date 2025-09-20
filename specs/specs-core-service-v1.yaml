@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatCreateResp'
+                $ref: '#/components/schemas/CSResponse'
   /chat/delete:
     post:
       tags:
@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatDeleteResp'
+                $ref: '#/components/schemas/CSResponse'
   /chat/search:
     post:
       tags:
@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatSearchResp'
+                $ref: '#/components/schemas/CSResponse'
   /message/create:
     post:
       tags:
@@ -89,7 +89,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageCreateResp'
+                $ref: '#/components/schemas/CSResponse'
   /message/delete:
     post:
       tags:
@@ -108,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageDeleteResp'
+                $ref: '#/components/schemas/CSResponse'
   /message/search:
     post:
       tags:
@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageSearchResp'
+                $ref: '#/components/schemas/CSResponse'
   /message/status/update:
     post:
       tags:
@@ -146,12 +146,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageStatusUpdateResp'
+                $ref: '#/components/schemas/CSResponse'
 
 components:
   schemas:
 
-    Error:
+    CSErrorResp:
       type: object
       properties:
         code:
@@ -169,16 +169,18 @@ components:
         - success
         - error
 
-    IResponse:
+    CSResponse:
       type: object
-      description: Базовый интерфейс для всех ответов
+      description: Обертка для всех ответов
       properties:
         result:
           $ref: '#/components/schemas/ResponseResult'
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/CSErrorResp'
+        content:
+          type: object
 
     CmRequestDebugStubs:
       type: string
@@ -278,14 +280,6 @@ components:
             payload:
               type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
 
-    ChatCreateResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              $ref: '#/components/schemas/ChatResp'
-
     ChatDeleteReq:
       allOf:
         - $ref: '#/components/schemas/IRequest'
@@ -297,21 +291,16 @@ components:
             communicationType:
               type: string
 
-    ChatDeleteResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              type: object
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                externalId:
-                  type: string
-                communicationType:
-                  type: string
+    ChatDeleteRespAllOfContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        externalId:
+          type: string
+        communicationType:
+          type: string
 
     ChatSearchReq:
       allOf:
@@ -349,16 +338,6 @@ components:
                   $ref: '#/components/schemas/OrderTypeDto'
             limit:
               type: integer
-
-    ChatSearchResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              type: array
-              items:
-                $ref: '#/components/schemas/ChatResp'
 
     MessageResp:
       type: object
@@ -408,14 +387,6 @@ components:
             payload:
               type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
 
-    MessageCreateResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              $ref: '#/components/schemas/MessageResp'
-
     MessageDeleteReq:
       allOf:
         - $ref: '#/components/schemas/IRequest'
@@ -429,21 +400,16 @@ components:
             communicationType:
               type: string
 
-    MessageDeleteResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-                    format: uuid
-                communicationType:
-                  type: string
+    MessageDeleteRespAllOfContent:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        communicationType:
+          type: string
 
     MessageStatusUpdateReq:
       allOf:
@@ -460,23 +426,18 @@ components:
             newStatus:
               type: string
 
-    MessageStatusUpdateResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              type: object
-              properties:
-                ids:
-                  type: array
-                  items:
-                    type: string
-                    format: uuid
-                communicationType:
-                  type: string
-                newStatus:
-                  type: string
+    MessageStatusUpdateRespAllOfContent:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        communicationType:
+          type: string
+        newStatus:
+          type: string
 
     MessageSearchReq:
       allOf:
@@ -511,13 +472,3 @@ components:
               $ref: '#/components/schemas/OrderTypeDto'
             limit:
               type: integer
-
-    MessageSearchResp:
-      allOf:
-        - $ref: '#/components/schemas/IResponse'
-        - type: object
-          properties:
-            content:
-              type: array
-              items:
-                $ref: '#/components/schemas/MessageResp'

@@ -80,11 +80,10 @@ class CSContextMapperTest {
 
     //When
     val model: ChatSearch = chatMapper.mapToModel(request)
-    val context: CSContext<ChatSearch, List<Chat>?> = csContextMapper
-      .mapToContext<ChatSearch, List<Chat>>(
-        request = request,
-        modelReq = model
-      )
+    val context: CSContext<ChatSearch, List<Chat>?> = csContextMapper.mapToContext(
+      request = request,
+      modelReq = model
+    )
 
     //Then
     assertAll(

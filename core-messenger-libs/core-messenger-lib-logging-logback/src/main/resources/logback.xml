@@ -103,7 +103,7 @@
     <!--        </if>-->
     <!--    </appender>-->
 
-    <logger name="ru.otus" level="${LOG_CM_LEVEL}" additivity="false">
+    <logger name="org.jep21s" level="${LOG_CM_LEVEL}" additivity="false">
         <appender-ref ref="fluentd"/>
         <!--        <appender-ref ref="asyncMyLogKafka"/>-->
         <appender-ref ref="STDOUT"/>

@@ -27,3 +27,5 @@ rootProject.name = "core-service"
 include("core-service-api-v1")
 include("core-service-common")
 include("core-service-api-v1-mapper")
+include("core-service-app-web")
+include("core-service-biz")
