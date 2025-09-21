@@ -5,6 +5,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaConsumerProperties
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaProperties
+import org.jep21s.messenger.core.service.app.kafka.constants.GroupId
+import org.jep21s.messenger.core.service.app.kafka.constants.Topic
 import org.jep21s.messenger.core.service.app.kafka.listener.ChatCreateKafkaListener
 
 fun main(): Unit = runBlocking {
@@ -12,12 +14,12 @@ fun main(): Unit = runBlocking {
     hosts = listOf("localhost:9092")
   )
   launch(Dispatchers.IO) {
-    ChatCreateKafkaListener.listen(
+    ChatCreateKafkaListener(
       kafkaProperties,
       KafkaConsumerProperties(
-        groupId = "core-service-chat-create-consumer",
-        topic = "chat-create-req",
+        groupId = GroupId.CORE_SERVICE_CHAT_CREATE_CONSUMER,
+        topic = Topic.CHAT_CREATE_REQ,
       )
-    )
+    ).listen()
   }
 }

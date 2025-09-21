@@ -4,7 +4,7 @@
 
     <property name="LOGS_FB_HOSTS" value="${LOGS_FB_HOSTS:-127.0.0.1}"/>
     <property name="LOGS_FB_PORT" value="${LOGS_FB_PORT:-24224}"/>
-    <property name="SERVICE_NAME" value="${SERVICE_NAME:-ok_marketplace}"/>
+    <property name="SERVICE_NAME" value="${SERVICE_NAME:-core_messenger}"/>
     <property name="LOG_CM_LEVEL" value="${LOG_CM_LEVEL:-info}"/>
     <property name="LOG_COMMON_LEVEL" value="${LOG_COMMON_LEVEL:-error}"/>
 
