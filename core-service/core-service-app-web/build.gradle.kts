@@ -30,6 +30,7 @@ dependencies {
   implementation(projects.coreServiceApiV1Mapper)
   implementation(projects.coreServiceCommon)
   implementation(projects.coreServiceBiz)
+  implementation(projects.coreServiceAppCommon)
 
   testImplementation(libs.bundles.junit)
   testImplementation(libs.ktor.server.test.host)

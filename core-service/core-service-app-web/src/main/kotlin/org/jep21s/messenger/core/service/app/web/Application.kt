@@ -20,7 +20,7 @@ import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
 import org.jep21s.messenger.core.service.api.v1.asCSErrorResp
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
-import org.jep21s.messenger.core.service.app.web.extention.logger
+import org.jep21s.messenger.core.lib.logging.logback.logger
 import org.jep21s.messenger.core.service.app.web.route.chatV1
 import org.jep21s.messenger.core.service.app.web.route.messageV1
 
