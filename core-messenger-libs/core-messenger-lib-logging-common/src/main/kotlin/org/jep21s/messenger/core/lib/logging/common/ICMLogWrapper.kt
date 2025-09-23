@@ -21,10 +21,10 @@ interface ICMLogWrapper: AutoCloseable {
     fun error(
         msg: String = "",
         marker: String = "DEV",
-        e: Throwable? = null,
+        ex: Throwable? = null,
         data: Any? = null,
         objs: Map<String, Any>? = null,
-    ) = log(msg, LogLevel.ERROR, marker, e, data, objs)
+    ) = log(msg, LogLevel.ERROR, marker, ex, data, objs)
 
     fun info(
         msg: String = "",

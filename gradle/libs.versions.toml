@@ -8,7 +8,12 @@ binaryCompabilityValidator = "0.13.2"
 coroutines = "1.9.0"
 jackson = "2.18.3"
 konvert = "4.2.0"
+kafka-client = "3.7.0"
+kotlinx-atomicfu = "0.23.2"
+kotlin-reflect = "2.2.10"
+kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.6.2"
+ktor = "3.3.0"
 logback = "1.5.3"
 logback-appenders = "1.8.8"
 logback-logstash = "7.4"
@@ -21,19 +26,41 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", ve
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlinVersion" }
+kafka-client = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-client" }
 konvert-lib = { module = "io.mcarle:konvert", version.ref = "konvert" }
 konvert-api = { module = "io.mcarle:konvert-api", version.ref = "konvert" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-reflect" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
+
+ktor-client-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-double-receive = { module = "io.ktor:ktor-server-double-receive", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
+ktor-server-host-common = { module = "io.ktor:ktor-server-host-common", version.ref = "ktor" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-appenders = { module = "com.sndyuk:logback-more-appenders", version.ref = "logback-appenders" }
 logback-logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-logstash" }
 logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-fluentd" }
+
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
 
 [bundles]
+jackson = [ "jackson-kotlin", "jackson-datatype" ]
 junit = [ "junit-kotlin", "assertj" ]
+kotlinx-coroutines = [ "kotlinx-coroutines-core", "kotlinx-coroutines-slf4j" ]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }

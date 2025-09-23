@@ -46,10 +46,3 @@ fun <MReq, MResp> CSContextMapper.mapToContext(
   modelReq = modelReq,
   modelResp = null
 )
-
-fun <MReq, MResp> CSContext<MReq, MResp?>.putModelResp(
-  modelResp: MResp,
-): CSContext<MReq, MResp> =
-  this.copy(modelResp = modelResp) as CSContext<MReq, MResp>
-
-
