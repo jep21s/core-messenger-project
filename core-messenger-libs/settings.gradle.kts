@@ -27,3 +27,4 @@ rootProject.name = "core-messenger-libs"
 include("core-messenger-lib-konvert")
 include("core-messenger-lib-logging-common")
 include("core-messenger-lib-logging-logback")
+include("core-messenger-lib-test-common")

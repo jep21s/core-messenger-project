@@ -19,6 +19,7 @@ logback-appenders = "1.8.8"
 logback-logstash = "7.4"
 logger-fluentd = "0.3.4"
 openapi-generator = "7.14.0"
+testcontainers = "1.21.3"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
@@ -52,6 +53,10 @@ logback-appenders = { module = "com.sndyuk:logback-more-appenders", version.ref 
 logback-logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-logstash" }
 logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-fluentd" }
 
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
+
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
 
@@ -59,6 +64,7 @@ plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-c
 jackson = [ "jackson-kotlin", "jackson-datatype" ]
 junit = [ "junit-kotlin", "assertj" ]
 kotlinx-coroutines = [ "kotlinx-coroutines-core", "kotlinx-coroutines-slf4j" ]
+testcontainers = [ "testcontainers-core", "testcontainers-junit" ]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }

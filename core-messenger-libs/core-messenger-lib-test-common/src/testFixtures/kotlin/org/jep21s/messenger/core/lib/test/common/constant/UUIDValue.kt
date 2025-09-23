@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.app.web.test.constant
+package org.jep21s.messenger.core.lib.test.common.constant
 
 import java.util.UUID
 

@@ -9,6 +9,7 @@ import io.ktor.http.contentType
 import java.time.Instant
 import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.jep21s.messenger.core.lib.test.common.constant.UUIDValue
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.MessageCreateReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageDeleteReq
@@ -21,8 +22,7 @@ import org.jep21s.messenger.core.service.api.v1.models.MessageStatusUpdateReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageStatusUpdateRespAllOfContent
 import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
-import org.jep21s.messenger.core.service.app.web.test.constant.UUIDValue
-import org.jep21s.messenger.core.service.app.web.test.extention.toLinkedHashMap
+import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
