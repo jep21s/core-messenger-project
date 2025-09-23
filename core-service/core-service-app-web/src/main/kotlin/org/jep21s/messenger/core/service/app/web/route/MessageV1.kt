@@ -3,7 +3,9 @@ package org.jep21s.messenger.core.service.app.web.route
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import org.jep21s.messenger.core.service.api.v1.mapper.MessageMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.MessageMapperImpl
+import org.jep21s.messenger.core.service.api.v1.mapper.MessageStatusMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.MessageStatusMapperImpl
 import org.jep21s.messenger.core.service.api.v1.models.MessageCreateReq
 import org.jep21s.messenger.core.service.api.v1.models.MessageDeleteReq
@@ -14,15 +16,18 @@ import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageDeleted
 import org.jep21s.messenger.core.service.common.model.message.status.MessageStatusUpdated
 
+private val messageMapper: MessageMapper = MessageMapperImpl
+private val messageStatusMapper: MessageStatusMapper = MessageStatusMapperImpl
+
 fun Route.messageV1() {
   route("/v1/message") {
     post("/create") {
       processRequest("message create") {
         mapRequestToModel { request: MessageCreateReq ->
-          MessageMapperImpl.mapToModel(request)
+          messageMapper.mapToModel(request)
         }
         mapResultToResponse { result: Message ->
-          MessageMapperImpl.mapToResponse(result)
+          messageMapper.mapToResponse(result)
         }
       }
     }
@@ -30,10 +35,10 @@ fun Route.messageV1() {
     post("/delete") {
       processRequest("message delete") {
         mapRequestToModel { request: MessageDeleteReq ->
-          MessageMapperImpl.mapToModel(request)
+          messageMapper.mapToModel(request)
         }
         mapResultToResponse { result: MessageDeleted ->
-          MessageMapperImpl.mapToDeleteResponse(result)
+          messageMapper.mapToDeleteResponse(result)
         }
       }
     }
@@ -41,10 +46,10 @@ fun Route.messageV1() {
     post("/search") {
       processRequest("message search") {
         mapRequestToModel { request: MessageSearchReq ->
-          MessageMapperImpl.mapToModel(request)
+          messageMapper.mapToModel(request)
         }
         mapResultToResponse { result: List<Message> ->
-          result.map { MessageMapperImpl.mapToResponse(it) }
+          result.map { messageMapper.mapToResponse(it) }
         }
       }
     }
@@ -52,10 +57,10 @@ fun Route.messageV1() {
     post("/status/update") {
       processRequest("message status update") {
         mapRequestToModel { request: MessageStatusUpdateReq ->
-          MessageStatusMapperImpl.mapToModel(request)
+          messageStatusMapper.mapToModel(request)
         }
         mapResultToResponse { result: MessageStatusUpdated ->
-          MessageStatusMapperImpl.mapToUpdateResponse(result)
+          messageStatusMapper.mapToUpdateResponse(result)
         }
       }
     }

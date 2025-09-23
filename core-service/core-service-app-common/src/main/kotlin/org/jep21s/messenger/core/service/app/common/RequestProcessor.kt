@@ -2,6 +2,7 @@ package org.jep21s.messenger.core.service.app.common
 
 import org.jep21s.messenger.core.lib.logging.common.ICMLogWrapper
 import org.jep21s.messenger.core.service.api.v1.asCSErrorResp
+import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapperImpl
 import org.jep21s.messenger.core.service.api.v1.mapper.mapToContext
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
@@ -10,6 +11,8 @@ import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.service.biz.processor.CSProcessorFactory
 import org.jep21s.messenger.core.service.biz.processor.getCSProcessor
 import org.jep21s.messenger.core.service.common.context.CSContext
+
+val csContextMapper: CSContextMapper = CSContextMapperImpl
 
 suspend inline fun <
     reified Req : IRequest,
@@ -31,7 +34,7 @@ suspend inline fun <
     )
     val request: Req = receive()
     val modelRequest: MReq = mapRequestToModel(request)
-    val context: CSContext<MReq, MResp?> = CSContextMapperImpl.mapToContext(
+    val context: CSContext<MReq, MResp?> = csContextMapper.mapToContext(
       request = request,
       modelReq = modelRequest
     )

@@ -7,6 +7,10 @@ kotlin {
   jvmToolchain(21)
 }
 
+application {
+  mainClass.set("org.jep21s.messenger.core.service.app.web.ApplicationKt")
+}
+
 dependencies {
   implementation(kotlin("stdlib"))
 

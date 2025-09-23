@@ -54,6 +54,7 @@ class CSContextMapperTest {
       ),
       limit = 10,
     )
+    val timeStart = Instant.now()
     val expectedContext = CSContext<ChatSearch, List<Chat>?>(
       command = CSContextCommand.SEARCH_CHAT,
       state = CSContextState.None,
@@ -75,14 +76,16 @@ class CSContextMapperTest {
         ),
         limit = 10
       ),
-      modelResp = null
+      modelResp = null,
+      timeStart = timeStart,
     )
 
     //When
     val model: ChatSearch = chatMapper.mapToModel(request)
     val context: CSContext<ChatSearch, List<Chat>?> = csContextMapper.mapToContext(
       request = request,
-      modelReq = model
+      modelReq = model,
+      timeStart = timeStart,
     )
 
     //Then

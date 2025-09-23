@@ -2,6 +2,7 @@ package org.jep21s.messenger.core.service.api.v1.mapper
 
 import io.mcarle.konvert.api.Konfig
 import io.mcarle.konvert.api.Konverter
+import java.time.Instant
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.jep21s.messenger.core.service.api.v1.models.IRequest
@@ -39,10 +40,12 @@ interface CSContextMapper {
 fun <MReq, MResp> CSContextMapper.mapToContext(
   request: IRequest,
   modelReq: MReq,
+  timeStart: Instant = Instant.now(),
 ): CSContext<MReq, MResp?> = CSContext(
   command = mapToModel(request.requestType),
   state = CSContextState.None,
   workMode = mapToModel(request),
   modelReq = modelReq,
-  modelResp = null
+  modelResp = null,
+  timeStart = timeStart,
 )
