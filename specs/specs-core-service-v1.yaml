@@ -1,0 +1,523 @@
+openapi: 3.0.3
+info:
+  title: "Core-service ${VERSION_APP}"
+  description: Core service for messenger
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/internal/v1
+tags:
+  - name: chat
+    description: Апи чатов
+  - name: message
+    description: Апи сообщений
+paths:
+  /chat/create:
+    post:
+      tags:
+        - chat
+      summary: Create chat
+      operationId: createChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreateReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCreateResp'
+  /chat/delete:
+    post:
+      tags:
+        - chat
+      summary: Delete chat
+      operationId: deleteChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatDeleteReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatDeleteResp'
+  /chat/search:
+    post:
+      tags:
+        - chat
+      summary: Get chat list
+      operationId: getChats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSearchReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSearchResp'
+  /message/create:
+    post:
+      tags:
+        - message
+      summary: Create message
+      operationId: createMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreateReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageCreateResp'
+  /message/delete:
+    post:
+      tags:
+        - message
+      summary: Delete message
+      operationId: deleteMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageDeleteReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageDeleteResp'
+  /message/search:
+    post:
+      tags:
+        - message
+      summary: Get message list
+      operationId: getMessages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageSearchReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageSearchResp'
+  /message/status/update:
+    post:
+      tags:
+        - message
+      summary: Update messages status
+      operationId: updateStatusMessages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageStatusUpdateReq'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageStatusUpdateResp'
+
+components:
+  schemas:
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+    CmRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - dbError
+
+    CmRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    CmDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/CmRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/CmRequestDebugStubs'
+
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+        debug:
+          $ref: '#/components/schemas/CmDebug'
+      discriminator:
+        propertyName: requestType
+        mapping:
+          CREATE_CHAT: '#/components/schemas/ChatCreateReq'
+          DELETE_CHAT: '#/components/schemas/ChatDeleteReq'
+          SEARCH_CHAT: '#/components/schemas/ChatSearchReq'
+          CREATE_MESSAGE: '#/components/schemas/MessageCreateReq'
+          DELETE_MESSAGE: '#/components/schemas/MessageDeleteReq'
+          SEARCH_MESSAGE: '#/components/schemas/MessageSearchReq'
+          UPDATE_STATUS_MESSAGE: '#/components/schemas/MessageStatusUpdateReq'
+
+    OrderTypeDto:
+      type: string
+      enum:
+        - ASC
+        - DESC
+    
+    ConditionTypeDto:
+      type: string
+      enum:
+        - LESS
+        - GREATER
+
+    ComparableFilterReq:
+      type: object
+      properties:
+        value:
+          type: long
+        direction:
+          $ref: '#/components/schemas/ConditionTypeDto'
+
+    ChatResp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        externalId:
+          type: string
+        communicationType:
+          type: string
+        chatType:
+          type: string
+        payload:
+          type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
+        createdAt:
+          type: long
+        updatedAt:
+          type: long
+        latestMessageDate:
+          type: long
+
+    ChatCreateReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            externalId:
+              type: string
+            communicationType:
+              type: string
+            chatType:
+              type: string
+            payload:
+              type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
+
+    ChatCreateResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              $ref: '#/components/schemas/ChatResp'
+
+    ChatDeleteReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            communicationType:
+              type: string
+
+    ChatDeleteResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                externalId:
+                  type: string
+                communicationType:
+                  type: string
+
+    ChatSearchReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            filter:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                externalIds:
+                  type: array
+                  items:
+                    type: string
+                communicationType:
+                  type: string
+                chatTypes:
+                  type: array
+                  items:
+                    type: string
+                latestMessageDate:
+                  $ref: '#/components/schemas/ComparableFilterReq'
+            sort:
+              type: object
+              properties:
+                sortField:
+                  type: string
+                  enum:
+                    - LATEST_MESSAGE_DATE
+                order:
+                  $ref: '#/components/schemas/OrderTypeDto'
+            limit:
+              type: integer
+
+    ChatSearchResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ChatResp'
+
+    MessageResp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        chatId:
+          type: string
+          format: uuid
+        messageType:
+          type: string
+        status:
+          type: string
+        sentDate:
+          type: long
+        createdAt:
+          type: long
+        updatedAt:
+          type: long
+        body:
+          type: string
+        externalId:
+          type: string
+        payload:
+          type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
+
+    MessageCreateReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            chatId:
+              type: string
+              format: uuid
+            messageType:
+              type: string
+            sentDate:
+              type: long
+            body:
+              type: string
+            externalId:
+              type: string
+            payload:
+              type: kotlin.collections.Map<kotlin.String, kotlin.Any?>
+
+    MessageCreateResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              $ref: '#/components/schemas/MessageResp'
+
+    MessageDeleteReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+            communicationType:
+              type: string
+
+    MessageDeleteResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                communicationType:
+                  type: string
+
+    MessageStatusUpdateReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+            communicationType:
+              type: string
+            newStatus:
+              type: string
+
+    MessageStatusUpdateResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                communicationType:
+                  type: string
+                newStatus:
+                  type: string
+
+    MessageSearchReq:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - type: object
+          properties:
+            chatFilter:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                communicationType:
+                  type: string
+            messageFilter:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                messageTypes:
+                  type: array
+                  items:
+                    type: string
+                partOfBody:
+                  type: string
+                sentDate:
+                  $ref: '#/components/schemas/ComparableFilterReq'
+            order:
+              $ref: '#/components/schemas/OrderTypeDto'
+            limit:
+              type: integer
+
+    MessageSearchResp:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/MessageResp'

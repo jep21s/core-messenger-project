@@ -1,0 +1,29 @@
+pluginManagement {
+    includeBuild("../backend-plugin")
+    plugins {
+        id("build-jvm") apply false
+        id("build-kmp") apply false
+        id("konvert") apply false
+    }
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
+
+// Включает вот такую конструкцию
+//implementation(projects.m2l5Gradle.sub1.ssub1)
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "core-messenger-libs"
+include("core-messenger-lib-konvert")
+include("core-messenger-lib-logging-common")
+include("core-messenger-lib-logging-logback")
