@@ -4,6 +4,7 @@ import java.time.Instant
 import java.util.UUID
 import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.jep21s.messenger.core.service.api.v1.mapper.helper.getOrThrow
 import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReq
 import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfFilter
 import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfSort
@@ -81,7 +82,7 @@ class CSContextMapperTest {
     )
 
     //When
-    val model: ChatSearch = chatMapper.mapToModel(request)
+    val model: ChatSearch = chatMapper.mapToModel(request).getOrThrow()
     val context: CSContext<ChatSearch, List<Chat>?> = csContextMapper.mapToContext(
       request = request,
       modelReq = model,

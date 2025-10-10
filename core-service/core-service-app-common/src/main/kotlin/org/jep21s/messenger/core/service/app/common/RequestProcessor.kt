@@ -1,9 +1,12 @@
 package org.jep21s.messenger.core.service.app.common
 
+import arrow.core.Either
+import arrow.core.getOrElse
 import org.jep21s.messenger.core.lib.logging.common.ICMLogWrapper
 import org.jep21s.messenger.core.service.api.v1.asCSErrorResp
 import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapperImpl
+import org.jep21s.messenger.core.service.api.v1.mapper.helper.MappingNullError
 import org.jep21s.messenger.core.service.api.v1.mapper.mapToContext
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.IRequest
@@ -21,7 +24,7 @@ suspend inline fun <
     reified MResp,
     > processRequest(
   actionName: String,
-  mapRequestToModel: (Req) -> MReq,
+  mapRequestToModel: (Req) -> Either<MappingNullError, MReq>,
   mapResultToResponse: (MResp) -> Resp,
   receive: () -> Req,
   respond: (CSResponse) -> Unit,
@@ -33,7 +36,9 @@ suspend inline fun <
       marker = "ROUTE",
     )
     val request: Req = receive()
-    val modelRequest: MReq = mapRequestToModel(request)
+    val modelRequest: MReq = mapRequestToModel(request).getOrElse {
+      throw MappingNullException(it)
+    }
     val context: CSContext<MReq, MResp?> = csContextMapper.mapToContext(
       request = request,
       modelReq = modelRequest
@@ -60,6 +65,27 @@ suspend inline fun <
       marker = "ROUTE",
     )
     respond(responseWrapper)
+  } catch (ex: MappingNullException) {
+    log.error(
+      msg = "Error in trying handle [$actionName] request, " +
+          "because of null fields: [${ex.error.getAllFieldPaths()}]",
+      marker = "ROUTE",
+      ex = ex,
+    )
+    respond(
+      CSResponse(
+        result = ResponseResult.ERROR,
+        errors = listOf(
+          ex.asCSErrorResp(
+            message = "Required fields: [${
+              ex.error
+                .getAllFieldPaths()
+                .joinToString("; ")
+            }]"
+          )
+        ),
+      )
+    )
   } catch (ex: Throwable) {
     log.error(
       msg = "Error in trying handle [$actionName] request",
@@ -77,10 +103,10 @@ suspend inline fun <
 }
 
 class ProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
-  private lateinit var _mapRequestToModel: (Req) -> MReq
+  private lateinit var _mapRequestToModel: (Req) -> Either<MappingNullError, MReq>
   private lateinit var _mapResultToResponse: (MResp) -> Resp
 
-  fun mapRequestToModel(block: (Req) -> MReq) {
+  fun mapRequestToModel(block: (Req) -> Either<MappingNullError, MReq>) {
     _mapRequestToModel = block
   }
 
@@ -97,7 +123,7 @@ class ProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
 }
 
 data class ProcessRequestConfig<Req : IRequest, Resp, MReq, MResp>(
-  val mapRequestToModel: (Req) -> MReq,
+  val mapRequestToModel: (Req) -> Either<MappingNullError, MReq>,
   val mapResultToResponse: (MResp) -> Resp,
 )
 
@@ -126,3 +152,5 @@ suspend inline fun <
     log = log,
   )
 }
+
+class MappingNullException(val error: MappingNullError) : Exception()

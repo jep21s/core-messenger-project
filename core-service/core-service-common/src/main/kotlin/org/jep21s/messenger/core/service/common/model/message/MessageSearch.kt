@@ -8,7 +8,7 @@ data class MessageSearch(
   val chatFilter: ChatFilter,
   val messageFilter: MessageFilter?,
   val order: OrderType?,
-  val limit: Int,
+  val limit: Int?,
 ) {
   data class ChatFilter(
     val id: UUID?,

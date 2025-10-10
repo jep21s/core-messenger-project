@@ -7,7 +7,7 @@ import org.jep21s.messenger.core.service.common.model.OrderType
 data class ChatSearch(
   val filter: ChatSearchFilter,
   val sort: ChatSearchSort?,
-  val limit: Int,
+  val limit: Int?,
 ) {
   data class ChatSearchFilter(
     val ids: List<UUID>?,
