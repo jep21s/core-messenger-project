@@ -3,18 +3,16 @@ package org.jep21s.messenger.core.service.app.kafka.extention
 import arrow.core.Either
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
-import org.jep21s.messenger.core.lib.logging.logback.mpLoggerLogback
 import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
 import org.jep21s.messenger.core.service.api.v1.mapper.helper.MappingNullError
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.IRequest
+import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.app.common.ProcessRequestDsl
 import org.jep21s.messenger.core.service.app.common.processRequest
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaListener
 
-val log = CMLoggerProvider { className: String -> mpLoggerLogback(className) }
-  .logger(KafkaListener::class)
+val logger = lazy { CSCorSettings.loggerProvider.logger(KafkaListener::class) }
 
 suspend inline fun <
     reified Req : IRequest,
@@ -32,7 +30,7 @@ suspend inline fun <
     config = dsl.getConfig(),
     receive = { ApiV1Mapper.jacksonMapper.readValue(value()) },
     respond = dsl.getRespond(),
-    log = log,
+    logger = logger.value,
   )
 }
 

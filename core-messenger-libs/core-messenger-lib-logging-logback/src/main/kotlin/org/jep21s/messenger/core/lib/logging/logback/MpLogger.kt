@@ -11,11 +11,12 @@ import org.jep21s.messenger.core.lib.logging.common.ICMLogWrapper
  *
  * @param logger Logback instance from [LoggerFactory.getLogger()]
  */
-fun mpLoggerLogback(logger: Logger): ICMLogWrapper = CMLogWrapperLogback(
+fun cmLoggerLogback(logger: Logger): ICMLogWrapper = CMLogWrapperLogback(
     logger = logger,
     loggerId = logger.name,
 )
 
-fun mpLoggerLogback(clazz: KClass<*>): ICMLogWrapper = mpLoggerLogback(LoggerFactory.getLogger(clazz.java) as Logger)
+fun cmLoggerLogback(clazz: KClass<*>): ICMLogWrapper = cmLoggerLogback(LoggerFactory.getLogger(clazz.java) as Logger)
+
 @Suppress("unused")
-fun mpLoggerLogback(loggerId: String): ICMLogWrapper = mpLoggerLogback(LoggerFactory.getLogger(loggerId) as Logger)
+fun cmLoggerLogback(loggerId: String): ICMLogWrapper = cmLoggerLogback(LoggerFactory.getLogger(loggerId) as Logger)

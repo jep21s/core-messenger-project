@@ -9,6 +9,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
+import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
+import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
 import org.jep21s.messenger.core.lib.test.common.constant.UUIDValue
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
@@ -23,7 +25,9 @@ import org.jep21s.messenger.core.service.app.kafka.constants.GroupId
 import org.jep21s.messenger.core.service.app.kafka.constants.Topic
 import org.jep21s.messenger.core.service.app.kafka.service.KafkaSender
 import org.jep21s.messenger.core.service.app.kafka.test.KafkaContainer
+import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
 import org.slf4j.LoggerFactory
 
 class ChatCreateKafkaListenerTest {
@@ -93,4 +97,11 @@ class ChatCreateKafkaListenerTest {
     responseKafkaListener.close()
   }
 
+  companion object {
+    @JvmStatic
+    @BeforeAll
+    fun initCSCorSettings() = CSCorSettings.initialize(
+      loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) }
+    )
+  }
 }

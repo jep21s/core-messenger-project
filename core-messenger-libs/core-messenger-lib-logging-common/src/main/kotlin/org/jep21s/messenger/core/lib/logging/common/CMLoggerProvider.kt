@@ -10,7 +10,7 @@ import kotlin.reflect.KFunction
  * // Обычно логер вызывается вот так
  * val logger = LoggerFactory.getLogger(this::class.java)
  * // Мы создаем экземпляр логер-провайдера вот так
- * val loggerProvider = MkpLoggerProvider { clazz -> mpLoggerLogback(clazz) }
+ * val loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) }
  *
  * // В дальнейшем будем использовать этот экземпляр вот так:
  * val logger = loggerProvider.logger(this::class)

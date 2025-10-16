@@ -1,0 +1,16 @@
+package org.jep21s.messenger.core.service.biz.processor.impl.chat
+
+import org.jep21s.messenger.core.service.biz.processor.CSProcessor
+import org.jep21s.messenger.core.service.biz.processor.cor.runChain
+import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.model.chat.Chat
+import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
+
+object CSChatSearchProcessor :
+  CSProcessor<ChatSearch, List<Chat>?>() {
+  override suspend fun exec(
+    context: CSContext<ChatSearch, List<Chat>?>,
+  ): CSContext<ChatSearch, List<Chat>?> = runChain(context) {
+    chatStubs()
+  }
+}

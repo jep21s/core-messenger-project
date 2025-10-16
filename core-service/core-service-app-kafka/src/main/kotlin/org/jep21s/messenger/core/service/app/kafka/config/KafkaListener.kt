@@ -13,13 +13,13 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
-import org.jep21s.messenger.core.lib.logging.logback.logger
+import org.jep21s.messenger.core.service.common.CSCorSettings
 
 class KafkaListener(
   kafkaProperties: KafkaProperties,
   private val kafkaConsumerProperties: KafkaConsumerProperties,
 ) : AutoCloseable {
-  private val log = logger()
+  private val log = CSCorSettings.loggerProvider.logger(this::class)
   private val process = atomic(true)
   private val consumer: Consumer<String, String> = KafkaFactory
     .createKafkaConsumer(kafkaProperties, kafkaConsumerProperties)

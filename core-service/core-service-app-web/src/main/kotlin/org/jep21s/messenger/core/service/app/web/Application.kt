@@ -15,12 +15,14 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
 import org.jep21s.messenger.core.lib.logging.common.ICMLogWrapper
+import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
 import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
 import org.jep21s.messenger.core.service.api.v1.asCSErrorResp
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
-import org.jep21s.messenger.core.lib.logging.logback.logger
+import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.app.web.route.chatV1
 import org.jep21s.messenger.core.service.app.web.route.messageV1
 
@@ -30,6 +32,17 @@ fun main() {
 }
 
 fun Application.csModule() {
+  csCorSettingsModule()
+  restModule()
+}
+
+fun Application.csCorSettingsModule() {
+  CSCorSettings.initialize(
+    loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) }
+  )
+}
+
+fun Application.restModule() {
   install(ContentNegotiation) {
     jackson {
       setConfig(ApiV1Mapper.jacksonMapper.serializationConfig)
@@ -37,7 +50,7 @@ fun Application.csModule() {
     }
   }
   install(StatusPages) {
-    val logger: ICMLogWrapper = logger()
+    val logger: ICMLogWrapper = CSCorSettings.loggerProvider.logger(this::class)
     exception<Throwable> { call: ApplicationCall, ex: Throwable ->
       logger.error(
         msg = "Uncaught exception",

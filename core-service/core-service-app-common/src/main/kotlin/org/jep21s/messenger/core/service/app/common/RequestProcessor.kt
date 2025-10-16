@@ -28,10 +28,10 @@ suspend inline fun <
   mapResultToResponse: (MResp) -> Resp,
   receive: () -> Req,
   respond: (CSResponse) -> Unit,
-  log: ICMLogWrapper,
+  logger: ICMLogWrapper,
 ) {
   try {
-    log.info(
+    logger.info(
       msg = "[$actionName] request started",
       marker = "ROUTE",
     )
@@ -43,15 +43,15 @@ suspend inline fun <
       request = request,
       modelReq = modelRequest
     )
-    log.info(
+    logger.info(
       msg = "Got [$actionName] context [$context]",
       marker = "ROUTE",
     )
     val processor = CSProcessorFactory
       .getCSProcessor(context)
-    log.info("Got processor [${processor::class.simpleName}] for [$actionName]")
+    logger.info("Got processor [${processor::class.simpleName}] for [$actionName]")
     val resultContext: CSContext<MReq, MResp?> = processor.exec(context)
-    log.info(
+    logger.info(
       msg = "Got [$actionName] result context [$resultContext]",
       marker = "ROUTE",
     )
@@ -60,13 +60,13 @@ suspend inline fun <
       result = ResponseResult.SUCCESS,
       content = response,
     )
-    log.info(
+    logger.info(
       msg = "Got [$actionName] response result: [$responseWrapper]",
       marker = "ROUTE",
     )
     respond(responseWrapper)
   } catch (ex: MappingNullException) {
-    log.error(
+    logger.error(
       msg = "Error in trying handle [$actionName] request, " +
           "because of null fields: [${ex.error.getAllFieldPaths()}]",
       marker = "ROUTE",
@@ -87,7 +87,7 @@ suspend inline fun <
       )
     )
   } catch (ex: Throwable) {
-    log.error(
+    logger.error(
       msg = "Error in trying handle [$actionName] request",
       marker = "ROUTE",
       ex = ex,
@@ -137,7 +137,7 @@ suspend inline fun <
   crossinline config: ProcessRequestDsl<Req, Resp, MReq, MResp>.() -> Unit,
   receive: () -> Req,
   respond: (CSResponse) -> Unit,
-  log: ICMLogWrapper,
+  logger: ICMLogWrapper,
 ) {
   val dsl = ProcessRequestDsl<Req, Resp, MReq, MResp>()
     .apply(config)
@@ -149,7 +149,7 @@ suspend inline fun <
     mapResultToResponse = configObj.mapResultToResponse,
     receive = receive,
     respond = respond,
-    log = log,
+    logger = logger,
   )
 }
 

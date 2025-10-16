@@ -21,6 +21,9 @@ import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
+import org.jep21s.messenger.core.service.api.v1.models.CmDebug
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.junit.jupiter.api.assertAll
 
 class ChatV1Test {
@@ -129,7 +132,11 @@ class ChatV1Test {
         sortField = ChatSearchReqAllOfSort.SortField.LATEST_MESSAGE_DATE,
         order = OrderTypeDto.DESC,
       ),
-      limit = 1
+      limit = 1,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(

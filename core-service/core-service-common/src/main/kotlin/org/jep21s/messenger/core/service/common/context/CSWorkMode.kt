@@ -29,3 +29,7 @@ enum class CSStub {
   NOT_FOUND,
   DB_ERROR,
 }
+
+fun CSWorkMode.isStubSuccess() = this is CSWorkMode.Stub && this.stubCase == CSStub.SUCCESS
+fun CSWorkMode.isStubNotFound() = this is CSWorkMode.Stub && this.stubCase == CSStub.NOT_FOUND
+fun CSWorkMode.isStubDbError() = this is CSWorkMode.Stub && this.stubCase == CSStub.DB_ERROR

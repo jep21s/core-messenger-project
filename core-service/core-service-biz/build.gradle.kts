@@ -12,6 +12,7 @@ dependencies {
   implementation(libs.bundles.kotlinx.coroutines)
 
   implementation(projects.coreServiceCommon)
+  implementation("org.jep21s.messenger.core.libs:core-messenger-lib-cor")
 
   testImplementation(libs.bundles.junit)
 }
