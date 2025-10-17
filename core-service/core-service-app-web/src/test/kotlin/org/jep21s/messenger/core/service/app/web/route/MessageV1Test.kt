@@ -23,6 +23,9 @@ import org.jep21s.messenger.core.service.api.v1.models.MessageStatusUpdateRespAl
 import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
+import org.jep21s.messenger.core.service.api.v1.models.CmDebug
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
@@ -38,7 +41,11 @@ class MessageV1Test {
       sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
       body = "body",
       externalId = null,
-      payload = null
+      payload = null,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
@@ -88,6 +95,10 @@ class MessageV1Test {
       requestType = "DELETE_MESSAGE",
       ids = ids,
       communicationType = communicationType,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
@@ -134,7 +145,11 @@ class MessageV1Test {
         messageTypes = listOf("simple"),
       ),
       order = OrderTypeDto.DESC,
-      limit = 10
+      limit = 10,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
@@ -187,7 +202,11 @@ class MessageV1Test {
       requestType = "UPDATE_STATUS_MESSAGE",
       ids = ids,
       communicationType = communicationType,
-      newStatus = status
+      newStatus = status,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
