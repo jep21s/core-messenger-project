@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.biz.processor.cor
+package org.jep21s.messenger.core.service.biz.cor
 
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.rootChain

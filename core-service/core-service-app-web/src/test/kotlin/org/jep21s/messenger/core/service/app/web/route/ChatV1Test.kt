@@ -34,6 +34,10 @@ class ChatV1Test {
       requestType = "CREATE_CHAT",
       communicationType = "TG",
       chatType = "simple",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
@@ -78,7 +82,11 @@ class ChatV1Test {
     val request = ChatDeleteReq(
       requestType = "DELETE_CHAT",
       id = UUIDValue.uuid1,
-      communicationType = "TG"
+      communicationType = "TG",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
     val expectedResponseBody = CSResponse(
       result = ResponseResult.SUCCESS,

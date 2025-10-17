@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.biz.processor.impl.chat
+package org.jep21s.messenger.core.service.biz.processor.impl.chat.stubs
 
 import java.time.Instant
 import java.util.UUID
@@ -16,17 +16,16 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 
-fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.chatStubs() {
+fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubsChatSearch() {
   chain {
-    this.title = "Обработка стабов чата"
+    this.title = "Обработка стабов поиска чатов"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
-    stubChatSearchSuccess()
+    stubSuccessChatSearch()
   }
 }
 
-private fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubChatSearchSuccess() = worker {
-  this.title = "Имитация успешной обработки"
-  this.description = "Кейс успеха для создания чата"
+private fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubSuccessChatSearch() = worker {
+  this.title = "Кейс успеха для поиска чатов"
   on { workMode.isStubSuccess() && state.isRunning() }
   val logger = CSCorSettings.loggerProvider.logger("stubChatSearchSuccess")
   handle {
