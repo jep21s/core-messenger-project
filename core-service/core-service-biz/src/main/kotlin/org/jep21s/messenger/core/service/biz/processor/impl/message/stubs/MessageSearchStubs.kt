@@ -5,8 +5,8 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
-import org.jep21s.messenger.core.service.biz.extention.putModelResp
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
 import org.jep21s.messenger.core.service.common.context.isRunning
 import org.jep21s.messenger.core.service.common.context.isStubSuccess
@@ -27,8 +27,8 @@ private fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubSuccessMe
   handle {
     val messageFilter: MessageSearch.MessageFilter? = modelReq.messageFilter
     val chatFilter: MessageSearch.ChatFilter = modelReq.chatFilter
-    putModelResp(
-      listOf(
+    copy(
+      modelResp = listOf(
         Message(
           id = UUID.fromString("00000000-0000-0000-0000-000000000001"),
           chatId = chatFilter.id ?: UUID.fromString("00000000-0000-0000-0000-000000000002"),
@@ -41,7 +41,8 @@ private fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubSuccessMe
           externalId = null,
           payload = null,
         )
-      )
+      ),
+      state = CSContextState.Finishing,
     )
   }
 }

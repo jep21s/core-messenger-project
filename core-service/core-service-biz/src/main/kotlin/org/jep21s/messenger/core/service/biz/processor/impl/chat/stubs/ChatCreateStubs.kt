@@ -5,7 +5,6 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
-import org.jep21s.messenger.core.service.biz.extention.putModelResp
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -27,8 +26,8 @@ private fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubSuccessChatCreation
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {
     val request: ChatCreation = modelReq
-    putModelResp(
-      Chat(
+    copy(
+      modelResp = Chat(
         id = UUID.fromString("00000000-0000-0000-0000-000000000001"),
         externalId = request.externalId,
         communicationType = request.communicationType,
@@ -37,7 +36,8 @@ private fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubSuccessChatCreation
         createdAt = Instant.ofEpochSecond(1),
         updatedAt = null,
         latestMessageDate = null,
-      )
+      ),
+      state = CSContextState.Finishing,
     )
   }
 }

@@ -5,7 +5,6 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
-import org.jep21s.messenger.core.service.biz.extention.putModelResp
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -26,8 +25,8 @@ private fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubSuccessChatDeletion
   this.title = "Кейс успеха для удаления чата"
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {
-    putModelResp(
-      Chat(
+    copy(
+      modelResp = Chat(
         id = UUID.fromString("00000000-0000-0000-0000-000000000001"),
         externalId = null,
         communicationType = modelReq.communicationType,
@@ -36,7 +35,8 @@ private fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubSuccessChatDeletion
         createdAt = Instant.ofEpochSecond(1),
         updatedAt = null,
         latestMessageDate = null,
-      )
+      ),
+      state = CSContextState.Finishing,
     )
   }
 }

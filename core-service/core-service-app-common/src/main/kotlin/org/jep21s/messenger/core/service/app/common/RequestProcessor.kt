@@ -8,12 +8,15 @@ import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.CSContextMapperImpl
 import org.jep21s.messenger.core.service.api.v1.mapper.helper.MappingNullError
 import org.jep21s.messenger.core.service.api.v1.mapper.mapToContext
+import org.jep21s.messenger.core.service.api.v1.models.CSErrorResp
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.IRequest
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.service.biz.processor.CSProcessorFactory
 import org.jep21s.messenger.core.service.biz.processor.getCSProcessor
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
+import org.jep21s.messenger.core.service.common.context.CSError
 
 val csContextMapper: CSContextMapper = CSContextMapperImpl
 
@@ -26,6 +29,7 @@ suspend inline fun <
   actionName: String,
   mapRequestToModel: (Req) -> Either<MappingNullError, MReq>,
   mapResultToResponse: (MResp) -> Resp,
+  mapErrorToResponse: (CSError) -> CSErrorResp,
   receive: () -> Req,
   respond: (CSResponse) -> Unit,
   logger: ICMLogWrapper,
@@ -55,11 +59,26 @@ suspend inline fun <
       msg = "Got [$actionName] result context [$resultContext]",
       marker = "ROUTE",
     )
-    val response: Resp = mapResultToResponse(requireNotNull(resultContext.modelResp))
-    val responseWrapper = CSResponse(
-      result = ResponseResult.SUCCESS,
-      content = response,
-    )
+
+    val responseWrapper = when (resultContext.state) {
+      is CSContextState.Finishing -> {
+        val response: Resp = mapResultToResponse(requireNotNull(resultContext.modelResp))
+        CSResponse(
+          result = ResponseResult.SUCCESS,
+          content = response,
+        )
+      }
+
+      is CSContextState.Failing -> CSResponse(
+        result = ResponseResult.ERROR,
+        errors = (resultContext.state as CSContextState.Failing).errors
+          .map { mapErrorToResponse(it) }
+      )
+
+      is CSContextState.None -> error("Context had not started")
+      is CSContextState.Running -> error("Context had not finished")
+    }
+
     logger.info(
       msg = "Got [$actionName] response result: [$responseWrapper]",
       marker = "ROUTE",
@@ -105,6 +124,7 @@ suspend inline fun <
 class ProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
   private lateinit var _mapRequestToModel: (Req) -> Either<MappingNullError, MReq>
   private lateinit var _mapResultToResponse: (MResp) -> Resp
+  private lateinit var _mapErrorToResponse: (CSError) -> CSErrorResp
 
   fun mapRequestToModel(block: (Req) -> Either<MappingNullError, MReq>) {
     _mapRequestToModel = block
@@ -114,10 +134,15 @@ class ProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
     _mapResultToResponse = block
   }
 
+  fun mapErrorToResponse(block: (CSError) -> CSErrorResp) {
+    _mapErrorToResponse = block
+  }
+
   fun build(): ProcessRequestConfig<Req, Resp, MReq, MResp> {
     return ProcessRequestConfig(
       mapRequestToModel = _mapRequestToModel,
-      mapResultToResponse = _mapResultToResponse
+      mapResultToResponse = _mapResultToResponse,
+      mapErrorToResponse = _mapErrorToResponse
     )
   }
 }
@@ -125,6 +150,7 @@ class ProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
 data class ProcessRequestConfig<Req : IRequest, Resp, MReq, MResp>(
   val mapRequestToModel: (Req) -> Either<MappingNullError, MReq>,
   val mapResultToResponse: (MResp) -> Resp,
+  val mapErrorToResponse: (CSError) -> CSErrorResp,
 )
 
 suspend inline fun <
@@ -147,6 +173,7 @@ suspend inline fun <
     actionName = actionName,
     mapRequestToModel = configObj.mapRequestToModel,
     mapResultToResponse = configObj.mapResultToResponse,
+    mapErrorToResponse = configObj.mapErrorToResponse,
     receive = receive,
     respond = respond,
     logger = logger,

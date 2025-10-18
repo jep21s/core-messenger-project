@@ -3,8 +3,8 @@ package org.jep21s.messenger.core.service.biz.processor.impl.message.status.stub
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
-import org.jep21s.messenger.core.service.biz.extention.putModelResp
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
 import org.jep21s.messenger.core.service.common.context.isRunning
 import org.jep21s.messenger.core.service.common.context.isStubSuccess
@@ -24,12 +24,13 @@ private fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>
     this.title = "Кейс успеха обновления статусов сообщений"
     on { workMode.isStubSuccess() && state.isRunning() }
     handle {
-      putModelResp(
-        MessageStatusUpdated(
+      copy(
+        modelResp = MessageStatusUpdated(
           ids = modelReq.ids,
           communicationType = modelReq.communicationType,
           newStatus = modelReq.newStatus
-        )
+        ),
+        state = CSContextState.Finishing,
       )
     }
   }

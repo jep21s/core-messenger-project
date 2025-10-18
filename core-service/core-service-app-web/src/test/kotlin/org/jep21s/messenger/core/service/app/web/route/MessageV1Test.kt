@@ -23,6 +23,7 @@ import org.jep21s.messenger.core.service.api.v1.models.MessageStatusUpdateRespAl
 import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
+import org.jep21s.messenger.core.service.api.v1.models.CSErrorResp
 import org.jep21s.messenger.core.service.api.v1.models.CmDebug
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
@@ -85,6 +86,59 @@ class MessageV1Test {
       }
     )
   }
+
+  @Test
+  fun `failure creation message because of not found chat`() = testConfiguredApplication { client ->
+    //Given
+    val request = MessageCreateReq(
+      requestType = "CREATE_MESSAGE",
+      id = UUIDValue.uuid10,
+      chatId = UUIDValue.uuid20,
+      messageType = "simple",
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
+      body = "body",
+      externalId = null,
+      payload = null,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.NOT_FOUND,
+      )
+    )
+
+    val expectedResponseBody = CSResponse(
+      result = ResponseResult.ERROR,
+      errors = listOf(
+        CSErrorResp(
+          code = "not-found-chat-for-message-creation",
+          group = "not-found",
+          field = mapOf("chatId" to request.chatId.toString()).toString(),
+          message = "Ошибка при попытке сохранить сообщение. Чат не найден",
+        )
+      )
+    )
+
+    //When
+    val response = client.post("/v1/message/create") {
+      contentType(ContentType.Application.Json)
+      setBody(request)
+    }
+    val resultBody: CSResponse = response.body<CSResponse>()
+
+    //Then
+    assertAll(
+      {
+        assertThat(resultBody)
+          .describedAs("got expected response body")
+          .isEqualTo(expectedResponseBody)
+      },
+      {
+        assertThat(response.status)
+          .describedAs("got expected http status")
+          .isEqualTo(HttpStatusCode.OK)
+      }
+    )
+  }
+
 
   @Test
   fun `success delete message`() = testConfiguredApplication { client ->

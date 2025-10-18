@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
+import org.jep21s.messenger.core.service.api.v1.mapper.CSErrorMapperImpl
 import org.jep21s.messenger.core.service.api.v1.mapper.helper.MappingNullError
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.IRequest
@@ -54,6 +55,7 @@ class KafkaProcessRequestDsl<Req : IRequest, Resp, MReq, MResp> {
   fun getConfig(): ProcessRequestDsl<Req, Resp, MReq, MResp>.() -> Unit = {
     mapRequestToModel { _kMapRequestToModel(it) }
     mapResultToResponse { _kMapResultToResponse(it) }
+    mapErrorToResponse { CSErrorMapperImpl.mapToResponse(it) }
   }
 
   fun getRespond() = _respond

@@ -6,7 +6,6 @@ import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.lib.logging.common.LogLevel
-import org.jep21s.messenger.core.service.biz.extention.putModelResp
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
@@ -31,8 +30,8 @@ private fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubSuccessChatSear
   handle {
     logger.doWithLogging(level = LogLevel.DEBUG) {
       val request: ChatSearch.ChatSearchFilter = modelReq.filter
-      putModelResp(
-        listOf(
+      copy(
+        modelResp = listOf(
           Chat(
             id = UUID.fromString("00000000-0000-0000-0000-000000000001"),
             externalId = request.externalIds?.firstOrNull(),
@@ -43,7 +42,8 @@ private fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubSuccessChatSear
             updatedAt = null,
             latestMessageDate = null
           )
-        )
+        ),
+        state = CSContextState.Finishing,
       )
     }
   }
