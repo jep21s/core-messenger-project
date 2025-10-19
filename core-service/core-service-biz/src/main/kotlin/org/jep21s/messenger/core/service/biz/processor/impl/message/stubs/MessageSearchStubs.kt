@@ -3,8 +3,8 @@ package org.jep21s.messenger.core.service.biz.processor.impl.message.stubs
 import java.time.Instant
 import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
-import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
+import org.jep21s.messenger.core.service.biz.cor.chainStub
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -14,7 +14,7 @@ import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 
 fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubsMessageSearch() {
-  chain {
+  chainStub {
     this.title = "Обработка стабов поиска сообщений"
     on { workMode is CSWorkMode.Stub && state.isRunning() }
     stubSuccessMessageSearch()

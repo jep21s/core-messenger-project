@@ -3,8 +3,8 @@ package org.jep21s.messenger.core.service.biz.processor.impl.chat.stubs
 import java.time.Instant
 import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
-import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
+import org.jep21s.messenger.core.service.biz.cor.chainStub
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -14,7 +14,7 @@ import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
 
 fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubsChatDeletion() {
-  chain {
+  chainStub {
     this.title = "Обработка стабов поиска чатов"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
     stubSuccessChatDeletion()

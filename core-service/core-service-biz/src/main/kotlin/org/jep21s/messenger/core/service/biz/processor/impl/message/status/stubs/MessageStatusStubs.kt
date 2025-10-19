@@ -1,8 +1,8 @@
 package org.jep21s.messenger.core.service.biz.processor.impl.message.status.stubs
 
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
-import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.lib.cor.handler.worker
+import org.jep21s.messenger.core.service.biz.cor.chainStub
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -12,7 +12,7 @@ import org.jep21s.messenger.core.service.common.model.message.status.MessageStat
 import org.jep21s.messenger.core.service.common.model.message.status.MessageStatusUpdation
 
 fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubsMessageStatusUpdation() {
-  chain {
+  chainStub {
     this.title = "Обработка стабов изменения статусов сообщений"
     on { workMode is CSWorkMode.Stub && state.isRunning() }
     stubSuccessMessageStatusUpdation()
