@@ -15,6 +15,8 @@ dependencies {
   implementation("org.jep21s.messenger.core.libs:core-messenger-lib-cor")
 
   testImplementation(libs.bundles.junit)
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.test {

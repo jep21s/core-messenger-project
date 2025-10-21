@@ -8,6 +8,7 @@ arrow = "2.1.2"
 binaryCompabilityValidator = "0.13.2"
 coroutines = "1.9.0"
 jackson = "2.18.3"
+junit-parametrized = "5.13.4"
 konform = "0.11.0"
 konvert = "4.2.0"
 kafka-client = "3.7.0"
@@ -20,6 +21,7 @@ logback = "1.5.3"
 logback-appenders = "1.8.8"
 logback-logstash = "7.4"
 logger-fluentd = "0.3.4"
+mockk = "1.14.6"
 openapi-generator = "7.14.0"
 testcontainers = "1.21.3"
 
@@ -31,6 +33,7 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlinVersion" }
+junit-parametrized = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-parametrized" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-client" }
 konform = { module = "io.konform:konform-jvm", version.ref = "konform" }
 konvert-lib = { module = "io.mcarle:konvert", version.ref = "konvert" }
@@ -40,6 +43,7 @@ kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "k
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 ktor-client-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
@@ -58,6 +62,8 @@ logback-appenders = { module = "com.sndyuk:logback-more-appenders", version.ref 
 logback-logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-logstash" }
 logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-fluentd" }
 
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
+
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
@@ -67,7 +73,7 @@ plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-c
 
 [bundles]
 jackson = [ "jackson-kotlin", "jackson-datatype" ]
-junit = [ "junit-kotlin", "assertj" ]
+junit = [ "junit-kotlin", "assertj", "junit-parametrized" ]
 kotlinx-coroutines = [ "kotlinx-coroutines-core", "kotlinx-coroutines-slf4j" ]
 testcontainers = [ "testcontainers-core", "testcontainers-junit" ]
 

@@ -5,6 +5,7 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.chainStub
+import org.jep21s.messenger.core.service.biz.cor.fail
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSError
@@ -56,16 +57,12 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessa
         && modelReq.chatId == UUID.fromString("00000000-0000-0000-0000-000000000020")
   }
   handle {
-    copy(
-      state = CSContextState.Failing(
-        listOf(
-          CSError(
-            code = "not-found-chat-for-message-creation",
-            group = "not-found",
-            field = mapOf("chatId" to this.modelReq.chatId.toString()).toString(),
-            message = "Ошибка при попытке сохранить сообщение. Чат не найден",
-          )
-        )
+    fail(
+      CSError(
+        code = "not-found-chat-for-message-creation",
+        group = "not-found",
+        field = mapOf("chatId" to this.modelReq.chatId.toString()).toString(),
+        message = "Ошибка при попытке сохранить сообщение. Чат не найден",
       )
     )
   }
@@ -75,19 +72,15 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessa
   this.title = "Кейс провала создания сообщения. База данных недоступна"
   on { workMode.isStubDbError() && state.isRunning() }
   handle {
-    copy(
-      state = CSContextState.Failing(
-        listOf(
-          CSError(
-            code = "internal-db-error",
-            group = "internal",
-            field = buildMap {
-              put("chatId", modelReq.chatId.toString())
-              modelReq.id?.let { put("messageId", it.toString()) }
-            }.toString(),
-            message = "Ошибка при попытке сохранить сообщение. База данных недоступна",
-          )
-        )
+    fail(
+      CSError(
+        code = "internal-db-error",
+        group = "internal",
+        field = buildMap {
+          put("chatId", modelReq.chatId.toString())
+          modelReq.id?.let { put("messageId", it.toString()) }
+        }.toString(),
+        message = "Ошибка при попытке сохранить сообщение. База данных недоступна",
       )
     )
   }

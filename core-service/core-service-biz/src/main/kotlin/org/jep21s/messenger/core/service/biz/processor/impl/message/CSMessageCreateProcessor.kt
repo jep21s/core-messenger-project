@@ -5,6 +5,7 @@ import org.jep21s.messenger.core.service.biz.cor.validation
 import org.jep21s.messenger.core.service.biz.processor.CSProcessor
 import org.jep21s.messenger.core.service.biz.processor.impl.message.stubs.stubsMessageCreation
 import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.existChat
+import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.notExistExternalId
 import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.validCommunicationType
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.model.message.Message
@@ -19,6 +20,7 @@ object CSMessageCreateProcessor :
     validation {
       existChat()
       validCommunicationType()
+      notExistExternalId()
     }
   }
 }
