@@ -27,16 +27,18 @@ interface MessageStatusMapper {
     fieldName: String = "",
   ): Either<MappingNullError, MessageStatusUpdation> {
     val idsKP = MessageStatusUpdateReq::ids
+    val chatIdKP = MessageStatusUpdateReq::chatId
     val communicationTypeKP = MessageStatusUpdateReq::communicationType
     val newStatusKP = MessageStatusUpdateReq::newStatus
 
     return buildEitherResult(
       request, fieldName,
-      idsKP, communicationTypeKP, newStatusKP
+      idsKP, chatIdKP, communicationTypeKP, newStatusKP
     ) { nonNullRequest: MessageStatusUpdateReq ->
       modelReq {
         MessageStatusUpdation(
           ids = idsKP.getNotNull(nonNullRequest),
+          chatId = chatIdKP.getNotNull(nonNullRequest),
           communicationType = communicationTypeKP.getNotNull(nonNullRequest),
           newStatus = newStatusKP.getNotNull(nonNullRequest)
         )

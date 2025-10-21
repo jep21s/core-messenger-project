@@ -34,6 +34,7 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSucce
       modelResp = Message(
         id = modelReq.id ?: UUID.fromString("00000000-0000-0000-0000-000000000001"),
         chatId = modelReq.chatId,
+        communicationType = "TG",
         messageType = modelReq.messageType,
         status = "CREATED",
         sentDate = modelReq.sentDate,

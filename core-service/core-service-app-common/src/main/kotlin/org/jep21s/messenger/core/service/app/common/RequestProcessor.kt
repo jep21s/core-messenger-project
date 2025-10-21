@@ -96,10 +96,12 @@ suspend inline fun <
         result = ResponseResult.ERROR,
         errors = listOf(
           ex.asCSErrorResp(
+            code = "required-field",
+            group = "required-field",
             message = "Required fields: [${
               ex.error
                 .getAllFieldPaths()
-                .joinToString("; ")
+                .joinToString(", ")
             }]"
           )
         ),
@@ -180,4 +182,4 @@ suspend inline fun <
   )
 }
 
-class MappingNullException(val error: MappingNullError) : Exception()
+data class MappingNullException(val error: MappingNullError) : Exception()

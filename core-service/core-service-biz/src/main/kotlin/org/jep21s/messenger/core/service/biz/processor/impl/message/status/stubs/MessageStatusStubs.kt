@@ -27,6 +27,7 @@ private suspend  fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatus
       copy(
         modelResp = MessageStatusUpdated(
           ids = modelReq.ids,
+          chatId = modelReq.chatId,
           communicationType = modelReq.communicationType,
           newStatus = modelReq.newStatus
         ),

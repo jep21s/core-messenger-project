@@ -39,22 +39,24 @@ interface MessageMapper {
     fieldName: String = "",
   ): Either<MappingNullError, MessageCreation> {
     val chatIdKP = MessageCreateReq::chatId
+    val communicationTypeKP = MessageCreateReq::communicationType
     val messageTypeKP = MessageCreateReq::messageType
     val sentDateKP = MessageCreateReq::sentDate
 
     return buildEitherResult(
       request, fieldName,
-      chatIdKP, messageTypeKP, sentDateKP
+      chatIdKP, communicationTypeKP, messageTypeKP, sentDateKP
     ) { nonNullRequest: MessageCreateReq ->
       modelReq {
         MessageCreation(
           id = nonNullRequest.id,
           chatId = chatIdKP.getNotNull(nonNullRequest),
+          communicationType = communicationTypeKP.getNotNull(nonNullRequest),
           messageType = messageTypeKP.getNotNull(nonNullRequest),
           sentDate = Instant.ofEpochMilli(sentDateKP.getNotNull(nonNullRequest)),
           body = nonNullRequest.body,
           externalId = nonNullRequest.externalId,
-          payload = nonNullRequest.payload
+          payload = nonNullRequest.payload,
         )
       }
     }
@@ -65,15 +67,17 @@ interface MessageMapper {
     fieldName: String = "",
   ): Either<MappingNullError, MessageDeletion> {
     val idsKP = MessageDeleteReq::ids
+    val chatIdKP = MessageDeleteReq::chatId
     val communicationTypeKP = MessageDeleteReq::communicationType
 
     return buildEitherResult(
       request, fieldName,
-      idsKP, communicationTypeKP,
+      idsKP, chatIdKP, communicationTypeKP,
     ) { nonNullRequest: MessageDeleteReq ->
       modelReq {
         MessageDeletion(
-          ids = idsKP.getNotNull(nonNullRequest),
+          ids = idsKP.getNotNull(nonNullRequest).toSet(),
+          chadId = chatIdKP.getNotNull(nonNullRequest),
           communicationType = communicationTypeKP.getNotNull(nonNullRequest),
         )
       }

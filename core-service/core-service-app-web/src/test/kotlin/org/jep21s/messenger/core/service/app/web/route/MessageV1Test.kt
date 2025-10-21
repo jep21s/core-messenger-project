@@ -33,10 +33,12 @@ class MessageV1Test {
   fun `success delete message`() = testConfiguredApplication { client ->
     //Given
     val ids = listOf(UUIDValue.uuid1, UUIDValue.uuid2)
+    val chatId = UUIDValue.uuid10
     val communicationType = "TG"
     val request = MessageDeleteReq(
       requestType = "DELETE_MESSAGE",
       ids = ids,
+      chatId = chatId,
       communicationType = communicationType,
       debug = CmDebug(
         mode = CmRequestDebugMode.STUB,
@@ -48,6 +50,7 @@ class MessageV1Test {
       result = ResponseResult.SUCCESS,
       content = MessageDeleteRespAllOfContent(
         ids = ids,
+        chatId = chatId,
         communicationType = communicationType,
       ).toLinkedHashMap()
     )
@@ -102,6 +105,7 @@ class MessageV1Test {
           id = UUIDValue.uuid1,
           chatId = UUIDValue.uuid2,
           messageType = "simple",
+          communicationType = "TG",
           sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
           body = "body",
           externalId = null,
@@ -139,11 +143,13 @@ class MessageV1Test {
   fun `success update message status`() = testConfiguredApplication { client ->
     //Given
     val ids = listOf(UUIDValue.uuid1, UUIDValue.uuid2)
+    val chatId = UUIDValue.uuid10
     val communicationType = "TG"
     val status = "status"
     val request = MessageStatusUpdateReq(
       requestType = "UPDATE_STATUS_MESSAGE",
       ids = ids,
+      chatId = chatId,
       communicationType = communicationType,
       newStatus = status,
       debug = CmDebug(
@@ -156,6 +162,7 @@ class MessageV1Test {
       result = ResponseResult.SUCCESS,
       content = MessageStatusUpdateRespAllOfContent(
         ids = ids,
+        chatId = chatId,
         communicationType = communicationType,
         newStatus = status
       ).toLinkedHashMap()
