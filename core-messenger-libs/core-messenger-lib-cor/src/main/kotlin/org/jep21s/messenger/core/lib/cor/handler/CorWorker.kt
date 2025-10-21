@@ -19,11 +19,11 @@ class CorWorker<T>(
 class CorWorkerDsl<T> : AbstractCorExecDsl<T>(), ICorWorkerDsl<T> {
   private var blockHandle: suspend T.() -> T = { this }
 
-  override fun handle(blockHandle: suspend T.() -> T) {
+  override suspend fun handle(blockHandle: suspend T.() -> T) {
     this.blockHandle = blockHandle
   }
 
-  override fun build(): ICorExec<T> = CorWorker<T>(
+  override suspend fun build(): ICorExec<T> = CorWorker<T>(
     title = this.title,
     description = this.description,
     blockOn = this.blockOn,
@@ -32,6 +32,6 @@ class CorWorkerDsl<T> : AbstractCorExecDsl<T>(), ICorWorkerDsl<T> {
   )
 }
 
-fun <T> ICorChainDsl<T>.worker(block: ICorWorkerDsl<T>.() -> Unit) {
-  add(CorWorkerDsl<T>().apply(block))
+suspend fun <T> ICorChainDsl<T>.worker(block: suspend ICorWorkerDsl<T>.() -> Unit) {
+  add(CorWorkerDsl<T>().apply{ block() })
 }

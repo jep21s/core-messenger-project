@@ -16,7 +16,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageCreation
 
-fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubsMessageCreation() {
+suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubsMessageCreation() {
   chainStub {
     this.title = "Обработка стабов создания сообщения"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
@@ -26,7 +26,7 @@ fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubsMessageCreation() {
   }
 }
 
-private fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSuccessMessageCreation() = worker {
+private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSuccessMessageCreation() = worker {
   this.title = "Кейс успеха создания сообщения"
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {
@@ -48,7 +48,7 @@ private fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSuccessMessag
   }
 }
 
-private fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationNotFoundChat() = worker {
+private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationNotFoundChat() = worker {
   this.title = "Кейс провала. Не найден чат для создания сообщения"
   on {
     workMode.isStubNotFound() && state.isRunning()
@@ -70,7 +70,7 @@ private fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreati
   }
 }
 
-private fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationDBError() = worker {
+private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationDBError() = worker {
   this.title = "Кейс провала создания сообщения. База данных недоступна"
   on { workMode.isStubDbError() && state.isRunning() }
   handle {

@@ -13,7 +13,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 
-fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubsMessageSearch() {
+suspend fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubsMessageSearch() {
   chainStub {
     this.title = "Обработка стабов поиска сообщений"
     on { workMode is CSWorkMode.Stub && state.isRunning() }
@@ -21,7 +21,7 @@ fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubsMessageSearch() 
   }
 }
 
-private fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubSuccessMessageSearch() = worker {
+private suspend fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubSuccessMessageSearch() = worker {
   this.title = "Кейс успеха поиска сообщений"
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {

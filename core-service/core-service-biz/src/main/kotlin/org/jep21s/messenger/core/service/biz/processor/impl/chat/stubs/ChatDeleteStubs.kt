@@ -13,7 +13,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
 
-fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubsChatDeletion() {
+suspend fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubsChatDeletion() {
   chainStub {
     this.title = "Обработка стабов поиска чатов"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
@@ -21,7 +21,7 @@ fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubsChatDeletion() {
   }
 }
 
-private fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubSuccessChatDeletion() = worker {
+private suspend fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubSuccessChatDeletion() = worker {
   this.title = "Кейс успеха для удаления чата"
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {

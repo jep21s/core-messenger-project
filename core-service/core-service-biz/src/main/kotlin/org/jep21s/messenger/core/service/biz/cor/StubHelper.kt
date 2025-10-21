@@ -9,7 +9,7 @@ import org.jep21s.messenger.core.service.common.context.CSError
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
 import org.jep21s.messenger.core.service.common.context.isRunning
 
-fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.stubNoCase() = worker {
+suspend fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.stubNoCase() = worker {
   title = "Запрошенный кейс не поддерживается"
   on { workMode is CSWorkMode.Stub && state.isRunning() }
   handle {
@@ -28,8 +28,8 @@ fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.stubNoCase() = worker {
   }
 }
 
-inline fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.chainStub(
-  crossinline block: ICorChainDsl<CSContext<MReq, MResp>>.() -> Unit,
+suspend inline fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.chainStub(
+  crossinline block: suspend ICorChainDsl<CSContext<MReq, MResp>>.() -> Unit,
 ) = chain {
   block()
   stubNoCase()

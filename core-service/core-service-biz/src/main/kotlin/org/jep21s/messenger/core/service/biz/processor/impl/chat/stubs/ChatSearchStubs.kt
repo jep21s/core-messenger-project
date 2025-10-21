@@ -15,7 +15,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 
-fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubsChatSearch() {
+suspend fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubsChatSearch() {
   chainStub {
     this.title = "Обработка стабов поиска чатов"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
@@ -23,7 +23,7 @@ fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubsChatSearch() {
   }
 }
 
-private fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubSuccessChatSearch() = worker {
+private suspend fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.stubSuccessChatSearch() = worker {
   this.title = "Кейс успеха для поиска чатов"
   on { workMode.isStubSuccess() && state.isRunning() }
   val logger = CSCorSettings.loggerProvider.logger("stubChatSearchSuccess")

@@ -6,7 +6,7 @@ import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 
-fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.initStatus() = worker {
+suspend fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.initStatus() = worker {
   this.title = "Инициализация стартового статуса обработки"
   this.description = "Этот обработчик устанавливает стартовый статус обработки. " +
       "Запускается только в случае не заданного статуса."
@@ -16,7 +16,7 @@ fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.initStatus() = worker {
 
 suspend inline fun <MReq, MResp> runChain(
   context: CSContext<MReq, MResp>,
-  crossinline block: ICorChainDsl<CSContext<MReq, MResp>>.() -> Unit,
+  crossinline block: suspend ICorChainDsl<CSContext<MReq, MResp>>.() -> Unit,
 ): CSContext<MReq, MResp> = rootChain {
   initStatus()
   block()

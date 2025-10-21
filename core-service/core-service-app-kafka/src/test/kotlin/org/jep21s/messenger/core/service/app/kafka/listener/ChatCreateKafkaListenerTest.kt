@@ -17,6 +17,9 @@ import org.jep21s.messenger.core.service.api.v1.ApiV1Mapper
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ChatCreateReq
 import org.jep21s.messenger.core.service.api.v1.models.ChatResp
+import org.jep21s.messenger.core.service.api.v1.models.CmDebug
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaConsumerProperties
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaListener
@@ -66,6 +69,10 @@ class ChatCreateKafkaListenerTest {
       requestType = "CREATE_CHAT",
       communicationType = "TG",
       chatType = "simple",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
     val expectedResponse = CSResponse(
       result = ResponseResult.SUCCESS,

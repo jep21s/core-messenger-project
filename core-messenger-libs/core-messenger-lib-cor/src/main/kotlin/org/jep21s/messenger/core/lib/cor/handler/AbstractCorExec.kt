@@ -31,11 +31,11 @@ abstract class AbstractCorExecDsl<T> : ICorExecDsl<T> {
 
   protected var blockExcept: suspend T.(Throwable) -> T = { throw it }
 
-  override fun on(blockOn: suspend T.() -> Boolean) {
+  override suspend fun on(blockOn: suspend T.() -> Boolean) {
     this.blockOn = blockOn
   }
 
-  override fun except(blockExcept: suspend T.(Throwable) -> T) {
+  override suspend fun except(blockExcept: suspend T.(Throwable) -> T) {
     this.blockExcept = blockExcept
   }
 }

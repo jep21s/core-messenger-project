@@ -11,7 +11,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.message.status.MessageStatusUpdated
 import org.jep21s.messenger.core.service.common.model.message.status.MessageStatusUpdation
 
-fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubsMessageStatusUpdation() {
+suspend fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubsMessageStatusUpdation() {
   chainStub {
     this.title = "Обработка стабов изменения статусов сообщений"
     on { workMode is CSWorkMode.Stub && state.isRunning() }
@@ -19,7 +19,7 @@ fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubsM
   }
 }
 
-private fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubSuccessMessageStatusUpdation() =
+private suspend  fun ICorChainDsl<CSContext<MessageStatusUpdation, MessageStatusUpdated?>>.stubSuccessMessageStatusUpdation() =
   worker {
     this.title = "Кейс успеха обновления статусов сообщений"
     on { workMode.isStubSuccess() && state.isRunning() }

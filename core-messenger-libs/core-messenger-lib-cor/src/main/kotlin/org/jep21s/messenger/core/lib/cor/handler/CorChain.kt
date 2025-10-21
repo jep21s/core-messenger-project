@@ -22,11 +22,11 @@ class CorChain<T>(
 class CorChainDsl<T> : AbstractCorExecDsl<T>(), ICorChainDsl<T> {
   private val workers: MutableList<ICorExecDsl<T>> = mutableListOf()
 
-  override fun add(worker: ICorExecDsl<T>) {
+  override suspend fun add(worker: ICorExecDsl<T>) {
     workers.add(worker)
   }
 
-  override fun build(): ICorExec<T> = CorChain(
+  override suspend fun build(): ICorExec<T> = CorChain(
     title = this.title,
     description = this.description,
     blockOn = this.blockOn,
@@ -35,9 +35,9 @@ class CorChainDsl<T> : AbstractCorExecDsl<T>(), ICorChainDsl<T> {
   )
 }
 
-fun <T> rootChain(block: ICorChainDsl<T>.() -> Unit): ICorChainDsl<T> =
-  CorChainDsl<T>().apply(block)
+suspend fun <T> rootChain(block: suspend ICorChainDsl<T>.() -> Unit): ICorChainDsl<T> =
+  CorChainDsl<T>().apply{ block() }
 
-fun <T> ICorChainDsl<T>.chain(block: ICorChainDsl<T>.() -> Unit) {
-  add(CorChainDsl<T>().apply(block))
+suspend fun <T> ICorChainDsl<T>.chain(block: suspend ICorChainDsl<T>.() -> Unit) {
+  add(CorChainDsl<T>().apply { block() })
 }

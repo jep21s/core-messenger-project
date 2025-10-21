@@ -13,7 +13,7 @@ import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 
-fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubsChatCreation() {
+suspend fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubsChatCreation() {
   chainStub {
     this.title = "Обработка стабов создания чата"
     on { workMode is CSWorkMode.Stub && state == CSContextState.Running }
@@ -21,7 +21,7 @@ fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubsChatCreation() {
   }
 }
 
-private fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubSuccessChatCreation() = worker {
+private suspend fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.stubSuccessChatCreation() = worker {
   this.title = "Кейс успеха для создания чата"
   on { workMode.isStubSuccess() && state.isRunning() }
   handle {

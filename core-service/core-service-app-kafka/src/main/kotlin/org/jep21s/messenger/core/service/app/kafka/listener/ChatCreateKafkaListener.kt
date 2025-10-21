@@ -38,7 +38,7 @@ class ChatCreateKafkaListener(
           KafkaSender.send(
             hosts = kafkaProperties.hosts,
             topic = Topic.CHAT_CREATE_RESP,
-            key = (response.content as ChatResp).id?.toString(),
+            key = (response.content as? ChatResp)?.id?.toString(),
             value = response,
           )
         }

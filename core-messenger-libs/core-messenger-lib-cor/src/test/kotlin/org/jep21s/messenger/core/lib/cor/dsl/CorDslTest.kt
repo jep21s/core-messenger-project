@@ -106,7 +106,7 @@ class CorDslTest {
     println("Complete: $ctx")
   }
 
-  private fun ICorChainDsl<TestContext>.printResult() = worker {
+  private suspend fun ICorChainDsl<TestContext>.printResult() = worker {
     title = "Print example"
     handle {
       println("some = $some")
