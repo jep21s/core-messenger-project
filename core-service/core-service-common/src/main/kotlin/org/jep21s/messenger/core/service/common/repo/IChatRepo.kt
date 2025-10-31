@@ -10,7 +10,7 @@ interface IChatRepo {
     get() = 10
 
   val maxPaginationLimit: Int
-    get() = 50
+    get() = 30
 
   suspend fun save(chatCreation: ChatCreation): Chat
 
