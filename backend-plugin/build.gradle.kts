@@ -16,6 +16,10 @@ gradlePlugin {
             id = "konvert"
             implementationClass = "org.jep21s.messenger.core.plugins.KonvertPlugin"
         }
+        register("idea-plugin") {
+            id = "idea-plugin"
+            implementationClass = "org.jep21s.messenger.core.plugins.IdeaPlugin"
+        }
     }
 }
 

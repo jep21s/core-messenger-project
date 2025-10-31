@@ -1,5 +1,6 @@
 package org.jep21s.messenger.core.service.biz.processor.impl.chat
 
+import org.jep21s.messenger.core.lib.cor.handler.chain
 import org.jep21s.messenger.core.service.biz.cor.runChain
 import org.jep21s.messenger.core.service.biz.cor.validation
 import org.jep21s.messenger.core.service.biz.processor.CSProcessor
@@ -17,6 +18,9 @@ object CSChatCreateProcessor :
     stubsChatCreation()
     validation {
       notExistExternalId()
+    }
+    chain {
+
     }
   }
 }

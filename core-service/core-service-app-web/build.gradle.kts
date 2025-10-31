@@ -1,5 +1,6 @@
 plugins {
   id("build-jvm")
+  id("idea-plugin")
   alias(libs.plugins.ktor)
 }
 
@@ -35,6 +36,7 @@ dependencies {
   implementation(projects.coreServiceCommon)
   implementation(projects.coreServiceBiz)
   implementation(projects.coreServiceAppCommon)
+  implementation(projects.coreServiceRepoInmemory)
 
   testImplementation(libs.bundles.junit)
   testImplementation(libs.ktor.server.test.host)
