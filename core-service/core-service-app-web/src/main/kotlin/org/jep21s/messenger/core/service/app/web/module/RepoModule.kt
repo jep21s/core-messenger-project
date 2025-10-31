@@ -14,6 +14,8 @@ import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
 import org.jep21s.messenger.core.service.repo.inmemory.chat.ChatRepoInmemory
 import org.jep21s.messenger.core.service.repo.inmemory.chat.entity.ChatEntity
+import org.jep21s.messenger.core.service.repo.inmemory.message.MessageRepoInmemory
+import org.jep21s.messenger.core.service.repo.inmemory.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.inmemory.scheduler.DBCleaner
 
 private val scheduleScope = lazyScheduleScope {
@@ -40,6 +42,7 @@ suspend fun Application.initializeRepos() {
 
 suspend fun Application.initInmemoryRepos() {
   initChatInmemoryRepo(scheduleScope.value(this))
+  initMessageInmemoryRepo(scheduleScope.value(this))
 }
 
 private suspend fun initChatInmemoryRepo(scope: CoroutineScope) {
@@ -49,4 +52,13 @@ private suspend fun initChatInmemoryRepo(scope: CoroutineScope) {
   )
   DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
   println("----- ChatDBCleaner started")
+}
+
+private suspend fun initMessageInmemoryRepo(scope: CoroutineScope) {
+  val db = mutableMapOf<UUID, EntityWrapper<MessageEntity>>()
+  CSCorSettings.initialize(
+    messageRepo = MessageRepoInmemory(db)
+  )
+  DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
+  println("----- MessageDBCleaner started")
 }
