@@ -1,6 +1,7 @@
 package org.jep21s.messenger.core.service.common
 
 import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
+import org.jep21s.messenger.core.service.common.context.CSWorkMode
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
 
@@ -10,12 +11,7 @@ object CSCorSettings {
     get() = loggerProviderWrapper.get(CSCorSettings::loggerProvider.name)
 
   private val chatRepoStubWrapper = InitWrapper<IChatRepo>()
-  val chatRepoStub: IChatRepo
-    get() = chatRepoStubWrapper.get(CSCorSettings::chatRepoStub.name)
-
   private val messageRepoStubWrapper = InitWrapper<IMessageRepo>()
-  val messageRepoStub: IMessageRepo
-    get() = messageRepoStubWrapper.get(CSCorSettings::messageRepoStub.name)
 
 
   fun initialize(
@@ -24,8 +20,24 @@ object CSCorSettings {
     messageRepoStub: IMessageRepo? = null,
   ) {
     loggerProvider?.let { loggerProviderWrapper.set(it, CSCorSettings::loggerProvider.name) }
-    chatRepoStub?.let { chatRepoStubWrapper.set(it, CSCorSettings::chatRepoStub.name) }
-    messageRepoStub?.let { messageRepoStubWrapper.set(it, CSCorSettings::messageRepoStub.name) }
+    chatRepoStub?.let { chatRepoStubWrapper.set(it, CSCorSettings::chatRepoStubWrapper.name) }
+    messageRepoStub?.let { messageRepoStubWrapper.set(it, CSCorSettings::messageRepoStubWrapper.name) }
+  }
+
+  fun chatRepo(
+    workMode: CSWorkMode,
+  ): IChatRepo = when (workMode) {
+    is CSWorkMode.Stub -> chatRepoStubWrapper.get(CSCorSettings::chatRepoStubWrapper.name)
+    is CSWorkMode.Test -> TODO()
+    is CSWorkMode.Prod -> TODO()
+  }
+
+  fun messageRepo(
+    workMode: CSWorkMode,
+  ): IMessageRepo = when (workMode) {
+    is CSWorkMode.Stub -> messageRepoStubWrapper.get(CSCorSettings::messageRepoStubWrapper.name)
+    is CSWorkMode.Test -> TODO()
+    is CSWorkMode.Prod -> TODO()
   }
 }
 
