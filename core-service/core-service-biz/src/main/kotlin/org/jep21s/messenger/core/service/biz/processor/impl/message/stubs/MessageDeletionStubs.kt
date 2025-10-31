@@ -26,7 +26,7 @@ private suspend fun ICorChainDsl<CSContext<MessageDeletion, MessageDeleted?>>.st
     copy(
       modelResp = MessageDeleted(
         ids = modelReq.ids.toList(),
-        chatId = modelReq.chadId,
+        chatId = modelReq.chatId,
         communicationType = modelReq.communicationType,
       ),
       state = CSContextState.Finishing,

@@ -15,7 +15,8 @@ dependencies {
   implementation(projects.coreServiceCommon)
 
   testImplementation(libs.bundles.junit)
-  testImplementation(libs.coroutines.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.kotlinx.coroutines.test)
 }
 
 tasks.test {

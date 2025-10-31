@@ -10,7 +10,7 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
 import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
-import org.jep21s.messenger.core.service.app.web.restModule
+import org.jep21s.messenger.core.service.app.web.module.restModule
 import org.jep21s.messenger.core.service.common.CSCorSettings
 
 fun testConfiguredApplication(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) {

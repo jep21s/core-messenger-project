@@ -352,8 +352,6 @@ components:
           type: string
         messageType:
           type: string
-        status:
-          type: string
         sentDate:
           type: long
         createdAt:

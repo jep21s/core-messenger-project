@@ -77,7 +77,7 @@ interface MessageMapper {
       modelReq {
         MessageDeletion(
           ids = idsKP.getNotNull(nonNullRequest).toSet(),
-          chadId = chatIdKP.getNotNull(nonNullRequest),
+          chatId = chatIdKP.getNotNull(nonNullRequest),
           communicationType = communicationTypeKP.getNotNull(nonNullRequest),
         )
       }

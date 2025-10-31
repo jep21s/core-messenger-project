@@ -53,7 +53,6 @@ class MessageCreationV1Test {
         body = "body",
         externalId = null,
         payload = null,
-        status = "CREATED",
         createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
         updatedAt = null,
       ).toLinkedHashMap()

@@ -4,6 +4,6 @@ import java.util.UUID
 
 data class MessageDeletion(
   val ids: Set<UUID>,
-  val chadId: UUID,
+  val chatId: UUID,
   val communicationType: String
 )
