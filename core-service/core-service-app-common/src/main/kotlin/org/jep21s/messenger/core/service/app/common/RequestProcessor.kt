@@ -62,7 +62,7 @@ suspend inline fun <
 
     val responseWrapper = when (resultContext.state) {
       is CSContextState.Finishing -> {
-        val response: Resp = mapResultToResponse(requireNotNull(resultContext.modelResp))
+        val response: Resp? = resultContext.modelResp?.let { mapResultToResponse(it) }
         CSResponse(
           result = ResponseResult.SUCCESS,
           content = response,
