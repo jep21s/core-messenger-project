@@ -48,7 +48,7 @@ suspend fun Application.initInmemoryRepos() {
 private suspend fun initChatInmemoryRepo(scope: CoroutineScope) {
   val db = mutableMapOf<UUID, EntityWrapper<ChatEntity>>()
   CSCorSettings.initialize(
-    chatRepo = ChatRepoInmemory(db)
+    chatRepoStub = ChatRepoInmemory(db)
   )
   DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
   println("----- ChatDBCleaner started")
@@ -57,7 +57,7 @@ private suspend fun initChatInmemoryRepo(scope: CoroutineScope) {
 private suspend fun initMessageInmemoryRepo(scope: CoroutineScope) {
   val db = mutableMapOf<UUID, EntityWrapper<MessageEntity>>()
   CSCorSettings.initialize(
-    messageRepo = MessageRepoInmemory(db)
+    messageRepoStub = MessageRepoInmemory(db)
   )
   DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
   println("----- MessageDBCleaner started")

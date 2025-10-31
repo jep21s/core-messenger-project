@@ -5,37 +5,42 @@ import org.jep21s.messenger.core.service.common.repo.IChatRepo
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
 
 object CSCorSettings {
-  private var _loggerProvider: CMLoggerProvider? = null
-  private val loggerProvider: CMLoggerProvider
-    get() = _loggerProvider ?: notInit(CSCorSettings::loggerProvider.name)
+  private val loggerProviderWrapper = InitWrapper<CMLoggerProvider>()
+  val loggerProvider: CMLoggerProvider
+    get() = loggerProviderWrapper.get(CSCorSettings::loggerProvider.name)
 
-  private var _chatRepoMock: IChatRepo? = null
-  private val chatRepoMock: IChatRepo
-    get() = _chatRepoMock ?: notInit(CSCorSettings::chatRepoMock.name)
+  private val chatRepoStubWrapper = InitWrapper<IChatRepo>()
+  val chatRepoStub: IChatRepo
+    get() = chatRepoStubWrapper.get(CSCorSettings::chatRepoStub.name)
 
-  private var _messageRepoMock: IMessageRepo? = null
-  private val messageRepoMock: IMessageRepo
-    get() = _messageRepoMock ?: notInit(CSCorSettings::messageRepoMock.name)
+  private val messageRepoStubWrapper = InitWrapper<IMessageRepo>()
+  val messageRepoStub: IMessageRepo
+    get() = messageRepoStubWrapper.get(CSCorSettings::messageRepoStub.name)
+
 
   fun initialize(
     loggerProvider: CMLoggerProvider? = null,
-    chatRepo: IChatRepo? = null,
-    messageRepo: IMessageRepo? = null,
+    chatRepoStub: IChatRepo? = null,
+    messageRepoStub: IMessageRepo? = null,
   ) {
-    loggerProvider?.let {
-      if (_loggerProvider != null) alreadyInit(CSCorSettings::loggerProvider.name)
-      _loggerProvider = loggerProvider
-      successInit(CSCorSettings::loggerProvider.name)
-    }
-    chatRepo?.let {
-      if (_chatRepoMock != null) alreadyInit(CSCorSettings::chatRepoMock.name)
-      _chatRepoMock = chatRepo
-      successInit(CSCorSettings::chatRepoMock.name)
-    }
-    messageRepo?.let {
-      if (_messageRepoMock != null) alreadyInit(CSCorSettings::messageRepoMock.name)
-      successInit(CSCorSettings::messageRepoMock.name)
-    }
+    loggerProvider?.let { loggerProviderWrapper.set(it, CSCorSettings::loggerProvider.name) }
+    chatRepoStub?.let { chatRepoStubWrapper.set(it, CSCorSettings::chatRepoStub.name) }
+    messageRepoStub?.let { messageRepoStubWrapper.set(it, CSCorSettings::messageRepoStub.name) }
+  }
+}
+
+private class InitWrapper<T>() {
+  private var value: T? = null
+
+  fun get(fieldName: String): T = value.let {
+    if (it == null) notInit(fieldName)
+    return@let it
+  }
+
+  fun set(initValue: T, fieldName: String) {
+    if (value != null) alreadyInit(fieldName)
+    value = initValue
+    successInit(fieldName)
   }
 }
 
