@@ -9,6 +9,7 @@ import io.ktor.http.HttpStatusCode
 import java.time.Instant
 import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
+import org.jep21s.messenger.core.lib.test.common.constant.UUIDValue
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ChatCreateReq
 import org.jep21s.messenger.core.service.api.v1.models.ChatDeleteReq
@@ -18,9 +19,11 @@ import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfFilter
 import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfSort
 import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
-import org.jep21s.messenger.core.service.app.web.test.constant.UUIDValue
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
-import org.jep21s.messenger.core.service.app.web.test.extention.toLinkedHashMap
+import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
+import org.jep21s.messenger.core.service.api.v1.models.CmDebug
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.junit.jupiter.api.assertAll
 
 class ChatV1Test {
@@ -31,6 +34,10 @@ class ChatV1Test {
       requestType = "CREATE_CHAT",
       communicationType = "TG",
       chatType = "simple",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(
@@ -75,7 +82,11 @@ class ChatV1Test {
     val request = ChatDeleteReq(
       requestType = "DELETE_CHAT",
       id = UUIDValue.uuid1,
-      communicationType = "TG"
+      communicationType = "TG",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
     val expectedResponseBody = CSResponse(
       result = ResponseResult.SUCCESS,
@@ -129,7 +140,11 @@ class ChatV1Test {
         sortField = ChatSearchReqAllOfSort.SortField.LATEST_MESSAGE_DATE,
         order = OrderTypeDto.DESC,
       ),
-      limit = 1
+      limit = 1,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.SUCCESS,
+      )
     )
 
     val expectedResponseBody = CSResponse(

@@ -348,6 +348,8 @@ components:
         chatId:
           type: string
           format: uuid
+        communicationType:
+          type: string
         messageType:
           type: string
         status:
@@ -376,6 +378,8 @@ components:
             chatId:
               type: string
               format: uuid
+            communicationType:
+              type: string
             messageType:
               type: string
             sentDate:
@@ -397,6 +401,9 @@ components:
               items:
                 type: string
                 format: uuid
+            chatId:
+              type: string
+              format: uuid
             communicationType:
               type: string
 
@@ -408,6 +415,9 @@ components:
           items:
             type: string
             format: uuid
+        chatId:
+          type: string
+          format: uuid
         communicationType:
           type: string
 
@@ -421,6 +431,9 @@ components:
               items:
                 type: string
                 format: uuid
+            chatId:
+              type: string
+              format: uuid
             communicationType:
               type: string
             newStatus:
@@ -434,6 +447,9 @@ components:
           items:
             type: string
             format: uuid
+        chatId:
+          type: string
+          format: uuid
         communicationType:
           type: string
         newStatus:

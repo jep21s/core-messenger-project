@@ -7,6 +7,10 @@ kotlin {
   jvmToolchain(21)
 }
 
+application {
+  mainClass.set("org.jep21s.messenger.core.service.app.web.ApplicationKt")
+}
+
 dependencies {
   implementation(kotlin("stdlib"))
 
@@ -35,6 +39,9 @@ dependencies {
   testImplementation(libs.bundles.junit)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.ktor.client.negotiation)
+
+  testImplementation(testFixtures("org.jep21s.messenger.core.libs:core-messenger-lib-test-common"))
+
 }
 
 tasks.test {

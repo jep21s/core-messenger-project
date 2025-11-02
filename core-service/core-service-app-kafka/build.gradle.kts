@@ -24,6 +24,10 @@ dependencies {
   implementation(projects.coreServiceAppCommon)
 
   testImplementation(libs.bundles.junit)
+  testImplementation(libs.bundles.testcontainers)
+  testImplementation(libs.testcontainers.kafka)
+
+  testImplementation(testFixtures("org.jep21s.messenger.core.libs:core-messenger-lib-test-common"))
 }
 
 tasks.test {

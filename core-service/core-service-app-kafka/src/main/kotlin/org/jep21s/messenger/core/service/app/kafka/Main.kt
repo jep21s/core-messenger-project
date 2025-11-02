@@ -3,6 +3,9 @@ package org.jep21s.messenger.core.service.app.kafka
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
+import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
+import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaConsumerProperties
 import org.jep21s.messenger.core.service.app.kafka.config.KafkaProperties
 import org.jep21s.messenger.core.service.app.kafka.constants.GroupId
@@ -10,6 +13,10 @@ import org.jep21s.messenger.core.service.app.kafka.constants.Topic
 import org.jep21s.messenger.core.service.app.kafka.listener.ChatCreateKafkaListener
 
 fun main(): Unit = runBlocking {
+  CSCorSettings.initialize(
+    loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) }
+  )
+
   val kafkaProperties = KafkaProperties(
     hosts = listOf("localhost:9092")
   )

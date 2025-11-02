@@ -2,6 +2,7 @@ package org.jep21s.messenger.core.service.app.kafka.listener
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jep21s.messenger.core.service.api.v1.mapper.ChatMapper
 import org.jep21s.messenger.core.service.api.v1.mapper.ChatMapperImpl
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ChatCreateReq
@@ -17,6 +18,7 @@ import org.jep21s.messenger.core.service.common.model.chat.Chat
 class ChatCreateKafkaListener(
   private val kafkaProperties: KafkaProperties,
   kafkaConsumerProperties: KafkaConsumerProperties,
+  private val chatMapper: ChatMapper = ChatMapperImpl,
 ) : AutoCloseable {
   private val kafkaListener: KafkaListener = KafkaListener(
     kafkaProperties,
@@ -27,16 +29,16 @@ class ChatCreateKafkaListener(
     kafkaListener.listen { message ->
       message.processRequest("chat create kafka") {
         mapRequestToModel { request: ChatCreateReq ->
-          ChatMapperImpl.mapToModel(request)
+          chatMapper.mapToModel(request)
         }
         mapResultToResponse { result: Chat ->
-          ChatMapperImpl.mapToResponse(result)
+          chatMapper.mapToResponse(result)
         }
         respond { response: CSResponse ->
           KafkaSender.send(
             hosts = kafkaProperties.hosts,
             topic = Topic.CHAT_CREATE_RESP,
-            key = (response.content as ChatResp).id?.toString(),
+            key = (response.content as? ChatResp)?.id?.toString(),
             value = response,
           )
         }

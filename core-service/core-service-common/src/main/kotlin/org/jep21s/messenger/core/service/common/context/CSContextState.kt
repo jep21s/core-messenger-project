@@ -39,3 +39,8 @@ data class CSError(
   val level: LogLevel = LogLevel.ERROR,
   val exception: Throwable? = null,
 )
+
+fun CSContextState.isNone(): Boolean = this is CSContextState.None
+fun CSContextState.isRunning(): Boolean = this is CSContextState.Running
+fun CSContextState.isFinishing(): Boolean = this is CSContextState.Finishing
+fun CSContextState.isFailing(): Boolean = this is CSContextState.Failing

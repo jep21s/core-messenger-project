@@ -6,6 +6,7 @@ import java.util.UUID
 data class MessageCreation(
   val id: UUID?,
   val chatId: UUID,
+  val communicationType: String,
   val messageType: String,
   val sentDate: Instant,
   val body: String?,
