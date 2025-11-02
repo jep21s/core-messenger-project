@@ -6,6 +6,7 @@ import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
+import org.jep21s.messenger.core.service.repo.common.IChatRepoInitializable
 import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
 import org.jep21s.messenger.core.service.repo.inmemory.chat.entity.ChatEntity
 import org.jep21s.messenger.core.service.repo.inmemory.chat.mapper.ChatEntityMapper
@@ -15,7 +16,8 @@ import org.jep21s.messenger.core.service.repo.inmemory.wrap
 class ChatRepoInmemory(
   private val db: MutableMap<UUID, EntityWrapper<ChatEntity>>,
   private val chatEntityMapper: ChatEntityMapper = ChatEntityMapperImpl,
-) : IChatRepo {
+  repoInitializable: IChatRepoInitializable = DummyChatRepoInitializable,
+) : IChatRepo, IChatRepoInitializable by repoInitializable {
 
   override suspend fun save(chatCreation: ChatCreation): Chat {
     val entity = chatEntityMapper.mapToEntity(chatCreation)
@@ -55,3 +57,5 @@ class ChatRepoInmemory(
     return entities.map { chatEntityMapper.mapToModel(it) }
   }
 }
+
+private object DummyChatRepoInitializable: IChatRepoInitializable

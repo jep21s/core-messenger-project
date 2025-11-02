@@ -13,6 +13,7 @@ dependencies {
   implementation(libs.coroutines.core)
 
   implementation(projects.coreServiceCommon)
+  api(projects.coreServiceRepoCommon)
 
   testImplementation(libs.bundles.junit)
   testImplementation(libs.mockk)

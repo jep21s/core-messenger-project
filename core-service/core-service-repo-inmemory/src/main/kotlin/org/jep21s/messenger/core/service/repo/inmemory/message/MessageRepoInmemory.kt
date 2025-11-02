@@ -6,6 +6,7 @@ import org.jep21s.messenger.core.service.common.model.message.MessageCreation
 import org.jep21s.messenger.core.service.common.model.message.MessageDeletion
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
+import org.jep21s.messenger.core.service.repo.common.IMessageRepoInitializable
 import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
 import org.jep21s.messenger.core.service.repo.inmemory.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.inmemory.message.mapper.MessageEntityMapper
@@ -15,7 +16,8 @@ import org.jep21s.messenger.core.service.repo.inmemory.wrap
 class MessageRepoInmemory(
   private val db: MutableMap<UUID, EntityWrapper<MessageEntity>>,
   private val messageEntityMapper: MessageEntityMapper = MessageEntityMapperImpl,
-) : IMessageRepo {
+  repoInitializable: IMessageRepoInitializable = DummyMessageRepoInitializable,
+) : IMessageRepo, IMessageRepoInitializable by repoInitializable {
 
   override suspend fun save(messageCreation: MessageCreation): Message {
     val entity = messageEntityMapper.mapToEntity(messageCreation)
@@ -58,3 +60,5 @@ class MessageRepoInmemory(
     return entities.map { messageEntityMapper.mapToModel(it) }
   }
 }
+
+private object DummyMessageRepoInitializable: IMessageRepoInitializable
