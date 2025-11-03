@@ -18,6 +18,7 @@ dependencies {
   testImplementation(libs.bundles.junit)
   testImplementation(libs.mockk)
   testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(testFixtures(projects.coreServiceRepoCommon))
 }
 
 tasks.test {

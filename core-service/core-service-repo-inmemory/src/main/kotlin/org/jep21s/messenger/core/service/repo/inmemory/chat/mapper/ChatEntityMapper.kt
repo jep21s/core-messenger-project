@@ -24,4 +24,6 @@ interface ChatEntityMapper {
   fun mapToEntity(chatCreation: ChatCreation): ChatEntity
 
   fun mapToModel(chatEntity: ChatEntity): Chat
+
+  fun mapToEntity(chatCreation: Chat): ChatEntity
 }
