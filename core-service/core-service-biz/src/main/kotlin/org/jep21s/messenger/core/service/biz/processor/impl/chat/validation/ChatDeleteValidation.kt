@@ -12,6 +12,7 @@ import org.jep21s.messenger.core.service.common.model.chat.chatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 
 suspend fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.validCommunicationType() = worker {
+  title = "Проверка валидности переданного значения ${ChatDeletion::communicationType.name}"
   on {
     val chatRepo: IChatRepo = CSCorSettings.chatRepo(workMode)
     val existsChat: Chat? = chatRepo.search(

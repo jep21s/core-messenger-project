@@ -12,6 +12,7 @@ import org.jep21s.messenger.core.service.common.model.chat.chatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 
 suspend fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.notExistExternalId() = worker {
+  title = "Проверка отсутствия поля ${ChatCreation::externalId.name}"
   on {
     val externalId: String = this.modelReq.externalId ?: return@on false
     val chatRepo: IChatRepo = CSCorSettings.chatRepo(this.workMode)
