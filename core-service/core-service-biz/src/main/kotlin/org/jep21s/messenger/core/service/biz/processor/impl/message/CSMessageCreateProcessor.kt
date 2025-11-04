@@ -19,7 +19,6 @@ object CSMessageCreateProcessor :
     stubsMessageCreation()
     validation {
       existChat()
-      validCommunicationType()
       notExistExternalId()
     }
   }
