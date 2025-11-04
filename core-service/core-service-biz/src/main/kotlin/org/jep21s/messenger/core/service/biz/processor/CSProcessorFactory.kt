@@ -27,6 +27,7 @@ object CSProcessorFactory {
     CSMessageStatusUpdateProcessor,
   ).associateBy { it.contextType }
 
+  @Suppress("UNCHECKED_CAST")
   suspend fun <MReq, MResp> getCSProcessor(
     contextKType: KType,
   ): CSProcessor<MReq, MResp> {
