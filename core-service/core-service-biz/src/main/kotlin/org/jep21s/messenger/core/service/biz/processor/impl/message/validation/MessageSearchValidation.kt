@@ -9,6 +9,7 @@ import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 
 suspend fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.validLimit() = worker {
+  title = "Проверка корректно переданного лимита при поиске сообщений"
   on {
     modelReq.limit
       ?.let { it < 1 || it > 50 }

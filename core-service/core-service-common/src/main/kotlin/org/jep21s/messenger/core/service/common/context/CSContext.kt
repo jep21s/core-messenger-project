@@ -10,11 +10,17 @@ data class CSContext<Req, Resp>(
   val modelReq: Req,
   val modelResp: Resp,
   val timeStart: Instant = Instant.now(),
-  private val innerContext: MutableMap<KClass<*>, Any> = mutableMapOf()
+  private val innerContext: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) {
   @Suppress("UNCHECKED_CAST")
   operator fun<T: Any> get(valClass: KClass<T>): T? =
     innerContext[valClass] as? T
+
+  fun<T: Any> pop(valClass: KClass<T>): T? {
+    val value: T? = get(valClass)
+    innerContext[valClass] = null
+    return value
+  }
 
   operator fun <T: Any> set(valClass: KClass<T>, value: T) {
     innerContext.put(valClass, value as Any)
