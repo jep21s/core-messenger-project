@@ -3,6 +3,7 @@ package org.jep21s.messenger.core.service.biz.processor.impl.chat.validation
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.fail
+import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSError
@@ -13,8 +14,8 @@ import org.jep21s.messenger.core.service.common.repo.IChatRepo
 
 suspend fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.notExistExternalId() = worker {
   title = "Проверка отсутствия поля ${ChatCreation::externalId.name}"
-  on {
-    val externalId: String = this.modelReq.externalId ?: return@on false
+  onRunning {
+    val externalId: String = this.modelReq.externalId ?: return@onRunning false
     val chatRepo: IChatRepo = CSCorSettings.chatRepo(this.workMode)
     val existsChat: Chat? = chatRepo.search(
       chatSearch {
@@ -26,7 +27,7 @@ suspend fun ICorChainDsl<CSContext<ChatCreation, Chat?>>.notExistExternalId() = 
       }
     ).firstOrNull()
 
-    return@on existsChat != null
+    return@onRunning existsChat != null
   }
   handle {
     fail(

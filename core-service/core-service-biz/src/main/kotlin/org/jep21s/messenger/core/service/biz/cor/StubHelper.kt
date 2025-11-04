@@ -7,11 +7,10 @@ import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSError
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
-import org.jep21s.messenger.core.service.common.context.isRunning
 
 suspend fun <MReq, MResp> ICorChainDsl<CSContext<MReq, MResp>>.stubNoCase() = worker {
   title = "Запрошенный кейс не поддерживается"
-  on { workMode is CSWorkMode.Stub && state.isRunning() }
+  onRunning { workMode is CSWorkMode.Stub }
   handle {
     copy(
       state = CSContextState.Failing(

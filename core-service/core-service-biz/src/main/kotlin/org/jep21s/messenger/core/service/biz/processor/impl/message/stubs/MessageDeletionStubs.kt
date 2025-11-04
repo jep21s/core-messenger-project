@@ -3,6 +3,7 @@ package org.jep21s.messenger.core.service.biz.processor.impl.message.stubs
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.chainStub
+import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -21,7 +22,7 @@ suspend fun ICorChainDsl<CSContext<MessageDeletion, MessageDeleted?>>.stubsMessa
 
 private suspend fun ICorChainDsl<CSContext<MessageDeletion, MessageDeleted?>>.stubSuccessMessageDeletion() = worker {
   this.title = "Кейс успеха удаления сообщения"
-  on { workMode.isStubSuccess() && state.isRunning() }
+  onRunning { workMode.isStubSuccess() }
   handle {
     copy(
       modelResp = MessageDeleted(

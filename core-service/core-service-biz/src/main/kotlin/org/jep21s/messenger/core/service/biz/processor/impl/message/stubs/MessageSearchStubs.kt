@@ -5,6 +5,7 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.chainStub
+import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -23,7 +24,7 @@ suspend fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubsMessageS
 
 private suspend fun ICorChainDsl<CSContext<MessageSearch, List<Message>?>>.stubSuccessMessageSearch() = worker {
   this.title = "Кейс успеха поиска сообщений"
-  on { workMode.isStubSuccess() && state.isRunning() }
+  onRunning { workMode.isStubSuccess() }
   handle {
     val messageFilter: MessageSearch.MessageFilter? = modelReq.messageFilter
     val chatFilter: MessageSearch.ChatFilter = modelReq.chatFilter
