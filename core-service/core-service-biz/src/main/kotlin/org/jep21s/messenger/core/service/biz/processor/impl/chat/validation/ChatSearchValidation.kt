@@ -17,8 +17,8 @@ suspend fun ICorChainDsl<CSContext<ChatSearch, List<Chat>?>>.validLimit() = work
   handle {
     fail(
       CSError(
-        code = "validation-search",
-        group = "validation",
+        code = "chat-validation-search",
+        group = "chat-validation",
         field = ChatSearch::limit.name,
         message = "incorrect limit value [${modelReq.limit}]",
       )
