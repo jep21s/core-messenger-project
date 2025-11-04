@@ -11,6 +11,7 @@ import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.e
 import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.notExistId
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageCreation
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
@@ -33,7 +34,8 @@ object CSMessageCreateProcessor :
           val messageRepo: IMessageRepo = CSCorSettings.messageRepo(workMode)
           val message: Message = messageRepo.save(modelReq)
           this.copy(
-            modelResp = message
+            state = CSContextState.Finishing,
+            modelResp = message,
           )
         }
       }

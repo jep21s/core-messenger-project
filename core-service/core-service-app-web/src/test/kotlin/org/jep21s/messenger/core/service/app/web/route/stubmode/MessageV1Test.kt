@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.app.web.route
+package org.jep21s.messenger.core.service.app.web.route.stubmode
 
 import io.ktor.client.call.body
 import io.ktor.client.request.post

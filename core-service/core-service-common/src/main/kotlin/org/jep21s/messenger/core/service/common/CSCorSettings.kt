@@ -28,7 +28,7 @@ object CSCorSettings {
     workMode: CSWorkMode,
   ): IChatRepo = when (workMode) {
     is CSWorkMode.Stub -> chatRepoStubWrapper.get(CSCorSettings::chatRepoStubWrapper.name)
-    is CSWorkMode.Test -> TODO()
+    is CSWorkMode.Test -> chatRepoStubWrapper.get(CSCorSettings::chatRepoStubWrapper.name)
     is CSWorkMode.Prod -> TODO()
   }
 
@@ -36,8 +36,9 @@ object CSCorSettings {
     workMode: CSWorkMode,
   ): IMessageRepo = when (workMode) {
     is CSWorkMode.Stub -> messageRepoStubWrapper.get(CSCorSettings::messageRepoStubWrapper.name)
-    is CSWorkMode.Test -> TODO()
+    is CSWorkMode.Test -> messageRepoStubWrapper.get(CSCorSettings::messageRepoStubWrapper.name)
     is CSWorkMode.Prod -> TODO()
+    else -> TODO()
   }
 }
 

@@ -11,6 +11,7 @@ import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.m
 import org.jep21s.messenger.core.service.biz.processor.impl.message.validation.existChat
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.model.message.MessageDeleted
 import org.jep21s.messenger.core.service.common.model.message.MessageDeletion
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
@@ -33,11 +34,12 @@ object CSMessageDeleteProcessor :
           val messageRepo: IMessageRepo = CSCorSettings.messageRepo(workMode)
           messageRepo.delete(modelReq)
           this.copy(
+            state = CSContextState.Finishing,
             modelResp = MessageDeleted(
               ids = modelReq.ids.toList(),
               chatId = modelReq.chatId,
               communicationType = modelReq.communicationType
-            )
+            ),
           )
         }
       }

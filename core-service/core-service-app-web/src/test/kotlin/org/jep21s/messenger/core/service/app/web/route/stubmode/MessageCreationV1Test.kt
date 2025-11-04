@@ -1,109 +1,65 @@
-package org.jep21s.messenger.core.service.app.web.route
+package org.jep21s.messenger.core.service.app.web.route.stubmode
 
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import java.time.Instant
 import kotlin.test.Test
 import org.assertj.core.api.Assertions.assertThat
 import org.jep21s.messenger.core.lib.test.common.constant.UUIDValue
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
-import org.jep21s.messenger.core.service.api.v1.models.ChatCreateReq
-import org.jep21s.messenger.core.service.api.v1.models.ChatDeleteReq
-import org.jep21s.messenger.core.service.api.v1.models.ChatResp
-import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReq
-import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfFilter
-import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfSort
-import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
+import org.jep21s.messenger.core.service.api.v1.models.MessageCreateReq
+import org.jep21s.messenger.core.service.api.v1.models.MessageResp
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
-import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
+import org.jep21s.messenger.core.service.api.v1.models.CSErrorResp
 import org.jep21s.messenger.core.service.api.v1.models.CmDebug
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
+import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
-class ChatV1Test {
+class MessageCreationV1Test {
   @Test
-  fun `success creation chat`() = testConfiguredApplication { client ->
+  fun `success creation message`() = testConfiguredApplication { client ->
     //Given
-    val request = ChatCreateReq(
-      requestType = "CREATE_CHAT",
-      communicationType = "TG",
-      chatType = "simple",
-      debug = CmDebug(
-        mode = CmRequestDebugMode.STUB,
-        stub = CmRequestDebugStubs.SUCCESS,
-      )
-    )
-
-    val expectedResponseBody = CSResponse(
-      result = ResponseResult.SUCCESS,
-      content = ChatResp(
-        id = UUIDValue.uuid1,
-        externalId = request.externalId,
-        communicationType = request.communicationType,
-        chatType = request.chatType,
-        payload = request.payload,
-        createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
-        updatedAt = null,
-        latestMessageDate = null
-      ).toLinkedHashMap()
-    )
-
-    //When
-    val response = client.post("/v1/chat/create") {
-      contentType(ContentType.Application.Json)
-      setBody(request)
-    }
-    val resultBody: CSResponse = response.body<CSResponse>()
-
-    //Then
-    assertAll(
-      {
-        assertThat(resultBody)
-          .describedAs("got expected response body")
-          .isEqualTo(expectedResponseBody)
-      },
-      {
-        assertThat(response.status)
-          .describedAs("got expected http status")
-          .isEqualTo(HttpStatusCode.OK)
-      }
-    )
-  }
-
-  @Test
-  fun `success delete chat`() = testConfiguredApplication { client ->
-    //Given
-    val request = ChatDeleteReq(
-      requestType = "DELETE_CHAT",
+    val request = MessageCreateReq(
+      requestType = "CREATE_MESSAGE",
       id = UUIDValue.uuid1,
+      chatId = UUIDValue.uuid2,
       communicationType = "TG",
+      messageType = "simple",
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
+      body = "body",
+      externalId = null,
+      payload = null,
       debug = CmDebug(
         mode = CmRequestDebugMode.STUB,
         stub = CmRequestDebugStubs.SUCCESS,
       )
     )
+
     val expectedResponseBody = CSResponse(
       result = ResponseResult.SUCCESS,
-      content = ChatResp(
+      content = MessageResp(
         id = UUIDValue.uuid1,
+        chatId = UUIDValue.uuid2,
+        communicationType = "TG",
+        messageType = "simple",
+        sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
+        body = "body",
         externalId = null,
-        communicationType = request.communicationType,
-        chatType = "simple",
         payload = null,
         createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
         updatedAt = null,
-        latestMessageDate = null
       ).toLinkedHashMap()
     )
 
     //When
-    val response = client.post("/v1/chat/delete") {
+    val response = client.post("/v1/message/create") {
       contentType(ContentType.Application.Json)
       setBody(request)
     }
@@ -125,47 +81,38 @@ class ChatV1Test {
   }
 
   @Test
-  fun `success search chat`() = testConfiguredApplication { client ->
+  fun `failure creation message because of not found chat`() = testConfiguredApplication { client ->
     //Given
-    val request = ChatSearchReq(
-      requestType = "SEARCH_CHAT",
-      filter = ChatSearchReqAllOfFilter(
-        ids = listOf(UUIDValue.uuid1),
-        externalIds = null,
-        communicationType = "TG",
-        chatTypes = listOf("simple"),
-        latestMessageDate = null,
-      ),
-      sort = ChatSearchReqAllOfSort(
-        sortField = ChatSearchReqAllOfSort.SortField.LATEST_MESSAGE_DATE,
-        order = OrderTypeDto.DESC,
-      ),
-      limit = 1,
+    val request = MessageCreateReq(
+      requestType = "CREATE_MESSAGE",
+      id = UUIDValue.uuid10,
+      chatId = UUIDValue.uuid20,
+      communicationType = "TG",
+      messageType = "simple",
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
+      body = "body",
+      externalId = null,
+      payload = null,
       debug = CmDebug(
         mode = CmRequestDebugMode.STUB,
-        stub = CmRequestDebugStubs.SUCCESS,
+        stub = CmRequestDebugStubs.NOT_FOUND,
       )
     )
 
     val expectedResponseBody = CSResponse(
-      result = ResponseResult.SUCCESS,
-      content = listOf(
-        ChatResp(
-          id = UUIDValue.uuid1,
-          externalId = null,
-          communicationType = "TG",
-          chatType = "simple",
-          payload = null,
-          createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
-          updatedAt = null,
-          latestMessageDate = null
+      result = ResponseResult.ERROR,
+      errors = listOf(
+        CSErrorResp(
+          code = "not-found-chat-for-message-creation",
+          group = "not-found",
+          field = mapOf("chatId" to request.chatId.toString()).toString(),
+          message = "Ошибка при попытке сохранить сообщение. Чат не найден",
         )
       )
-        .toLinkedHashMap()
     )
 
     //When
-    val response = client.post("/v1/chat/search") {
+    val response = client.post("/v1/message/create") {
       contentType(ContentType.Application.Json)
       setBody(request)
     }
@@ -184,5 +131,62 @@ class ChatV1Test {
           .isEqualTo(HttpStatusCode.OK)
       }
     )
+  }
+
+  @Test
+  fun `failure creation message because of database error`() = testConfiguredApplication { client ->
+    //Given
+    val request = MessageCreateReq(
+      requestType = "CREATE_MESSAGE",
+      id = UUIDValue.uuid2,
+      chatId = UUIDValue.uuid10,
+      communicationType = "TG",
+      messageType = "simple",
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
+      body = "body",
+      externalId = null,
+      payload = null,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.STUB,
+        stub = CmRequestDebugStubs.DB_ERROR,
+      )
+    )
+
+    val expectedResponseBody = CSResponse(
+      result = ResponseResult.ERROR,
+      errors = listOf(
+        CSErrorResp(
+          code = "internal-db-error",
+          group = "internal",
+          field = buildMap {
+            put("chatId", request.chatId.toString())
+            request.id?.let { put("messageId", it.toString()) }
+          }.toString(),
+          message = "Ошибка при попытке сохранить сообщение. База данных недоступна",
+        )
+      )
+    )
+
+    //When
+    val response = client.post("/v1/message/create") {
+      contentType(ContentType.Application.Json)
+      setBody(request)
+    }
+    val resultBody: CSResponse = response.body<CSResponse>()
+
+    //Then
+    assertAll(
+      {
+        assertThat(resultBody)
+          .describedAs("got expected response body")
+          .isEqualTo(expectedResponseBody)
+      },
+      {
+        assertThat(response.status)
+          .describedAs("got expected http status")
+          .isEqualTo(HttpStatusCode.OK)
+      }
+    )
+
   }
 }

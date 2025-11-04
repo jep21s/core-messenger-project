@@ -39,6 +39,7 @@ dependencies {
   implementation(projects.coreServiceRepoInmemory)
 
   testImplementation(libs.bundles.junit)
+  testImplementation(libs.mockk)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.ktor.client.negotiation)
 
@@ -47,5 +48,8 @@ dependencies {
 }
 
 tasks.test {
+  jvmArgs = listOf(
+    "--add-opens=java.base/java.time=ALL-UNNAMED"
+  )
   useJUnitPlatform()
 }

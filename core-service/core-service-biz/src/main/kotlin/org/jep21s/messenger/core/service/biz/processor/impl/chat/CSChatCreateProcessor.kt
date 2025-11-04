@@ -11,6 +11,7 @@ import org.jep21s.messenger.core.service.biz.processor.impl.chat.stubs.stubsChat
 import org.jep21s.messenger.core.service.biz.processor.impl.chat.validation.notExistExternalId
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
+import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 
@@ -36,7 +37,8 @@ object CSChatCreateProcessor :
         val chatRepo = CSCorSettings.chatRepo(workMode)
         val newChat = chatRepo.save(modelReq)
         this.copy(
-          modelResp = newChat
+          state = CSContextState.Finishing,
+          modelResp = newChat,
         )
       }
     }
