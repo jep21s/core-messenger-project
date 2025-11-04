@@ -22,7 +22,7 @@ import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
-class MessageCreationV1Test {
+class MessageCreationV1ModeStubShould {
   @Test
   fun `success creation message`() = testConfiguredApplication { client ->
     //Given

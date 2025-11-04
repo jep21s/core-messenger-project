@@ -28,7 +28,7 @@ import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
-class MessageV1Test {
+class MessageV1ModeStubShould {
   @Test
   fun `success delete message`() = testConfiguredApplication { client ->
     //Given

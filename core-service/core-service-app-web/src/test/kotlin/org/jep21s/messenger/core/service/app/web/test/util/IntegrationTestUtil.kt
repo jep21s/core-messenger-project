@@ -10,17 +10,15 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
 import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
-import org.jep21s.messenger.core.service.app.web.module.initInmemoryRepos
 import org.jep21s.messenger.core.service.app.web.module.restModule
 import org.jep21s.messenger.core.service.common.CSCorSettings
+import org.jep21s.messenger.core.service.repo.inmemory.chat.ChatRepoInmemory
+import org.jep21s.messenger.core.service.repo.inmemory.message.MessageRepoInmemory
 
 fun testConfiguredApplication(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) {
   testApplication {
-    application {
-      testCsCorSettingsModule()
-      restModule()
-      initInmemoryRepos()
-    }
+    application.testCsCorSettingsModule()
+    application.restModule()
 
     val client = createClient {
       install(ContentNegotiation) {
@@ -37,8 +35,20 @@ fun testConfiguredApplication(block: suspend ApplicationTestBuilder.(HttpClient)
   }
 }
 
-private fun Application.testCsCorSettingsModule() = runCatching {
-  CSCorSettings.initialize(
-    loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) }
-  )
+private fun Application.testCsCorSettingsModule() {
+  runCatching {
+    CSCorSettings.initialize(
+      loggerProvider = CMLoggerProvider { clazz -> cmLoggerLogback(clazz) },
+    )
+  }
+  runCatching {
+    CSCorSettings.initialize(
+      chatRepoStub = ChatRepoInmemory(mutableMapOf()),
+    )
+  }
+  runCatching {
+    CSCorSettings.initialize(
+      messageRepoStub = MessageRepoInmemory(mutableMapOf())
+    )
+  }
 }

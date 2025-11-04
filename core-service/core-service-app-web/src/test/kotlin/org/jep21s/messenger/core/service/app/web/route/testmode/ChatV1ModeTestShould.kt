@@ -16,11 +16,19 @@ import org.jep21s.messenger.core.lib.test.common.constant.UUIDValue
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.api.v1.models.CSResponse
 import org.jep21s.messenger.core.service.api.v1.models.ChatCreateReq
+import org.jep21s.messenger.core.service.api.v1.models.ChatDeleteReq
 import org.jep21s.messenger.core.service.api.v1.models.ChatResp
-import org.jep21s.messenger.core.service.api.v1.models.CmDebug
-import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReq
+import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfFilter
+import org.jep21s.messenger.core.service.api.v1.models.ChatSearchReqAllOfSort
+import org.jep21s.messenger.core.service.api.v1.models.OrderTypeDto
 import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
+import org.jep21s.messenger.core.service.api.v1.models.CmDebug
+import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.common.CSCorSettings
+import org.jep21s.messenger.core.service.common.context.CSWorkMode
+import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 import org.junit.jupiter.api.assertAll
 
 class ChatV1ModeTestShould {
@@ -77,4 +85,133 @@ class ChatV1ModeTestShould {
     }
   }
 
+  @Test
+  fun `success delete chat`() = testConfiguredApplication { client ->
+    //Given
+    val request = ChatDeleteReq(
+      requestType = "DELETE_CHAT",
+      id = UUIDValue.uuid1,
+      communicationType = "TG",
+      debug = CmDebug(
+        mode = CmRequestDebugMode.TEST,
+      )
+    )
+
+    val createdAt: Instant = Instant.ofEpochSecond(1)
+    val expectedResponseBody = CSResponse(
+      result = ResponseResult.SUCCESS,
+      content = ChatResp(
+        id = UUIDValue.uuid1,
+        externalId = null,
+        communicationType = request.communicationType,
+        chatType = "simple",
+        payload = null,
+        createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
+        updatedAt = null,
+        latestMessageDate = null
+      ).toLinkedHashMap()
+    )
+
+    mockkStatic(Instant::class, UUID::class) {
+      every { Instant.now() } returns createdAt
+      every { UUID.randomUUID() } returns UUIDValue.uuid1
+
+      //When
+      val response = client.post("/v1/chat/delete") {
+        contentType(ContentType.Application.Json)
+        setBody(request)
+      }
+      val resultBody: CSResponse = response.body<CSResponse>()
+
+      //Then
+      assertAll(
+        {
+          assertThat(resultBody)
+            .describedAs("got expected response body")
+            .isEqualTo(expectedResponseBody)
+        },
+        {
+          assertThat(response.status)
+            .describedAs("got expected http status")
+            .isEqualTo(HttpStatusCode.OK)
+        }
+      )
+    }
+  }
+
+  @Test
+  fun `success search chat`() = testConfiguredApplication { client ->
+    //Given
+    val request = ChatSearchReq(
+      requestType = "SEARCH_CHAT",
+      filter = ChatSearchReqAllOfFilter(
+        ids = listOf(UUIDValue.uuid1),
+        externalIds = null,
+        communicationType = "TG",
+        chatTypes = listOf("simple"),
+        latestMessageDate = null,
+      ),
+      sort = ChatSearchReqAllOfSort(
+        sortField = ChatSearchReqAllOfSort.SortField.LATEST_MESSAGE_DATE,
+        order = OrderTypeDto.DESC,
+      ),
+      limit = 1,
+      debug = CmDebug(
+        mode = CmRequestDebugMode.TEST,
+      )
+    )
+
+    val createdAt: Instant = Instant.ofEpochSecond(1)
+    val expectedResponseBody = CSResponse(
+      result = ResponseResult.SUCCESS,
+      content = listOf(
+        ChatResp(
+          id = UUIDValue.uuid1,
+          externalId = null,
+          communicationType = "TG",
+          chatType = "simple",
+          payload = null,
+          createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
+          updatedAt = null,
+          latestMessageDate = null
+        )
+      ).toLinkedHashMap()
+    )
+
+    mockkStatic(Instant::class, UUID::class) {
+      every { Instant.now() } returns createdAt
+      every { UUID.randomUUID() } returns UUIDValue.uuid1
+
+      val chatRepo = CSCorSettings.chatRepo(CSWorkMode.Test)
+      chatRepo.save(
+        ChatCreation(
+          externalId = null,
+          communicationType = "TG",
+          chatType = "simple",
+          payload = null
+        )
+      )
+
+      //When
+      val response = client.post("/v1/chat/search") {
+        contentType(ContentType.Application.Json)
+        setBody(request)
+      }
+      val resultBody: CSResponse = response.body<CSResponse>()
+
+      //Then
+      assertAll(
+        {
+          assertThat(resultBody)
+            .describedAs("got expected response body")
+            .isEqualTo(expectedResponseBody)
+        },
+        {
+          assertThat(response.status)
+            .describedAs("got expected http status")
+            .isEqualTo(HttpStatusCode.OK)
+        }
+      )
+    }
+  }
 }
