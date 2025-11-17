@@ -1,9 +1,7 @@
 package org.jep21s.messenger.core.service.repo.cassandra.message.mapper
 
 import io.mcarle.konvert.api.Konfig
-import io.mcarle.konvert.api.Konvert
 import io.mcarle.konvert.api.Konverter
-import io.mcarle.konvert.api.Mapping
 import java.util.UUID
 import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageCreation
