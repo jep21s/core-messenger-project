@@ -24,6 +24,8 @@ import org.jep21s.messenger.core.service.api.v1.models.ResponseResult
 import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.api.v1.models.CmDebug
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
+import org.jep21s.messenger.core.service.api.v1.models.ComparableFilterReq
+import org.jep21s.messenger.core.service.api.v1.models.ConditionTypeDto
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
@@ -76,6 +78,7 @@ class MessageV1ModeTestShould {
         ids = ids,
         chatId = chat.id,
         communicationType = communicationType,
+        sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
         debug = CmDebug(
           mode = CmRequestDebugMode.TEST,
         )
@@ -159,6 +162,10 @@ class MessageV1ModeTestShould {
         messageFilter = MessageSearchReqAllOfMessageFilter(
           ids = listOf(message.id),
           messageTypes = listOf("simple"),
+          sentDate = ComparableFilterReq(
+            value = Instant.ofEpochSecond(1).toEpochMilli(),
+            direction = ConditionTypeDto.EQUAL,
+          )
         ),
         order = OrderTypeDto.DESC,
         limit = 10,

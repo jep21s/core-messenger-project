@@ -24,21 +24,21 @@ fun Sequence<Map.Entry<UUID, MessageEntity>>.filterByCommunicationType(
 fun Sequence<Map.Entry<UUID, MessageEntity>>.filterByMessageIds(
   messageSearch: MessageSearch,
 ): Sequence<Map.Entry<UUID, MessageEntity>> =
-  doFilterIfNotNull(messageSearch.messageFilter?.ids) { ids ->
+  doFilterIfNotNull(messageSearch.messageFilter.ids) { ids ->
     { (_, message) -> ids.contains(message.id) }
   }
 
 fun Sequence<Map.Entry<UUID, MessageEntity>>.filterByMessageTypes(
   messageSearch: MessageSearch,
 ): Sequence<Map.Entry<UUID, MessageEntity>> =
-  doFilterIfNotNull(messageSearch.messageFilter?.messageTypes) { messageTypes ->
+  doFilterIfNotNull(messageSearch.messageFilter.messageTypes) { messageTypes ->
     { (_, message) -> messageTypes.contains(message.messageType) }
   }
 
 fun Sequence<Map.Entry<UUID, MessageEntity>>.filterByPartOfBody(
   messageSearch: MessageSearch,
 ): Sequence<Map.Entry<UUID, MessageEntity>> =
-  doFilterIfNotNull(messageSearch.messageFilter?.partOfBody) { searchText ->
+  doFilterIfNotNull(messageSearch.messageFilter.partOfBody) { searchText ->
     { (_, message) ->
       message.body?.contains(searchText, ignoreCase = true) == true
     }
@@ -47,11 +47,12 @@ fun Sequence<Map.Entry<UUID, MessageEntity>>.filterByPartOfBody(
 fun Sequence<Map.Entry<UUID, MessageEntity>>.filterBySentDate(
   messageSearch: MessageSearch,
 ): Sequence<Map.Entry<UUID, MessageEntity>> =
-  doFilterIfNotNull(messageSearch.messageFilter?.sentDate) { comparableFilter ->
+  doFilterIfNotNull(messageSearch.messageFilter.sentDate) { comparableFilter ->
     { (_, message) ->
       when (comparableFilter.direction) {
         ConditionType.LESS -> message.sentDate < comparableFilter.value
         ConditionType.GREATER -> message.sentDate > comparableFilter.value
+        ConditionType.EQUAL -> message.sentDate == comparableFilter.value
       }
     }
   }

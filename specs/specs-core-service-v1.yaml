@@ -236,6 +236,7 @@ components:
       enum:
         - LESS
         - GREATER
+        - EQUAL
 
     ComparableFilterReq:
       type: object
@@ -402,6 +403,8 @@ components:
             chatId:
               type: string
               format: uuid
+            sentDate:
+              type: long
             communicationType:
               type: string
 

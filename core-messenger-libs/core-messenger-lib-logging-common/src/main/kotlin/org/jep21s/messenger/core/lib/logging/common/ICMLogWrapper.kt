@@ -26,6 +26,14 @@ interface ICMLogWrapper: AutoCloseable {
         objs: Map<String, Any>? = null,
     ) = log(msg, LogLevel.ERROR, marker, ex, data, objs)
 
+    fun warn(
+        msg: String = "",
+        marker: String = "DEV",
+        ex: Throwable? = null,
+        data: Any? = null,
+        objs: Map<String, Any>? = null,
+    ) = log(msg, LogLevel.WARN, marker, ex, data, objs)
+
     fun info(
         msg: String = "",
         marker: String = "DEV",

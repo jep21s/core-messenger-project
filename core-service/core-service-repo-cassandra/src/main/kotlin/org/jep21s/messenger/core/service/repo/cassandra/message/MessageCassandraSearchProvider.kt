@@ -1,0 +1,105 @@
+package org.jep21s.messenger.core.service.repo.cassandra.message
+
+import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder
+import com.datastax.oss.driver.api.mapper.MapperContext
+import com.datastax.oss.driver.api.mapper.entity.EntityHelper
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder
+import com.datastax.oss.driver.api.querybuilder.select.Select
+import java.util.UUID
+import java.util.concurrent.CompletionStage
+import org.jep21s.messenger.core.service.common.model.ComparableFilter
+import org.jep21s.messenger.core.service.common.model.ConditionType
+import org.jep21s.messenger.core.service.common.model.OrderType
+import org.jep21s.messenger.core.service.repo.cassandra.config.AsyncFetcher
+import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
+import org.jep21s.messenger.core.service.repo.cassandra.message.filter.MessageEntityFilter
+
+class MessageCassandraSearchProvider(
+  private val context: MapperContext,
+  private val entityHelper: EntityHelper<MessageEntity>,
+) {
+  fun search(filter: MessageEntityFilter): CompletionStage<List<MessageEntity>> {
+    val select: Select = entityHelper.selectStart()
+      .allowFiltering()
+      .applyChatId(context, filter.chatId)
+      .applySentDate(context, filter.sentDate)
+      .applyMessageId(context, filter.id)
+      .withSorting(filter.order)
+      .withLimit(filter.limit)
+
+    val asyncFetcher = AsyncFetcher<MessageEntity>(entityHelper)
+
+    context.session
+      .executeAsync(select.build())
+      .whenComplete(asyncFetcher)
+
+    return asyncFetcher.stage
+  }
+
+  private fun Select.applyChatId(
+    context: MapperContext,
+    chatId: UUID,
+  ): Select = whereColumn(MessageEntity.COLUMN_CHAT_ID)
+    .isEqualTo(
+      QueryBuilder.literal(
+        chatId,
+        context.session.context.codecRegistry
+      )
+    )
+
+  private fun Select.applySentDate(
+    context: MapperContext,
+    sentDateFilter: ComparableFilter,
+  ): Select {
+    val literal = QueryBuilder.literal(
+      sentDateFilter.value,
+      context.session.context.codecRegistry
+    )
+
+    return whereColumn(MessageEntity.COLUMN_SENT_DATE)
+      .let {
+        when (sentDateFilter.direction) {
+          ConditionType.EQUAL -> it.isEqualTo(literal)
+          ConditionType.LESS -> it.isLessThan(literal)
+          ConditionType.GREATER -> it.isGreaterThan(literal)
+        }
+      }
+  }
+
+  private fun Select.applyMessageId(
+    context: MapperContext,
+    messageId: UUID?,
+  ): Select {
+    if (messageId == null) return this
+    return whereColumn(MessageEntity.COLUMN_ID)
+      .isEqualTo(
+        QueryBuilder.literal(
+          messageId,
+          context.session.context.codecRegistry
+        )
+      )
+  }
+
+
+  private fun Select.withSorting(order: OrderType?): Select {
+    val direction = when (order ?: defaultSortDirection) {
+      OrderType.DESC -> ClusteringOrder.DESC
+      OrderType.ASC -> ClusteringOrder.ASC
+    }
+
+    return orderBy(
+      MessageEntity.COLUMN_SENT_DATE,
+      direction,
+    )
+  }
+
+  private fun Select.withLimit(limit: Int?): Select =
+    limit(limit ?: DEFAULT_LIMIT)
+
+  companion object {
+    private val defaultSortDirection = OrderType.DESC
+    private const val DEFAULT_LIMIT = 50
+  }
+
+}
+

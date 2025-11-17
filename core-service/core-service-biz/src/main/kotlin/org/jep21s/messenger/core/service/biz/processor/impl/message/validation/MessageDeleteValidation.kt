@@ -8,6 +8,8 @@ import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSError
+import org.jep21s.messenger.core.service.common.model.ComparableFilter
+import org.jep21s.messenger.core.service.common.model.ConditionType
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.chatSearch
 import org.jep21s.messenger.core.service.common.model.message.MessageDeleted
@@ -57,6 +59,12 @@ suspend fun ICorChainDsl<CSContext<MessageDeletion, MessageDeleted?>>.messageIds
       }
       messageFilter {
         ids { modelReq.ids.toList() }
+        sentDate {
+          ComparableFilter(
+            value = modelReq.sentDate,
+            direction = ConditionType.EQUAL,
+          )
+        }
       }
     }).map { it.id }
     val invalidMessageIds = messageIds - modelReq.ids

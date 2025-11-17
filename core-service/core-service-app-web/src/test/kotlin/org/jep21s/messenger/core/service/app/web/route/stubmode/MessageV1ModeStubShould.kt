@@ -25,6 +25,8 @@ import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.api.v1.models.CmDebug
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
+import org.jep21s.messenger.core.service.api.v1.models.ComparableFilterReq
+import org.jep21s.messenger.core.service.api.v1.models.ConditionTypeDto
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
@@ -40,6 +42,7 @@ class MessageV1ModeStubShould {
       ids = ids,
       chatId = chatId,
       communicationType = communicationType,
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
       debug = CmDebug(
         mode = CmRequestDebugMode.STUB,
         stub = CmRequestDebugStubs.SUCCESS,
@@ -89,6 +92,10 @@ class MessageV1ModeStubShould {
       messageFilter = MessageSearchReqAllOfMessageFilter(
         ids = listOf(UUIDValue.uuid1),
         messageTypes = listOf("simple"),
+        sentDate = ComparableFilterReq(
+          value = Instant.ofEpochSecond(1).toEpochMilli(),
+          direction = ConditionTypeDto.EQUAL,
+        )
       ),
       order = OrderTypeDto.DESC,
       limit = 10,

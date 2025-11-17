@@ -7,12 +7,12 @@ import org.jep21s.messenger.core.service.common.model.OrderType
 
 data class MessageSearch(
   val chatFilter: ChatFilter,
-  val messageFilter: MessageFilter?,
+  val messageFilter: MessageFilter,
   val order: OrderType?,
   val limit: Int?,
 ) {
   data class ChatFilter(
-    val id: UUID?,
+    val id: UUID,
     val communicationType: String,
   )
 
@@ -20,7 +20,7 @@ data class MessageSearch(
     val ids: List<UUID>?,
     val messageTypes: List<String>?,
     val partOfBody: String?,
-    val sentDate: ComparableFilter?,
+    val sentDate: ComparableFilter,
   )
 }
 
@@ -35,7 +35,7 @@ fun messageSearch(block: MessageSearchDsl.() -> Unit): MessageSearch {
 @MessageSearchDslMarker
 class MessageSearchDsl {
   private lateinit var _chatFilter: MessageSearch.ChatFilter
-  private var _messageFilter: MessageSearch.MessageFilter? = null
+  private lateinit var _messageFilter: MessageSearch.MessageFilter
   private var _order: OrderType? = null
   var limit: Int? = null
 
@@ -65,10 +65,10 @@ class MessageSearchDsl {
 
 @MessageSearchDslMarker
 class ChatFilterDsl {
-  private var _id: UUID? = null
+  private lateinit var _id: UUID
   private var _communicationType: String by Delegates.notNull()
 
-  fun id(block: () -> UUID?) {
+  fun id(block: () -> UUID) {
     _id = block()
   }
 
@@ -87,7 +87,7 @@ class MessageFilterDsl {
   private var _ids: List<UUID>? = null
   private var _messageTypes: List<String>? = null
   private var _partOfBody: String? = null
-  private var _sentDate: ComparableFilter? = null
+  private lateinit var _sentDate: ComparableFilter
 
   fun ids(block: () -> List<UUID>?) {
     _ids = block()
@@ -111,7 +111,7 @@ class MessageFilterDsl {
     _partOfBody = block()
   }
 
-  fun sentDate(block: () -> ComparableFilter?) {
+  fun sentDate(block: () -> ComparableFilter) {
     _sentDate = block()
   }
 

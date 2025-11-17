@@ -34,6 +34,9 @@ fun Sequence<Map.Entry<UUID, ChatEntity>>.filterByLatestMessageDate(
 
         ConditionType.GREATER ->
           comparableFilter.value < chat.latestMessageDate
+
+        ConditionType.EQUAL ->
+          comparableFilter.value == chat.latestMessageDate
       }
     }
   }

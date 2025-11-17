@@ -89,7 +89,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = null,
       limit = null
     )
@@ -112,7 +120,15 @@ class MessageRepoInmemoryTest {
         id = UUID.randomUUID(), // Non-existent chat
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = null,
       limit = null
     )
@@ -136,7 +152,10 @@ class MessageRepoInmemoryTest {
         ids = listOf(messageId1),
         messageTypes = null,
         partOfBody = null,
-        sentDate = null
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
       ),
       order = null,
       limit = null
@@ -162,7 +181,11 @@ class MessageRepoInmemoryTest {
         ids = null,
         messageTypes = listOf("TEXT"),
         partOfBody = null,
-        sentDate = null
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+
       ),
       order = null,
       limit = null
@@ -189,7 +212,11 @@ class MessageRepoInmemoryTest {
         ids = null,
         messageTypes = null,
         partOfBody = "image",
-        sentDate = null
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+
       ),
       order = null,
       limit = null
@@ -264,7 +291,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = OrderType.ASC,
       limit = null
     )
@@ -286,7 +321,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = OrderType.DESC,
       limit = null
     )
@@ -308,7 +351,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = OrderType.ASC,
       limit = 1
     )
@@ -347,7 +398,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = OrderType.ASC,
       limit = 1500 // More than max limit
     )
@@ -385,7 +444,15 @@ class MessageRepoInmemoryTest {
         id = chatId1,
         communicationType = "WHATSAPP"
       ),
-      messageFilter = null,
+      messageFilter = MessageSearch.MessageFilter(
+        ids = null,
+        messageTypes = null,
+        partOfBody = null,
+        sentDate = ComparableFilter(
+          value = Instant.ofEpochSecond(1),
+          direction = ConditionType.GREATER
+        )
+      ),
       order = OrderType.ASC,
       limit = null // Not specified
     )
