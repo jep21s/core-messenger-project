@@ -8,6 +8,7 @@ import org.jep21s.messenger.core.service.common.model.ConditionType
 import org.jep21s.messenger.core.service.common.model.OrderType
 import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
+import org.jep21s.messenger.core.service.repo.common.Pagination
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,20 +19,59 @@ import org.junit.jupiter.api.Test
 abstract class MessageSearchTest {
   abstract val messageRepo: AMessageRepoInitializable
 
-  protected abstract val chatId1: UUID
-  protected abstract val chatId2: UUID
-  protected abstract val messageId1: UUID
-  protected abstract val messageId2: UUID
-  protected abstract val messageId3: UUID
-  protected abstract val now: Instant
+  private val chatId1: UUID = UUID.randomUUID()
+  private val chatId2: UUID = UUID.randomUUID()
+  private val messageId1: UUID = UUID.randomUUID()
+  private val messageId2: UUID = UUID.randomUUID()
+  private val messageId3: UUID = UUID.randomUUID()
+  private val now: Instant = Instant.now()
+
+  private val message1 = Message(
+    id = messageId1,
+    chatId = chatId1,
+    communicationType = "WHATSAPP",
+    messageType = "TEXT",
+    sentDate = now.minusSeconds(3600),
+    createdAt = now.minusSeconds(3600),
+    updatedAt = null,
+    body = "Hello, world!",
+    externalId = "ext1",
+    payload = null
+  )
+
+  private val message2 = Message(
+    id = messageId2,
+    chatId = chatId1,
+    communicationType = "WHATSAPP",
+    messageType = "IMAGE",
+    sentDate = now.minusSeconds(1800),
+    createdAt = now.minusSeconds(1800),
+    updatedAt = null,
+    body = "Check this image",
+    externalId = "ext2",
+    payload = mapOf("url" to "http://example.com/image.jpg")
+  )
+
+  private val message3 = Message(
+    id = messageId3,
+    chatId = chatId2,
+    communicationType = "TELEGRAM",
+    messageType = "TEXT",
+    sentDate = now.minusSeconds(900),
+    createdAt = now.minusSeconds(900),
+    updatedAt = null,
+    body = "Telegram message",
+    externalId = "ext3",
+    payload = null
+  )
 
   @BeforeEach
-  fun setUp() {
-    messageRepo.initDB()
+  fun setUp() = runTest {
+    messageRepo.addTestData(listOf(message1, message2, message3))
   }
 
   @AfterEach
-  fun tearDown() {
+  fun tearDown() = runTest {
     messageRepo.clearDB()
   }
 
@@ -411,7 +451,7 @@ abstract class MessageSearchTest {
     val result = messageRepo.search(search)
 
     // Then
-    assertEquals(30, result.size) // Should use defaultPaginationLimit
+    assertEquals(Pagination.DEFAULT_MESSAGE_LIMIT, result.size) // Should use defaultPaginationLimit
   }
 
   @Test

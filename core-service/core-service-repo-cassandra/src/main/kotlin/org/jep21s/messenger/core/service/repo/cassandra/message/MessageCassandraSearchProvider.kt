@@ -13,6 +13,7 @@ import org.jep21s.messenger.core.service.common.model.OrderType
 import org.jep21s.messenger.core.service.repo.cassandra.config.AsyncFetcher
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.filter.MessageEntityFilter
+import org.jep21s.messenger.core.service.repo.common.Pagination
 
 class MessageCassandraSearchProvider(
   private val context: MapperContext,
@@ -82,7 +83,7 @@ class MessageCassandraSearchProvider(
 
 
   private fun Select.withSorting(order: OrderType?): Select {
-    val direction = when (order ?: defaultSortDirection) {
+    val direction = when (order ?: Pagination.defaultMessageSortDirection) {
       OrderType.DESC -> ClusteringOrder.DESC
       OrderType.ASC -> ClusteringOrder.ASC
     }
@@ -94,12 +95,6 @@ class MessageCassandraSearchProvider(
   }
 
   private fun Select.withLimit(limit: Int?): Select =
-    limit(limit ?: DEFAULT_LIMIT)
-
-  companion object {
-    private val defaultSortDirection = OrderType.DESC
-    private const val DEFAULT_LIMIT = 50
-  }
-
+    limit(Pagination.getValidMessageLimit(limit))
 }
 

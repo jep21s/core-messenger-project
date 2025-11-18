@@ -21,15 +21,18 @@ import org.jep21s.messenger.core.service.repo.cassandra.config.liquibase.Liquiba
 import org.jep21s.messenger.core.service.repo.cassandra.message.MessageDao
 import org.jep21s.messenger.core.service.repo.cassandra.message.MessageRepoCassandra
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
+import org.jep21s.messenger.core.service.repo.cassandra.test.extention.CassandraTestExtension
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertAll
+import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.ComposeContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.junit.jupiter.Container
 
+@ExtendWith(CassandraTestExtension::class)
 class CassandraTest {
 
   @Test

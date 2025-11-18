@@ -6,6 +6,7 @@ import org.jep21s.messenger.core.service.common.model.message.MessageCreation
 import org.jep21s.messenger.core.service.common.model.message.MessageDeletion
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
+import org.jep21s.messenger.core.service.repo.common.Pagination
 import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
 import org.jep21s.messenger.core.service.repo.inmemory.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.inmemory.message.mapper.MessageEntityMapper
@@ -33,9 +34,7 @@ class MessageRepoInmemory(
   }
 
   override suspend fun search(messageSearch: MessageSearch): List<Message> {
-    val limit = (messageSearch.limit ?: defaultPaginationLimit).let {
-      if (it > maxPaginationLimit) maxPaginationLimit else it
-    }
+    val limit = Pagination.getValidMessageLimit(messageSearch.limit)
 
     val entities = db.asSequence()
       .map { (id, messageWrapper) ->
