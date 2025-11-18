@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.repo.inmemory.message
+package org.jep21s.messenger.core.service.repo.common.message
 
 import java.time.Instant
 import java.util.UUID
@@ -6,79 +6,33 @@ import kotlinx.coroutines.test.runTest
 import org.jep21s.messenger.core.service.common.model.ComparableFilter
 import org.jep21s.messenger.core.service.common.model.ConditionType
 import org.jep21s.messenger.core.service.common.model.OrderType
+import org.jep21s.messenger.core.service.common.model.message.Message
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
-import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
-import org.jep21s.messenger.core.service.repo.inmemory.message.entity.MessageEntity
-import org.jep21s.messenger.core.service.repo.inmemory.message.mapper.MessageEntityMapper
-import org.jep21s.messenger.core.service.repo.inmemory.message.mapper.MessageEntityMapperImpl
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class MessageRepoInmemoryTest {
+abstract class MessageSearchTest {
+  abstract val messageRepo: AMessageRepoInitializable
 
-  private lateinit var messageRepo: MessageRepoInmemory
-  private lateinit var db: MutableMap<UUID, EntityWrapper<MessageEntity>>
-  private val messageEntityMapper: MessageEntityMapper = MessageEntityMapperImpl
-
-  private val chatId1 = UUID.randomUUID()
-  private val chatId2 = UUID.randomUUID()
-  private val messageId1 = UUID.randomUUID()
-  private val messageId2 = UUID.randomUUID()
-  private val messageId3 = UUID.randomUUID()
-  private val now = Instant.now()
-
-  private val messageEntity1 = MessageEntity(
-    id = messageId1,
-    chatId = chatId1,
-    communicationType = "WHATSAPP",
-    messageType = "TEXT",
-    sentDate = now.minusSeconds(3600),
-    createdAt = now.minusSeconds(3600),
-    updatedAt = null,
-    body = "Hello, world!",
-    externalId = "ext1",
-    payload = null
-  )
-
-  private val messageEntity2 = MessageEntity(
-    id = messageId2,
-    chatId = chatId1,
-    communicationType = "WHATSAPP",
-    messageType = "IMAGE",
-    sentDate = now.minusSeconds(1800),
-    createdAt = now.minusSeconds(1800),
-    updatedAt = null,
-    body = "Check this image",
-    externalId = "ext2",
-    payload = mapOf("url" to "http://example.com/image.jpg")
-  )
-
-  private val messageEntity3 = MessageEntity(
-    id = messageId3,
-    chatId = chatId2,
-    communicationType = "TELEGRAM",
-    messageType = "TEXT",
-    sentDate = now.minusSeconds(900),
-    createdAt = now.minusSeconds(900),
-    updatedAt = null,
-    body = "Telegram message",
-    externalId = "ext3",
-    payload = null
-  )
+  protected abstract val chatId1: UUID
+  protected abstract val chatId2: UUID
+  protected abstract val messageId1: UUID
+  protected abstract val messageId2: UUID
+  protected abstract val messageId3: UUID
+  protected abstract val now: Instant
 
   @BeforeEach
   fun setUp() {
-    db = mutableMapOf(
-      messageId1 to EntityWrapper(messageEntity1),
-      messageId2 to EntityWrapper(messageEntity2),
-      messageId3 to EntityWrapper(messageEntity3)
-    )
+    messageRepo.initDB()
+  }
 
-//    messageEntityMapper = mockk()
-    messageRepo = MessageRepoInmemory(db, messageEntityMapper)
+  @AfterEach
+  fun tearDown() {
+    messageRepo.clearDB()
   }
 
   @Test
@@ -376,9 +330,8 @@ class MessageRepoInmemoryTest {
   fun `search should respect max pagination limit`() = runTest {
     // Given - add more messages to test limit
     val manyMessages = (1..1500).map { i ->
-      val messageId = UUID.randomUUID()
-      val messageEntity = MessageEntity(
-        id = messageId,
+      Message(
+        id = UUID.randomUUID(),
         chatId = chatId1,
         communicationType = "WHATSAPP",
         messageType = "TEXT",
@@ -389,9 +342,8 @@ class MessageRepoInmemoryTest {
         externalId = "ext$i",
         payload = null
       )
-      db[messageId] = EntityWrapper(messageEntity)
-      messageEntity
     }
+    messageRepo.addTestData(manyMessages)
 
     val search = MessageSearch(
       chatFilter = MessageSearch.ChatFilter(
@@ -422,9 +374,8 @@ class MessageRepoInmemoryTest {
   fun `search should use default pagination limit when not specified`() = runTest {
     // Given - add more messages to test default limit
     val manyMessages = (1..100).map { i ->
-      val messageId = UUID.randomUUID()
-      val messageEntity = MessageEntity(
-        id = messageId,
+      Message(
+        id = UUID.randomUUID(),
         chatId = chatId1,
         communicationType = "WHATSAPP",
         messageType = "TEXT",
@@ -435,9 +386,8 @@ class MessageRepoInmemoryTest {
         externalId = "ext$i",
         payload = null
       )
-      db[messageId] = EntityWrapper(messageEntity)
-      messageEntity
     }
+    messageRepo.addTestData(manyMessages)
 
     val search = MessageSearch(
       chatFilter = MessageSearch.ChatFilter(

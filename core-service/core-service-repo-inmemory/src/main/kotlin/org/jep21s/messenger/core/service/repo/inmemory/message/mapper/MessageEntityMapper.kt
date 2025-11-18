@@ -23,4 +23,6 @@ interface MessageEntityMapper {
     ]
   )
   fun mapToEntity(messageCreation: MessageCreation): MessageEntity
+
+  fun mapToEntity(message: Message): MessageEntity
 }
