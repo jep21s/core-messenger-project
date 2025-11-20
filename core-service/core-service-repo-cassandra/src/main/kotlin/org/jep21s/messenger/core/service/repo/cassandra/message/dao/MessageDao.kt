@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.repo.cassandra.message
+package org.jep21s.messenger.core.service.repo.cassandra.message.dao
 
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import com.datastax.oss.driver.api.mapper.annotations.CqlName
@@ -10,6 +10,7 @@ import com.datastax.oss.driver.api.mapper.annotations.StatementAttributes
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.CompletionStage
+import org.jep21s.messenger.core.service.repo.cassandra.message.providers.MessageCassandraSearchProvider
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.filter.MessageEntityFilter
 
@@ -22,9 +23,9 @@ interface MessageDao {
   @Delete(entityClass = [MessageEntity::class])
   @StatementAttributes(consistencyLevel = "QUORUM")
   fun delete(
-    @CqlName(MessageEntity.COLUMN_CHAT_ID) chatId: UUID,
-    @CqlName(MessageEntity.COLUMN_SENT_DATE) sentDate: Instant,
-    @CqlName(MessageEntity.COLUMN_ID) messageId: UUID
+    @CqlName(MessageEntity.Companion.COLUMN_CHAT_ID) chatId: UUID,
+    @CqlName(MessageEntity.Companion.COLUMN_SENT_DATE) sentDate: Instant,
+    @CqlName(MessageEntity.Companion.COLUMN_ID) messageId: UUID
   ): CompletionStage<AsyncResultSet>
 
   @QueryProvider(providerClass = MessageCassandraSearchProvider::class, entityHelpers = [MessageEntity::class])

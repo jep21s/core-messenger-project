@@ -9,6 +9,9 @@ import org.jep21s.messenger.core.service.common.model.message.MessageDeletion
 import org.jep21s.messenger.core.service.common.model.message.MessageSearch
 import org.jep21s.messenger.core.service.common.repo.IMessageRepo
 import org.jep21s.messenger.core.service.repo.cassandra.extention.awaitAll
+import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageByTypeDao
+import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageDao
+import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageByTypeEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.filter.MessageEntityFilter
 import org.jep21s.messenger.core.service.repo.cassandra.message.mapper.MessageEntityMapper
@@ -16,6 +19,7 @@ import org.jep21s.messenger.core.service.repo.cassandra.message.mapper.MessageEn
 
 class MessageRepoCassandra(
   private val messageDao: MessageDao,
+  private val messageByTypeDao: MessageByTypeDao,
   private val messageEntityMapper: MessageEntityMapper = MessageEntityMapperImpl,
 ) : IMessageRepo {
   private val logger = CSCorSettings.loggerProvider
@@ -57,13 +61,38 @@ class MessageRepoCassandra(
         } else ids
       }
 
-    return ids.map { messageId: UUID? ->
+    val messages: List<MessageEntity> = ids.map { messageId: UUID? ->
       val filter: MessageEntityFilter = messageEntityMapper
         .mapToMessageEntityFilter(messageSearch, messageId)
       messageDao.search(filter)
     }
       .awaitAll()
       .flatten()
-      .map { messageEntityMapper.mapToModel(it) }
+
+    val messageTypes: List<String>? = messageSearch.messageFilter.messageTypes
+    val result = if (!messageTypes.isNullOrEmpty()) {
+      //TODO реализовать логику рекурсивного поиска с использованием mat view
+//      if (messages.size < (messageSearch.limit ?: Pagination.DEFAULT_MESSAGE_LIMIT)) {
+        messages.filter { messageTypes.contains(it.messageType) }
+//      } else {
+//      }
+    } else {
+      messages
+    }
+
+    return result.map { messageEntityMapper.mapToModel(it) }
+  }
+
+  private suspend fun getMessageByTypes(
+    messageSearch: MessageSearch,
+    messageTypes: List<String>,
+    messageIds: List<UUID?>?,
+  ): List<MessageByTypeEntity>? {
+    val typeFilter = messageEntityMapper.mapToMessageByTypeEntityFilter(
+      messageSearch = messageSearch,
+      messageIds = messageIds?.mapNotNull { it }.orEmpty(),
+      messageTypes = messageTypes
+    )
+    return messageByTypeDao.search(typeFilter).await()
   }
 }

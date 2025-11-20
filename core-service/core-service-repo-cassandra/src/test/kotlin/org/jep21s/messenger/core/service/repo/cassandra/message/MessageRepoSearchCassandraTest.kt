@@ -9,8 +9,11 @@ import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraProperti
 import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraSessionProvider
 import org.jep21s.messenger.core.service.repo.cassandra.config.liquibase.LiquibaseConfig
 import org.jep21s.messenger.core.service.repo.cassandra.extention.awaitAll
+import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageByTypeDao
+import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageDao
 import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageSimpleCleaner
 import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageSimpleWriter
+import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageByTypeEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.mapper.MessageEntityMapperImpl
 import org.jep21s.messenger.core.service.repo.cassandra.test.extention.CassandraTestExtension
@@ -32,11 +35,17 @@ class MessageRepoSearchCassandraTest : MessageSearchTest() {
   private val properties = CassandraProperties()
   private val sessionProvider = CassandraSessionProvider(properties)
     .also { LiquibaseConfig(properties).runMigrations() }
-  private val messageDao: MessageDao = CassandraMapper.getInstant(sessionProvider.session).getMessageDAO(
-    properties.keyspaceName,
-    MessageEntity.TABLE_NAME,
-  )
-  private val messageRepoCassandra = MessageRepoCassandra(messageDao)
+  private val messageDao: MessageDao = CassandraMapper.getInstant(sessionProvider.session)
+    .getMessageDAO(
+      properties.keyspaceName,
+      MessageEntity.TABLE_NAME,
+    )
+  private val messageByTypeDao: MessageByTypeDao = CassandraMapper.getInstant(sessionProvider.session)
+    .getMessageByTypeDAO(
+      properties.keyspaceName,
+      MessageByTypeEntity.TABLE_NAME,
+    )
+  private val messageRepoCassandra = MessageRepoCassandra(messageDao, messageByTypeDao)
 
   override val messageRepo: AMessageRepoInitializable = object : AMessageRepoInitializable(
     messageRepoCassandra,

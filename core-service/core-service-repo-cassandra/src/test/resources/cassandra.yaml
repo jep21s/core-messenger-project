@@ -252,7 +252,7 @@ cidr_authorizer:
     # Refresh interval for CIDR groups cache, this value is considered in minutes
     # cidr_groups_cache_refresh_interval: 5
 
-    # Maximum number of entries an IP to CIDR groups cache can accommodate
+  # Maximum number of entries an IP to CIDR groups cache can accommodate
   # ip_cache_max_size: 100
 
 # Depending on the auth strategy of the cluster, it can be beneficial to iterate
@@ -1915,7 +1915,7 @@ report_unconfirmed_repaired_data_mismatches: false
 
 # Enables materialized view creation on this node.
 # Materialized views are considered experimental and are not recommended for production use.
-materialized_views_enabled: false
+materialized_views_enabled: true
 
 # Enables SASI index creation on this node.
 # SASI indexes are considered experimental and are not recommended for production use.

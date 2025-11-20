@@ -9,6 +9,7 @@ import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEn
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.CompletionStage
+import kotlinx.coroutines.delay
 
 class MessageSimpleWriter(private val session: CqlSession) {
   private val logger = CSCorSettings.loggerProvider.logger(this::class)
@@ -16,7 +17,14 @@ class MessageSimpleWriter(private val session: CqlSession) {
 
   suspend fun insertMessages(
     messages: List<MessageEntity>,
-  ): List<CompletionStage<AsyncResultSet>> = messages.map { insertMessage(it) }
+  ): List<CompletionStage<AsyncResultSet>> = messages.map {
+    /**
+     * Делаем задержку чтобы не было ошибок от касандры при запросах
+     * с минимальной паузой между ними
+     */
+    delay(20L)
+    insertMessage(it)
+  }
 
   suspend fun insertMessage(message: MessageEntity): CompletionStage<AsyncResultSet> {
     val query = buildInsertQuery(message)

@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.repo.cassandra.message
+package org.jep21s.messenger.core.service.repo.cassandra.message.providers
 
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder
 import com.datastax.oss.driver.api.mapper.MapperContext
@@ -25,7 +25,8 @@ class MessageCassandraSearchProvider(
       .applyChatId(context, filter.chatId)
       .applySentDate(context, filter.sentDate)
       .applyMessageId(context, filter.id)
-      .withSorting(filter.order)
+      .applyPartOfBody(filter.partOfBody)
+      .withSorting(filter)
       .withLimit(filter.limit)
 
     val asyncFetcher = AsyncFetcher<MessageEntity>(entityHelper)
@@ -81,9 +82,20 @@ class MessageCassandraSearchProvider(
       )
   }
 
+  private fun Select.applyPartOfBody(
+    partOfBody: String?,
+  ): Select {
+    if (partOfBody.isNullOrBlank()) return this
+    return whereColumn(MessageEntity.COLUMN_BODY)
+      .like(QueryBuilder.literal("%$partOfBody%"))
+  }
 
-  private fun Select.withSorting(order: OrderType?): Select {
-    val direction = when (order ?: Pagination.defaultMessageSortDirection) {
+  private fun Select.withSorting(filter: MessageEntityFilter): Select {
+    // отключаем сортировку, если требуется поиск по части тела сообщения,
+    // так как Cassandra не поддерживает и то и другое одновременно в данном кейсе
+    if (!filter.partOfBody.isNullOrBlank()) return this
+
+    val direction = when (filter.order ?: Pagination.defaultMessageSortDirection) {
       OrderType.DESC -> ClusteringOrder.DESC
       OrderType.ASC -> ClusteringOrder.ASC
     }

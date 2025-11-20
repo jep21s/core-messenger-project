@@ -23,33 +23,40 @@
         </sql>
     </changeSet>
 
-</databaseChangeLog>
+    <changeSet id="create_sasi_idx_ON_body_IN_messages" author="jep21s">
+        <sql>
+            <![CDATA[
+                    CREATE CUSTOM INDEX IF NOT EXISTS idx_messages_body
+                    ON messages(body)
+                    USING 'org.apache.cassandra.index.sasi.SASIIndex'
+                    WITH OPTIONS = {
+                        'mode': 'CONTAINS',
+                        'analyzer_class': 'org.apache.cassandra.index.sasi.analyzer.StandardAnalyzer',
+                        'tokenization_enable_stemming': 'true',
+                        'tokenization_normalize_lowercase': 'true',
+                        'tokenization_skip_stop_words': 'true'
+                    }
+                    ]]>
+        </sql>
+    </changeSet>
+    
+    <changeSet id="create_mat_view_messages_by_message_type" author="jep21s">
+        <sql>
+            CREATE MATERIALIZED VIEW messages_by_message_type AS
+            SELECT
+            chat_id,
+            message_type,
+            sent_date,
+            id
+            FROM messages
+            WHERE
+            chat_id IS NOT NULL AND
+            message_type IS NOT NULL AND
+            sent_date IS NOT NULL AND
+            id IS NOT NULL
+            PRIMARY KEY ((chat_id, message_type), sent_date, id)
+            WITH CLUSTERING ORDER BY (sent_date DESC, id ASC);
+        </sql>
+    </changeSet>
 
-        <!--        <sql>-->
-        <!--            <![CDATA[-->
-        <!--            ALTER TABLE messages -->
-        <!--            WITH CLUSTERING ORDER BY (sent_date DESC, id ASC)-->
-        <!--            ]]>-->
-        <!--        </sql>-->
-        <!---->
-        <!--        <sql>-->
-        <!--            <![CDATA[-->
-        <!--            CREATE CUSTOM INDEX IF NOT EXISTS idx_messages_body -->
-        <!--            ON messages(body) -->
-        <!--            USING 'org.apache.cassandra.index.sasi.SASIIndex'-->
-        <!--            WITH OPTIONS = {-->
-        <!--                'mode': 'CONTAINS',-->
-        <!--                'analyzer_class': 'org.apache.cassandra.index.sasi.analyzer.StandardAnalyzer',-->
-        <!--                'tokenization_enable_stemming': 'true',-->
-        <!--                'tokenization_normalize_lowercase': 'true',-->
-        <!--                'tokenization_skip_stop_words': 'true'-->
-        <!--            }-->
-        <!--            ]]>-->
-        <!--        </sql>-->
-        <!---->
-        <!--        <sql>-->
-        <!--            <![CDATA[-->
-        <!--            CREATE INDEX IF NOT EXISTS idx_messages_payload_keys-->
-        <!--            ON messages(KEYS(payload))-->
-        <!--            ]]>-->
-        <!--        </sql>-->
+</databaseChangeLog>
