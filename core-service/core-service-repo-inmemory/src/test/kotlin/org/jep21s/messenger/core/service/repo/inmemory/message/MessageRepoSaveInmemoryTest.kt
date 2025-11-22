@@ -1,9 +1,9 @@
 package org.jep21s.messenger.core.service.repo.inmemory.message
 
 import org.jep21s.messenger.core.service.repo.common.message.AMessageRepoInitializable
-import org.jep21s.messenger.core.service.repo.common.message.MessageSearchTest
+import org.jep21s.messenger.core.service.repo.common.message.MessageSaveTest
 
-class MessageRepoSearchInmemoryTest : MessageSearchTest() {
+class MessageRepoSaveInmemoryTest : MessageSaveTest() {
   override val messageRepo: AMessageRepoInitializable =
     MessageTestRepoProvider.getMessageRepoTest()
 }

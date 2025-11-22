@@ -28,5 +28,8 @@ dependencies {
 }
 
 tasks.test {
+    jvmArgs = listOf(
+        "--add-opens=java.base/java.time=ALL-UNNAMED"
+    )
     useJUnitPlatform()
 }

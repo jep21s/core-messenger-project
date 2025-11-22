@@ -19,7 +19,7 @@ interface MessageEntityMapper {
 
   @Konvert(
     mappings = [
-      Mapping(target = "id", ignore = true),
+      Mapping(target = "id", expression = "it.id ?: it.getIdOrGenerate()"),
     ]
   )
   fun mapToEntity(messageCreation: MessageCreation): MessageEntity

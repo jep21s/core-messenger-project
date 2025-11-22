@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.the
 
+@Suppress("unused")
 class KonvertPlugin : Plugin<Project> {
   private val logger = Logging.getLogger(this::class.java)
 

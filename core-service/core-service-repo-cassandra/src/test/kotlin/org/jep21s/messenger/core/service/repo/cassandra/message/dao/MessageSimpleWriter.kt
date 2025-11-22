@@ -4,7 +4,6 @@ import com.datastax.oss.driver.api.core.CqlSession
 import com.datastax.oss.driver.api.core.cql.AsyncResultSet
 import com.datastax.oss.driver.api.core.cql.SimpleStatement
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import java.time.Instant
 import java.util.UUID
@@ -12,7 +11,6 @@ import java.util.concurrent.CompletionStage
 import kotlinx.coroutines.delay
 
 class MessageSimpleWriter(private val session: CqlSession) {
-  private val logger = CSCorSettings.loggerProvider.logger(this::class)
   private val jacksonMapper = jacksonObjectMapper()
 
   suspend fun insertMessages(
@@ -34,10 +32,11 @@ class MessageSimpleWriter(private val session: CqlSession) {
       session.executeAsync(statement)
     }
       .onSuccess {
-        logger.debug("Successfully inserted message with id: ${message.id}")
+        println("Successfully inserted message with id: ${message.id}")
       }
       .onFailure {
-        logger.error("Failed to insert message with id: ${message.id}", ex = it)
+        System.err.println("Failed to insert message with id: ${message.id}")
+        it.printStackTrace()
       }
       .getOrThrow()
   }

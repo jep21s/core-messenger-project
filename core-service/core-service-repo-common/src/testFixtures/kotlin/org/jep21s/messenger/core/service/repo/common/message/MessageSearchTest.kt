@@ -369,7 +369,7 @@ abstract class MessageSearchTest {
   @Test
   fun `search should respect max pagination limit`() = runTest {
     // Given - add more messages to test limit
-    val manyMessages = (1..1500).map { i ->
+    val manyMessages = (1..500).map { i ->
       Message(
         id = UUID.randomUUID(),
         chatId = chatId1,

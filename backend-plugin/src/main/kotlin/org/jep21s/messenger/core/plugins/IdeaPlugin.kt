@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
+@Suppress("unused")
 internal class IdeaPlugin : Plugin<Project> {
   override fun apply(project: Project) = with(project) {
     // Применяем стандартный плагин Idea
