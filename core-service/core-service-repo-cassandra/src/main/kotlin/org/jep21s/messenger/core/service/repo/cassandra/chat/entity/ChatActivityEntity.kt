@@ -21,12 +21,11 @@ data class ChatActivityEntity(
   @field:CqlName(COLUMN_LATEST_ACTIVITY)
   val latestActivity: Instant,
 
-  @field:ClusteringColumn(1)
   @field:CqlName(COLUMN_CHAT_ID)
   val chatId: UUID,
 ) {
   companion object {
-    const val TABLE_NAME = "chat_activities"
+    const val TABLE_NAME = "chat_activity"
 
     const val COLUMN_BUCKET_DAY = "bucket_day"
     const val COLUMN_CHAT_ID = "chat_id"

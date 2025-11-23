@@ -1828,20 +1828,20 @@ unlogged_batch_across_partitions_warn_threshold: 10
 # Audit logging - Logs every incoming CQL command request, authentication to a node. See the docs
 # on audit_logging for full details about the various configuration options and production tips.
 audit_logging_options:
-  enabled: false
+  enabled: true
   logger:
     - class_name: BinAuditLogger
-  # audit_logs_dir:
-  # included_keyspaces:
-  # excluded_keyspaces: system, system_schema, system_virtual_schema
-  # included_categories:
+  audit_logs_dir: /var/log/cassandra/audit
+#  included_keyspaces:
+  excluded_keyspaces: system, system_schema, system_virtual_schema
+  included_categories: QUERY, DML, DDL, DCL, AUTH
   # excluded_categories:
   # included_users:
   # excluded_users:
-  # roll_cycle: HOURLY
-  # block: true
-  # max_queue_weight: 268435456 # 256 MiB
-  # max_log_size: 17179869184 # 16 GiB
+  roll_cycle: HOURLY
+  block: true
+  max_queue_weight: 268435456 # 256 MiB
+  max_log_size: 17179869184 # 16 GiB
   #
   ## If archive_command is empty or unset, Cassandra uses a built-in DeletingArchiver that deletes the oldest files if ``max_log_size`` is reached.
   ## If archive_command is set, Cassandra does not use DeletingArchiver, so it is the responsibility of the script to make any required cleanup.

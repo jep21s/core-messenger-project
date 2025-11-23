@@ -27,7 +27,7 @@
             communication_type text,
             latest_activity timestamp,
             chat_id uuid,
-            PRIMARY KEY ((bucket_day), latest_activity, chat_id)
+            PRIMARY KEY ((bucket_day, communication_type), latest_activity)
             ) WITH CLUSTERING ORDER BY (latest_activity DESC);
         </sql>
     </changeSet>

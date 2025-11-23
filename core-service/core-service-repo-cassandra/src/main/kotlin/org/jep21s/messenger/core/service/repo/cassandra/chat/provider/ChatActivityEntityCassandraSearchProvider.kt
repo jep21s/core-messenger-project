@@ -5,6 +5,10 @@ import com.datastax.oss.driver.api.mapper.MapperContext
 import com.datastax.oss.driver.api.mapper.entity.EntityHelper
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder
 import com.datastax.oss.driver.api.querybuilder.select.Select
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.util.concurrent.CompletionStage
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityEntityFilter
@@ -21,7 +25,6 @@ class ChatActivityEntityCassandraSearchProvider(
     val select: Select = entityHelper.selectStart()
       .applyBucketDay(filter)
       .applyCommunicationType(filter)
-      .applyChatId(filter)
       .sortByLatestMessage()
       .withLimit(filter)
 
@@ -39,7 +42,7 @@ class ChatActivityEntityCassandraSearchProvider(
   ): Select = whereColumn(ChatActivityEntity.COLUMN_BUCKET_DAY)
     .isEqualTo(
       QueryBuilder.literal(
-        filter.bucketDay,
+        filter.bucketDayStr,
         context.session.context.codecRegistry
       )
     )
@@ -54,19 +57,6 @@ class ChatActivityEntityCassandraSearchProvider(
       )
     )
 
-  private fun Select.applyChatId(
-    filter: ChatActivityEntityFilter,
-  ): Select {
-    if (filter.chatId == null) return this
-    return whereColumn(ChatActivityEntity.COLUMN_CHAT_ID)
-      .isEqualTo(
-        QueryBuilder.literal(
-          filter.chatId,
-          context.session.context.codecRegistry
-        )
-      )
-  }
-
   private fun Select.sortByLatestMessage(): Select = orderBy(
     ChatActivityEntity.COLUMN_LATEST_ACTIVITY,
     ClusteringOrder.DESC,
@@ -75,4 +65,10 @@ class ChatActivityEntityCassandraSearchProvider(
   private fun Select.withLimit(
     filter: ChatActivityEntityFilter,
   ): Select = limit(Pagination.getValidChatLimit(filter.limit))
+
+  private fun LocalDate.toEndOfDayInstant(zoneId: ZoneId = ZoneId.systemDefault()): Instant {
+    return this.atTime(LocalTime.MAX)
+      .atZone(zoneId)
+      .toInstant()
+  }
 }

@@ -4,9 +4,11 @@ import org.jep21s.messenger.core.lib.logging.common.CMLoggerProvider
 import org.jep21s.messenger.core.lib.logging.logback.cmLoggerLogback
 import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.model.chat.Chat
+import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatActivitySimpleWriter
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatSimpleWriter
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatEntity
+import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityBucketCalculator
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapperImpl
 import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraMapper
 import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraProperties
@@ -53,6 +55,7 @@ object ChatTestRepoProvider {
     initChats
   ) {
     private val chatSimpleWriter = ChatSimpleWriter(sessionProvider.session)
+    private val chatActivitySimpleWriter = ChatActivitySimpleWriter(sessionProvider.session)
     private val simpleCleaner = SimpleCleaner(sessionProvider.session)
 
     override suspend fun addTestData(chats: List<Chat>) {
@@ -60,10 +63,24 @@ object ChatTestRepoProvider {
       val entities = chats.map { chatEntityMapper.mapToEntity(it) }
       chatSimpleWriter.insertChats(entities)
         .awaitAll()
+      val activities = chats.mapNotNull { chat ->
+        chat.latestMessageDate?.let { latestMessageDate ->
+          ChatActivityEntity(
+            bucketDay = ChatActivityBucketCalculator
+              .calculateBucketDay(chat.latestMessageDate)
+              .toString(),
+            communicationType = chat.communicationType,
+            latestActivity = latestMessageDate,
+            chatId = chat.id
+          )
+        }
+      }
+      chatActivitySimpleWriter.insertChatActivities(activities)
     }
 
     override suspend fun clearDB() {
       simpleCleaner.truncateTable(ChatEntity.TABLE_NAME)
+      simpleCleaner.truncateTable(ChatActivityEntity.TABLE_NAME)
     }
   }
 
