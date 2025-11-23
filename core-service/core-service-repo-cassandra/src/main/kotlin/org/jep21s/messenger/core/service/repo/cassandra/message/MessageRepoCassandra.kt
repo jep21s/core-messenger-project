@@ -41,14 +41,22 @@ class MessageRepoCassandra(
   override suspend fun delete(messageDeletion: MessageDeletion) {
     messageDeletion.ids
       .map { id ->
-        messageDao.delete(
+        id to messageDao.delete(
           chatId = messageDeletion.chatId,
           sentDate = messageDeletion.sentDate,
           messageId = id
         )
       }
-      .awaitAll()
-      .map { it.wasApplied() }
+      .map { (id, completionStage) ->
+        id to completionStage.await()
+      }
+      .forEach { (id, result) ->
+        if (!result.wasApplied()) {
+          logger.warn("message [$id] is not deleted")
+          //TODO реализовать логику возврата результата и его обработку
+          // если сообщение не было удалено
+        }
+      }
   }
 
   override suspend fun search(
@@ -73,7 +81,7 @@ class MessageRepoCassandra(
     val result = if (!messageTypes.isNullOrEmpty()) {
       //TODO реализовать логику рекурсивного поиска с использованием mat view
 //      if (messages.size < (messageSearch.limit ?: Pagination.DEFAULT_MESSAGE_LIMIT)) {
-        messages.filter { messageTypes.contains(it.messageType) }
+      messages.filter { messageTypes.contains(it.messageType) }
 //      } else {
 //      }
     } else {

@@ -31,12 +31,12 @@ abstract class ChatSearchTest {
   abstract val chatModel3: Chat
 
   @BeforeEach
-  fun setUp() {
+  fun setUp() = runTest {
     chatRepo.initDB()
   }
 
   @AfterEach
-  fun tearDown() {
+  fun tearDown() = runTest {
     chatRepo.clearDB()
   }
 

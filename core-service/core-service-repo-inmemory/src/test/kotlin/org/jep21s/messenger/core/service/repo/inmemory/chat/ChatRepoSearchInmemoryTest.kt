@@ -91,14 +91,14 @@ class ChatRepoSearchInmemoryTest: ChatSearchTest() {
     chatRepo = ChatRepoInmemory(db, chatEntityMapper),
     initChats = listOf(chatModel1, chatModel2, chatModel3),
   ) {
-    override fun addTestData(chats: List<Chat>) {
+    override suspend fun addTestData(chats: List<Chat>) {
       chats.forEach {
         val entity = ChatEntityMapperImpl.mapToEntity(it)
         db.put(entity.id, entity.wrap())
       }
     }
 
-    override fun clearDB() {
+    override suspend fun clearDB() {
       db.clear()
     }
   }

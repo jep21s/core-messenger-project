@@ -45,14 +45,14 @@ class ChatRepoDeleteInmemoryTest : ChatDeleteTest() {
     chatRepo = ChatRepoInmemory(db, ChatEntityMapperImpl),
     initChats = listOf(existingWhatsappChat, existingTelegramChat)
   ) {
-    override fun addTestData(chats: List<Chat>) {
+    override suspend fun addTestData(chats: List<Chat>) {
       chats.forEach {
         val entity = ChatEntityMapperImpl.mapToEntity(it)
         db.put(entity.id, entity.wrap())
       }
     }
 
-    override fun clearDB() {
+    override suspend fun clearDB() {
       db.clear()
     }
   }

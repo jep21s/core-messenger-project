@@ -11,11 +11,11 @@ import org.jep21s.messenger.core.service.repo.cassandra.config.liquibase.Liquiba
 import org.jep21s.messenger.core.service.repo.cassandra.extention.awaitAll
 import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageByTypeDao
 import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageDao
-import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageSimpleCleaner
 import org.jep21s.messenger.core.service.repo.cassandra.message.dao.MessageSimpleWriter
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageByTypeEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.cassandra.message.mapper.MessageEntityMapperImpl
+import org.jep21s.messenger.core.service.repo.cassandra.test.dao.SimpleCleaner
 import org.jep21s.messenger.core.service.repo.common.message.AMessageRepoInitializable
 
 object MessageTestRepoProvider {
@@ -50,7 +50,7 @@ object MessageTestRepoProvider {
     initMessages
   ) {
     private val messageSimpleWriter = MessageSimpleWriter(sessionProvider.session)
-    private val messageSimpleCleaner = MessageSimpleCleaner(sessionProvider.session)
+    private val simpleCleaner = SimpleCleaner(sessionProvider.session)
 
     override suspend fun addTestData(messages: List<Message>) {
       if (messages.isEmpty()) return
@@ -60,7 +60,7 @@ object MessageTestRepoProvider {
     }
 
     override suspend fun clearDB() {
-      messageSimpleCleaner.truncateTable()
+      simpleCleaner.truncateTable(MessageEntity.TABLE_NAME)
     }
   }
 }

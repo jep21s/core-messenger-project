@@ -7,9 +7,9 @@ abstract class AChatRepoInitializable(
   private val chatRepo: IChatRepo,
   private val initChats: List<Chat>
 ) : IChatRepo by chatRepo {
-  abstract fun addTestData(chats: List<Chat>)
+  abstract suspend fun addTestData(chats: List<Chat>)
 
-  abstract fun clearDB()
+  abstract suspend fun clearDB()
 
-  fun initDB() = addTestData(initChats)
+  suspend fun initDB() = addTestData(initChats)
 }

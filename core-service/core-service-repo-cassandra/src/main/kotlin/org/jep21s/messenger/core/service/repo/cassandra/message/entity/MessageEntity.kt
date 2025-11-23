@@ -25,6 +25,7 @@ data class MessageEntity(
   val messageType: String,
 
   @field:CqlName(COLUMN_EXTERNAL_ID)
+  @Deprecated("field will be removed")
   val externalId: String?,
 
   @field:CqlName(COLUMN_COMMUNICATION_TYPE)

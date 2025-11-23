@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import java.util.UUID
-import kotlin.test.assertContains
 import kotlin.test.assertNotNull
 
 abstract class ChatSaveTest {
@@ -23,12 +22,12 @@ abstract class ChatSaveTest {
   abstract val existingChat: Chat
 
   @BeforeEach
-  fun setUp() {
+  fun setUp() = runTest {
     chatRepo.initDB()
   }
 
   @AfterEach
-  fun tearDown() {
+  fun tearDown() = runTest {
     chatRepo.clearDB()
   }
 

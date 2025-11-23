@@ -20,7 +20,7 @@ class ChatSearchPaginationInmemoryTest : ChatSearchPaginationTest() {
     chatRepo = ChatRepoInmemory(db, chatEntityMapper),
     initChats = emptyList()
   ) {
-    override fun addTestData(chats: List<Chat>) {
+    override suspend fun addTestData(chats: List<Chat>) {
 
       chats.forEach {
         val entity = ChatEntityMapperImpl.mapToEntity(it)
@@ -28,7 +28,7 @@ class ChatSearchPaginationInmemoryTest : ChatSearchPaginationTest() {
       }
     }
 
-    override fun clearDB() {
+    override suspend fun clearDB() {
       db.clear()
     }
   }

@@ -22,9 +22,9 @@ class MessageCassandraSearchProvider(
   fun search(filter: MessageEntityFilter): CompletionStage<List<MessageEntity>> {
     val select: Select = entityHelper.selectStart()
       .allowFiltering()
-      .applyChatId(context, filter.chatId)
-      .applySentDate(context, filter.sentDate)
-      .applyMessageId(context, filter.id)
+      .applyChatId(filter.chatId)
+      .applySentDate(filter.sentDate)
+      .applyMessageId(filter.id)
       .applyPartOfBody(filter.partOfBody)
       .withSorting(filter)
       .withLimit(filter.limit)
@@ -39,7 +39,6 @@ class MessageCassandraSearchProvider(
   }
 
   private fun Select.applyChatId(
-    context: MapperContext,
     chatId: UUID,
   ): Select = whereColumn(MessageEntity.COLUMN_CHAT_ID)
     .isEqualTo(
@@ -50,7 +49,6 @@ class MessageCassandraSearchProvider(
     )
 
   private fun Select.applySentDate(
-    context: MapperContext,
     sentDateFilter: ComparableFilter,
   ): Select {
     val literal = QueryBuilder.literal(
@@ -69,7 +67,6 @@ class MessageCassandraSearchProvider(
   }
 
   private fun Select.applyMessageId(
-    context: MapperContext,
     messageId: UUID?,
   ): Select {
     if (messageId == null) return this
