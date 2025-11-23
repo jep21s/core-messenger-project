@@ -12,7 +12,7 @@ import org.junit.jupiter.api.assertAll
 abstract class ChatSearchPaginationTest {
   abstract val chatRepo: AChatRepoInitializable
 
-  abstract val now: Instant
+  private val now: Instant = Instant.now()
 
   @Test
   fun `search should respect max pagination limit`() = runTest {

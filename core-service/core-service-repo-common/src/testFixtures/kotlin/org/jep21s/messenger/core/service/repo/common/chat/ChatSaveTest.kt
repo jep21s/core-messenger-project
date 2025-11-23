@@ -1,5 +1,6 @@
 package org.jep21s.messenger.core.service.repo.common.chat
 
+import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.jep21s.messenger.core.service.common.model.chat.Chat
@@ -14,16 +15,25 @@ import kotlin.test.assertNotNull
 abstract class ChatSaveTest {
   abstract val chatRepo: AChatRepoInitializable
 
-  abstract val existingChatId: UUID
-  abstract val newChatExternalId: String
-  abstract val communicationType: String
-  abstract val chatType: String
-
-  abstract val existingChat: Chat
+  private val existingChatId: UUID = UUID.randomUUID()
+  private val newChatExternalId: String = "new_external_id"
+  private val communicationType: String = "WHATSAPP"
+  private val chatType: String = "PRIVATE"
+  private val existingChat = Chat(
+    id = existingChatId,
+    externalId = "existing_ext",
+    communicationType = communicationType,
+    chatType = chatType,
+    payload = mapOf("existing" to "data"),
+    createdAt = Instant.now().minusSeconds(3600),
+    updatedAt = null,
+    latestMessageDate = null
+  )
 
   @BeforeEach
   fun setUp() = runTest {
     chatRepo.initDB()
+    chatRepo.addTestData(listOf(existingChat))
   }
 
   @AfterEach
@@ -149,7 +159,7 @@ abstract class ChatSaveTest {
     // Then
     assertAll(
       { assertNotNull(result.createdAt) },
-      { assertThat(result.createdAt).isBeforeOrEqualTo(java.time.Instant.now()) }
+      { assertThat(result.createdAt).isBeforeOrEqualTo(Instant.now()) }
     )
   }
 

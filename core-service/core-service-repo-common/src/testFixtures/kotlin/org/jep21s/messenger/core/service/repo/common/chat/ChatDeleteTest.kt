@@ -1,5 +1,6 @@
 package org.jep21s.messenger.core.service.repo.common.chat
 
+import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.jep21s.messenger.core.service.common.model.chat.Chat
@@ -13,17 +14,37 @@ import java.util.UUID
 abstract class ChatDeleteTest {
   abstract val chatRepo: AChatRepoInitializable
 
-  abstract val existingChatId: UUID
-  abstract val nonExistentChatId: UUID
-  abstract val whatsappCommunicationType: String
-  abstract val telegramCommunicationType: String
+  private val existingChatId: UUID = UUID.randomUUID()
+  private val nonExistentChatId: UUID = UUID.randomUUID()
+  private val whatsappCommunicationType: String = "WHATSAPP"
+  private val telegramCommunicationType: String = "TELEGRAM"
 
-  abstract val existingWhatsappChat: Chat
-  abstract val existingTelegramChat: Chat
+  private val existingWhatsappChat = Chat(
+    id = existingChatId,
+    externalId = "whatsapp_ext_1",
+    communicationType = whatsappCommunicationType,
+    chatType = "PRIVATE",
+    payload = mapOf("platform" to "whatsapp", "priority" to "high"),
+    createdAt = Instant.now().minusSeconds(3600),
+    updatedAt = Instant.now().minusSeconds(1800),
+    latestMessageDate = Instant.now().minusSeconds(300)
+  )
+
+  private val existingTelegramChat = Chat(
+    id = UUID.randomUUID(),
+    externalId = "telegram_ext_1",
+    communicationType = telegramCommunicationType,
+    chatType = "GROUP",
+    payload = mapOf("members_count" to 150),
+    createdAt = Instant.now().minusSeconds(7200),
+    updatedAt = null,
+    latestMessageDate = Instant.now().minusSeconds(600)
+  )
 
   @BeforeEach
   fun setUp() = runTest {
     chatRepo.initDB()
+    chatRepo.addTestData(listOf(existingWhatsappChat, existingTelegramChat))
   }
 
   @AfterEach
@@ -200,7 +221,7 @@ abstract class ChatDeleteTest {
       communicationType = whatsappCommunicationType,
       chatType = "PRIVATE",
       payload = null,
-      createdAt = java.time.Instant.now(),
+      createdAt = Instant.now(),
       updatedAt = null,
       latestMessageDate = null
     )

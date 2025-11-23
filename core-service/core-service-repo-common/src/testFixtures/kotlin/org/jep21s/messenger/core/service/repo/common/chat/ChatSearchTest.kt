@@ -20,19 +20,48 @@ import org.junit.jupiter.api.assertAll
 abstract class ChatSearchTest {
   abstract val chatRepo: AChatRepoInitializable
 
-  abstract val chatId1: UUID
-  abstract val chatId2: UUID
-  abstract val chatId3: UUID
+  private val chatId1: UUID = UUID.randomUUID()
+  private val chatId2: UUID = UUID.randomUUID()
+  private val chatId3: UUID = UUID.randomUUID()
+  private val now: Instant = Instant.now()
 
-  abstract val now: Instant
+  private val chatModel1 = Chat(
+    id = chatId1,
+    externalId = "ext1",
+    communicationType = "WHATSAPP",
+    chatType = "PRIVATE",
+    payload = null,
+    createdAt = now.minusSeconds(3600),
+    updatedAt = null,
+    latestMessageDate = now.minusSeconds(3600),
+  )
 
-  abstract val chatModel1: Chat
-  abstract val chatModel2: Chat
-  abstract val chatModel3: Chat
+  private val chatModel2 = Chat(
+    id = chatId2,
+    externalId = "ext2",
+    communicationType = "WHATSAPP",
+    chatType = "GROUP",
+    payload = null,
+    createdAt = now.minusSeconds(1800),
+    updatedAt = null,
+    latestMessageDate = now.minusSeconds(1800),
+  )
 
+  private val chatModel3 = Chat(
+    id = chatId3,
+    externalId = "ext3",
+    communicationType = "TELEGRAM",
+    chatType = "PRIVATE",
+    payload = null,
+    createdAt = now.minusSeconds(900),
+    updatedAt = null,
+    latestMessageDate = now.minusSeconds(900),
+  )
+  
   @BeforeEach
   fun setUp() = runTest {
     chatRepo.initDB()
+    chatRepo.addTestData(listOf(chatModel1, chatModel2, chatModel3))
   }
 
   @AfterEach
