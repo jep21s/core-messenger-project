@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import java.util.UUID
 import kotlin.test.assertNotNull
+import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 
 abstract class ChatSaveTest {
   abstract val chatRepo: AChatRepoInitializable
@@ -178,8 +179,8 @@ abstract class ChatSaveTest {
 
     // Then - search by externalId
     val searchResult = chatRepo.search(
-      org.jep21s.messenger.core.service.common.model.chat.ChatSearch(
-        filter = org.jep21s.messenger.core.service.common.model.chat.ChatSearch.ChatSearchFilter(
+      ChatSearch(
+        filter = ChatSearch.ChatSearchFilter(
           ids = null,
           externalIds = listOf(newChatExternalId),
           latestMessageDate = null,

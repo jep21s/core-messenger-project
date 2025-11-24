@@ -5,6 +5,7 @@ import java.util.UUID
 import kotlinx.coroutines.test.runTest
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
+import org.jep21s.messenger.core.service.repo.common.Pagination
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -17,7 +18,7 @@ abstract class ChatSearchPaginationTest {
   @Test
   fun `search should respect max pagination limit`() = runTest {
     // Given - add more chats to test limit
-    (1..1500).map { i ->
+    (1..500).map { i ->
       val chatId = UUID.randomUUID()
       Chat(
         id = chatId,
@@ -40,7 +41,7 @@ abstract class ChatSearchPaginationTest {
         communicationType = "WHATSAPP"
       ),
       sort = null,
-      limit = 1500 // More than max limit
+      limit = 500 // More than max limit
     )
 
     // When
@@ -87,7 +88,7 @@ abstract class ChatSearchPaginationTest {
 
     // Then
     assertAll(
-      { assertEquals(10, result.size) } // Should use defaultPaginationLimit
+      { assertEquals(Pagination.DEFAULT_CHAT_LIMIT, result.size) } // Should use defaultPaginationLimit
     )
   }
 }

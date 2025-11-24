@@ -10,6 +10,7 @@ import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatActivityDao
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatDao
+import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapper
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapperImpl
@@ -38,6 +39,10 @@ class ChatRepoCassandra(
             "is already existed before"
       )
     }
+    val activityEntity: ChatActivityEntity = chatEntityMapper
+      .mapToActivityEntity(chatCreation, entity)
+    chatActivityDao.create(activityEntity)
+      .await()
     return chatEntityMapper.mapToModel(entity, null)
   }
 

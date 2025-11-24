@@ -4,6 +4,7 @@ import java.util.UUID
 import kotlinx.coroutines.future.await
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
+import org.jep21s.messenger.core.service.repo.cassandra.chat.ChatActivityBucketCalculator
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatActivityDao
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatDao
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
@@ -11,6 +12,7 @@ import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityEntityFilter
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapper
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapperImpl
+import org.jep21s.messenger.core.service.repo.common.Pagination
 
 class ChatSearchService(
   private val chatDao: ChatDao,
@@ -31,7 +33,8 @@ class ChatSearchService(
     val activities = chatActivityDao.search(
       ChatActivityEntityFilter(
         communicationType = chatSearch.filter.communicationType,
-        latestMessageDate = chatSearch.filter.latestMessageDate,
+        bucketDay = ChatActivityBucketCalculator
+          .calculateBucketDay(chatSearch.filter.latestMessageDate?.value),
         limit = limit,
       )
     ).await()
@@ -54,6 +57,7 @@ class ChatSearchService(
     }
     .filterByChatTypes(chatSearch)
     .filterByExternalIds(chatSearch)
+    .take(Pagination.getValidChatLimit(chatSearch.limit))
     .map { (chatActivityEntity, chatEntity) ->
       chatEntityMapper.mapToModel(chatEntity, chatActivityEntity.latestActivity)
     }

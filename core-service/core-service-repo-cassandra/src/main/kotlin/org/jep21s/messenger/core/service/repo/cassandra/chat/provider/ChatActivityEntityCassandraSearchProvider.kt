@@ -5,10 +5,6 @@ import com.datastax.oss.driver.api.mapper.MapperContext
 import com.datastax.oss.driver.api.mapper.entity.EntityHelper
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder
 import com.datastax.oss.driver.api.querybuilder.select.Select
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
 import java.util.concurrent.CompletionStage
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityEntityFilter
@@ -66,9 +62,4 @@ class ChatActivityEntityCassandraSearchProvider(
     filter: ChatActivityEntityFilter,
   ): Select = limit(Pagination.getValidChatLimit(filter.limit))
 
-  private fun LocalDate.toEndOfDayInstant(zoneId: ZoneId = ZoneId.systemDefault()): Instant {
-    return this.atTime(LocalTime.MAX)
-      .atZone(zoneId)
-      .toInstant()
-  }
 }

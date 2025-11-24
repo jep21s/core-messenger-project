@@ -8,7 +8,6 @@ import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatActivitySim
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatSimpleWriter
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatEntity
-import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityBucketCalculator
 import org.jep21s.messenger.core.service.repo.cassandra.chat.mapper.ChatEntityMapperImpl
 import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraMapper
 import org.jep21s.messenger.core.service.repo.cassandra.config.CassandraProperties
