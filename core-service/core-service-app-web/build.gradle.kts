@@ -37,6 +37,7 @@ dependencies {
   implementation(projects.coreServiceBiz)
   implementation(projects.coreServiceAppCommon)
   implementation(projects.coreServiceRepoInmemory)
+  implementation(projects.coreServiceRepoCassandra)
 
   testImplementation(libs.bundles.junit)
   testImplementation(libs.mockk)

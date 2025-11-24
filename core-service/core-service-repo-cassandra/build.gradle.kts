@@ -14,7 +14,7 @@ dependencies {
   implementation(kotlin("stdlib"))
   implementation(libs.coroutines.core)
   implementation(libs.coroutines.jdk9)
-  implementation(libs.bundles.cassandra)
+  api(libs.bundles.cassandra)
   kapt(libs.db.cassandra.kapt)
 
   implementation(libs.liquibase.core)

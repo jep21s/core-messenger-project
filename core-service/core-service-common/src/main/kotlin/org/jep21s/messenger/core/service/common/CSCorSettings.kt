@@ -12,24 +12,39 @@ object CSCorSettings {
 
   private val chatRepoStubWrapper = InitWrapper<IChatRepo>()
   private val messageRepoStubWrapper = InitWrapper<IMessageRepo>()
+  private val chatRepoTestWrapper = InitWrapper<IChatRepo>()
+  private val messageRepoTestWrapper = InitWrapper<IMessageRepo>()
+  private val chatRepoProdWrapper = InitWrapper<IChatRepo>()
+  private val messageRepoProWrapper = InitWrapper<IMessageRepo>()
 
 
   fun initialize(
     loggerProvider: CMLoggerProvider? = null,
     chatRepoStub: IChatRepo? = null,
     messageRepoStub: IMessageRepo? = null,
+    chatRepoTest: IChatRepo? = null,
+    messageRepoTest: IMessageRepo? = null,
+    chatRepoProd: IChatRepo? = null,
+    messageRepoProd: IMessageRepo? = null,
   ) {
     loggerProvider?.let { loggerProviderWrapper.set(it, CSCorSettings::loggerProvider.name) }
+
     chatRepoStub?.let { chatRepoStubWrapper.set(it, CSCorSettings::chatRepoStubWrapper.name) }
     messageRepoStub?.let { messageRepoStubWrapper.set(it, CSCorSettings::messageRepoStubWrapper.name) }
+
+    chatRepoTest?.let { chatRepoTestWrapper.set(it, CSCorSettings::chatRepoTestWrapper.name) }
+    messageRepoTest?.let { messageRepoTestWrapper.set(it, CSCorSettings::messageRepoTestWrapper.name) }
+
+    chatRepoProd?.let { chatRepoProdWrapper.set(it, CSCorSettings::chatRepoProdWrapper.name) }
+    messageRepoProd?.let { messageRepoProWrapper.set(it, CSCorSettings::messageRepoProWrapper.name) }
   }
 
   fun chatRepo(
     workMode: CSWorkMode,
   ): IChatRepo = when (workMode) {
     is CSWorkMode.Stub -> chatRepoStubWrapper.get(CSCorSettings::chatRepoStubWrapper.name)
-    is CSWorkMode.Test -> chatRepoStubWrapper.get(CSCorSettings::chatRepoStubWrapper.name)
-    is CSWorkMode.Prod -> TODO()
+    is CSWorkMode.Test -> chatRepoTestWrapper.get(CSCorSettings::chatRepoTestWrapper.name)
+    is CSWorkMode.Prod -> chatRepoProdWrapper.get(CSCorSettings::chatRepoProdWrapper.name)
   }
 
   fun messageRepo(
@@ -37,8 +52,7 @@ object CSCorSettings {
   ): IMessageRepo = when (workMode) {
     is CSWorkMode.Stub -> messageRepoStubWrapper.get(CSCorSettings::messageRepoStubWrapper.name)
     is CSWorkMode.Test -> messageRepoStubWrapper.get(CSCorSettings::messageRepoStubWrapper.name)
-    is CSWorkMode.Prod -> TODO()
-    else -> TODO()
+    is CSWorkMode.Prod -> messageRepoProWrapper.get(CSCorSettings::messageRepoProWrapper.name)
   }
 }
 

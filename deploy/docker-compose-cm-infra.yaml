@@ -1,30 +1,5 @@
-# Минимальная версия инфраструктуры на базе
-# OpenSearch
-# OpenSearch Dashboards
-# Fluent Bit
-
 version: '3'
 services:
-
-  #  app:
-  #    image: nginx:latest
-  #    ports:
-  #      - "8080:80"
-  #    depends_on:
-  #      - fluent-bit
-  #    volumes:
-  #      - ./volumes/nginx/default.conf:/etc/nginx/conf.d/default.conf
-  #      - ./volumes/nginx/nginx.conf:/etc/nginx/nginx.conf
-  #    logging:
-  #      # используемый драйвер логгирования
-  #      driver: "fluentd"
-  #      options:
-  #        # куда посылать лог-сообщения, необходимо чтобы адрес
-  #        # совпадал с настройками плагина forward
-  #        fluentd-address: localhost:24224
-  #        # теги используются для маршрутизации лог-сообщений, тема
-  #        # маршрутизации будет рассмотрена ниже
-  #        tag: app.logs
 
   fluent-bit:
     container_name: fluent-bit
@@ -37,10 +12,12 @@ services:
     environment:
       - opensearch_host=opensearch
       - opensearch_user=admin
-      - opensearch_pass=admin
+      - opensearch_pass=adm-Password0
     volumes:
       - ./volumes/fluent-bit-etc/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
       - ./volumes/fluent-bit-etc/parsers.conf:/fluent-bit/etc/parsers.conf
+    depends_on:
+      - opensearch
 
   opensearch:
     container_name: opensearch
@@ -82,8 +59,36 @@ services:
       - "5601"
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      OPENSEARCH_USERNAME: admin
+      OPENSEARCH_PASSWORD: adm-Password0
+      OPENSEARCH_SSL_VERIFICATIONMODE: none
     depends_on:
       - opensearch
+
+  cassandra:
+    image: cassandra:5.0.3
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_DC: "dc1"
+      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
+    healthcheck:
+      test: [ "CMD-SHELL", "cqlsh -u cassandra -p cassandra -e 'SELECT key FROM system.local'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+    volumes:
+      - ./volumes/cassandra/cassandra.yaml:/opt/cassandra/conf/cassandra.yaml
+
+  cassandra-init:
+    image: cassandra:5.0.3
+    entrypoint: [ "/init.sh" ]
+    volumes:
+      - ./volumes/cassandra/cassandra-init-data.sh:/init.sh
+    depends_on:
+      cassandra:
+        condition: service_healthy
 
 volumes:
   opensearch-data:
