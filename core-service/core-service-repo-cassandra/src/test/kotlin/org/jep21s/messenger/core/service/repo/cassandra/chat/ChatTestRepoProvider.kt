@@ -62,17 +62,15 @@ object ChatTestRepoProvider {
       val entities = chats.map { chatEntityMapper.mapToEntity(it) }
       chatSimpleWriter.insertChats(entities)
         .awaitAll()
-      val activities = chats.mapNotNull { chat ->
-        chat.latestMessageDate?.let { latestMessageDate ->
-          ChatActivityEntity(
-            bucketDay = ChatActivityBucketCalculator
-              .calculateBucketDay(chat.latestMessageDate)
-              .toString(),
-            communicationType = chat.communicationType,
-            latestActivity = latestMessageDate,
-            chatId = chat.id
-          )
-        }
+      val activities = chats.map { chat ->
+        ChatActivityEntity(
+          bucketDay = ChatActivityBucketCalculator
+            .calculateBucketDay(chat.latestMessageDate)
+            .toString(),
+          communicationType = chat.communicationType,
+          latestActivity = (chat.latestMessageDate ?: chat.createdAt),
+          chatId = chat.id
+        )
       }
       chatActivitySimpleWriter.insertChatActivities(activities)
     }

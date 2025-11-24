@@ -6,9 +6,12 @@ import com.datastax.oss.driver.api.mapper.entity.EntityHelper
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder
 import com.datastax.oss.driver.api.querybuilder.select.Select
 import java.util.concurrent.CompletionStage
+import org.jep21s.messenger.core.service.common.model.ConditionType
+import org.jep21s.messenger.core.service.common.model.OrderType
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.filter.ChatActivityEntityFilter
 import org.jep21s.messenger.core.service.repo.cassandra.config.AsyncFetcher
+import org.jep21s.messenger.core.service.repo.cassandra.message.entity.MessageEntity
 import org.jep21s.messenger.core.service.repo.common.Pagination
 
 class ChatActivityEntityCassandraSearchProvider(
@@ -21,7 +24,8 @@ class ChatActivityEntityCassandraSearchProvider(
     val select: Select = entityHelper.selectStart()
       .applyBucketDay(filter)
       .applyCommunicationType(filter)
-      .sortByLatestMessage()
+      .applyLatestMessageDate(filter)
+      .sortByLatestMessage(filter)
       .withLimit(filter)
 
     val asyncFetcher: AsyncFetcher<ChatActivityEntity> = AsyncFetcher(entityHelper)
@@ -53,10 +57,42 @@ class ChatActivityEntityCassandraSearchProvider(
       )
     )
 
-  private fun Select.sortByLatestMessage(): Select = orderBy(
-    ChatActivityEntity.COLUMN_LATEST_ACTIVITY,
-    ClusteringOrder.DESC,
-  )
+  private fun Select.applyLatestMessageDate(
+    filter: ChatActivityEntityFilter
+  ): Select {
+    val latestMessageDateFilter = filter.sourceFilter
+      .filter
+      .latestMessageDate
+    if (latestMessageDateFilter == null) return this
+
+    val literal = QueryBuilder.literal(
+      latestMessageDateFilter.value,
+      context.session.context.codecRegistry
+    )
+
+    return whereColumn(ChatActivityEntity.COLUMN_LATEST_ACTIVITY)
+      .let {
+        when (latestMessageDateFilter.direction) {
+          ConditionType.EQUAL -> it.isEqualTo(literal)
+          ConditionType.LESS -> it.isLessThan(literal)
+          ConditionType.GREATER -> it.isGreaterThan(literal)
+        }
+      }
+  }
+
+  private fun Select.sortByLatestMessage(
+    filter: ChatActivityEntityFilter,
+  ): Select {
+    val direction = when (filter.order) {
+      OrderType.DESC -> ClusteringOrder.DESC
+      OrderType.ASC -> ClusteringOrder.ASC
+    }
+
+    return orderBy(
+      ChatActivityEntity.COLUMN_LATEST_ACTIVITY,
+      direction,
+    )
+  }
 
   private fun Select.withLimit(
     filter: ChatActivityEntityFilter,

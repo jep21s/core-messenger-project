@@ -1,6 +1,7 @@
 package org.jep21s.messenger.core.service.repo.common
 
 import org.jep21s.messenger.core.service.common.model.OrderType
+import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 
 object Pagination {
   const val DEFAULT_MESSAGE_LIMIT = 50
@@ -23,4 +24,7 @@ object Pagination {
     limit > MAX_CHAT_LIMIT -> MAX_CHAT_LIMIT
     else -> limit
   }
+
+  fun getChatOrder(chatSearch: ChatSearch): OrderType =
+    chatSearch.sort?.order ?: defaultChatSortDirection
 }

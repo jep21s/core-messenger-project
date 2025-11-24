@@ -52,7 +52,7 @@ class JsonMapCodec : TypeCodec<Map<String, Any?>?> {
   }
 
   override fun decode(bytes: ByteBuffer?, protocolVersion: ProtocolVersion): Map<String, Any?>? {
-    if (bytes == null || !bytes.hasRemaining()) return emptyMap()
+    if (bytes == null || !bytes.hasRemaining()) return null
 
     return try {
       val jsonString = String(
@@ -64,7 +64,7 @@ class JsonMapCodec : TypeCodec<Map<String, Any?>?> {
       parse(jsonString)
     } catch (e: Exception) {
       logger.warn("Failed to decode bytes to map", ex = e)
-      emptyMap()
+      null
     }
   }
 

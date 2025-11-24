@@ -1,6 +1,7 @@
 package org.jep21s.messenger.core.service.repo.common.chat
 
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
@@ -31,9 +32,11 @@ abstract class ChatSearchTest {
     communicationType = "WHATSAPP",
     chatType = "PRIVATE",
     payload = null,
-    createdAt = now.minusSeconds(3600),
+    createdAt = now.minusSeconds(3600)
+      .truncatedTo(ChronoUnit.MILLIS),
     updatedAt = null,
-    latestMessageDate = now.minusSeconds(3600),
+    latestMessageDate = now.minusSeconds(3600)
+      .truncatedTo(ChronoUnit.MILLIS),
   )
 
   private val chatModel2 = Chat(
@@ -42,9 +45,11 @@ abstract class ChatSearchTest {
     communicationType = "WHATSAPP",
     chatType = "GROUP",
     payload = null,
-    createdAt = now.minusSeconds(1800),
+    createdAt = now.minusSeconds(1800)
+      .truncatedTo(ChronoUnit.MILLIS),
     updatedAt = null,
-    latestMessageDate = now.minusSeconds(1800),
+    latestMessageDate = now.minusSeconds(1800)
+      .truncatedTo(ChronoUnit.MILLIS),
   )
 
   private val chatModel3 = Chat(
@@ -53,11 +58,13 @@ abstract class ChatSearchTest {
     communicationType = "TELEGRAM",
     chatType = "PRIVATE",
     payload = null,
-    createdAt = now.minusSeconds(900),
+    createdAt = now.minusSeconds(900)
+      .truncatedTo(ChronoUnit.MILLIS),
     updatedAt = null,
-    latestMessageDate = now.minusSeconds(900),
+    latestMessageDate = now.minusSeconds(900)
+      .truncatedTo(ChronoUnit.MILLIS),
   )
-  
+
   @BeforeEach
   fun setUp() = runTest {
     chatRepo.initDB()

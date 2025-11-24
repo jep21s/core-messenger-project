@@ -2,6 +2,7 @@ package org.jep21s.messenger.core.service.repo.cassandra.chat.provider
 
 import java.util.UUID
 import kotlinx.coroutines.future.await
+import org.jep21s.messenger.core.service.common.model.OrderType
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 import org.jep21s.messenger.core.service.repo.cassandra.chat.ChatActivityBucketCalculator
@@ -36,6 +37,8 @@ class ChatSearchService(
         bucketDay = ChatActivityBucketCalculator
           .calculateBucketDay(chatSearch.filter.latestMessageDate?.value),
         limit = limit,
+        order = Pagination.getChatOrder(chatSearch),
+        sourceFilter = chatSearch,
       )
     ).await()
     val ids: List<UUID>? = chatSearch.filter.ids
@@ -46,7 +49,10 @@ class ChatSearchService(
 
   private suspend fun List<ChatActivityEntity>.findChats(
     chatSearch: ChatSearch,
-  ): List<Chat> = sortedByDescending { it.latestActivity }
+  ): List<Chat> = when (Pagination.getChatOrder(chatSearch)) {
+    OrderType.DESC -> sortedByDescending { it.latestActivity }
+    OrderType.ASC -> sortedBy { it.latestActivity }
+  }
     .mapNotNull { chatActivity ->
       val chatEntity = chatDao.findById(
         chatActivity.chatId,
