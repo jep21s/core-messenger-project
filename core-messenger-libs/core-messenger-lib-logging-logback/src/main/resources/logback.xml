@@ -5,8 +5,8 @@
     <property name="LOGS_FB_HOSTS" value="${LOGS_FB_HOSTS:-127.0.0.1}"/>
     <property name="LOGS_FB_PORT" value="${LOGS_FB_PORT:-24224}"/>
     <property name="SERVICE_NAME" value="${SERVICE_NAME:-core_messenger}"/>
-    <property name="LOG_CM_LEVEL" value="${LOG_CM_LEVEL:-debug}"/>
-    <property name="LOG_COMMON_LEVEL" value="${LOG_COMMON_LEVEL:-debug}"/>
+    <property name="LOG_CM_LEVEL" value="${LOG_CM_LEVEL:-info}"/>
+    <property name="LOG_COMMON_LEVEL" value="${LOG_COMMON_LEVEL:-info}"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -114,16 +114,16 @@
     </logger>
 
     <!-- Уровень DEBUG для ядра Liquibase -->
-    <logger name="liquibase" level="DEBUG" />
+    <logger name="liquibase" level="INFO" />
 
     <!-- Уровень DEBUG для расширения Liquibase Cassandra -->
-    <logger name="liquibase.ext" level="DEBUG" />
+    <logger name="liquibase.ext" level="INFO" />
 
     <!-- Уровень DEBUG для драйвера DataStax Cassandra (используется драйвером ING) -->
-    <logger name="com.datastax.oss.driver" level="DEBUG" />
+    <logger name="com.datastax.oss.driver" level="INFO" />
 
     <!-- Если вы используете стандартный Java Util Logging, перенаправьте его в SLF4J/Logback -->
-    <logger name="java.sql" level="DEBUG" />
+    <logger name="java.sql" level="INFO" />
 
     <root level="${LOG_COMMON_LEVEL}">
         <appender-ref ref="fluentd"/>
