@@ -6,6 +6,7 @@ import org.jep21s.messenger.core.service.common.CSCorSettings
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
+import org.jep21s.messenger.core.service.common.model.chat.ChatLatestActivityUpdation
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 import org.jep21s.messenger.core.service.repo.cassandra.chat.dao.ChatActivityDao
@@ -67,4 +68,13 @@ class ChatRepoCassandra(
 
   override suspend fun search(chatSearch: ChatSearch): List<Chat> =
     chatSearchService.search(chatSearch)
+
+  override suspend fun updateLatestMessageDate(
+    updation: ChatLatestActivityUpdation,
+  ) {
+    val activityEntity: ChatActivityEntity = chatEntityMapper
+      .mapToEntity(updation)
+    chatActivityDao.create(activityEntity)
+      .await()
+  }
 }

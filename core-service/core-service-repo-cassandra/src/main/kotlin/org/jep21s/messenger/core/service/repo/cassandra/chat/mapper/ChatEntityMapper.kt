@@ -6,6 +6,7 @@ import java.time.Instant
 import java.util.UUID
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
+import org.jep21s.messenger.core.service.common.model.chat.ChatLatestActivityUpdation
 import org.jep21s.messenger.core.service.repo.cassandra.chat.ChatActivityBucketCalculator
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatActivityEntity
 import org.jep21s.messenger.core.service.repo.cassandra.chat.entity.ChatEntity
@@ -45,4 +46,15 @@ interface ChatEntityMapper {
     @Konverter.Source entity: ChatEntity,
     latestMessageDate: Instant?,
   ): Chat
+
+  fun mapToEntity(
+    latestActivityInfo: ChatLatestActivityUpdation,
+  ) = ChatActivityEntity(
+    bucketDay = ChatActivityBucketCalculator
+      .calculateBucketDay(latestActivityInfo.latestMessageDate)
+      .toString(),
+    communicationType = latestActivityInfo.communicationType,
+    latestActivity = latestActivityInfo.latestMessageDate,
+    chatId = latestActivityInfo.chatId,
+  )
 }
