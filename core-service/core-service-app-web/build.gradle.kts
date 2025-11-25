@@ -50,7 +50,10 @@ dependencies {
 
 tasks.test {
   jvmArgs = listOf(
-    "--add-opens=java.base/java.time=ALL-UNNAMED"
+    "--add-opens=java.base/java.time=ALL-UNNAMED",
+    "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    "--add-opens=java.base/java.util=ALL-UNNAMED",
+    "--add-opens=java.base/java.math=ALL-UNNAMED"
   )
   useJUnitPlatform()
 }

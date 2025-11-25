@@ -44,11 +44,13 @@ private fun Application.testCsCorSettingsModule() {
   runCatching {
     CSCorSettings.initialize(
       chatRepoStub = ChatRepoInmemory(mutableMapOf()),
+      chatRepoTest = ChatRepoInmemory(mutableMapOf()),
     )
   }
   runCatching {
     CSCorSettings.initialize(
-      messageRepoStub = MessageRepoInmemory(mutableMapOf())
+      messageRepoStub = MessageRepoInmemory(mutableMapOf()),
+      messageRepoTest = MessageRepoInmemory(mutableMapOf())
     )
   }
 }
