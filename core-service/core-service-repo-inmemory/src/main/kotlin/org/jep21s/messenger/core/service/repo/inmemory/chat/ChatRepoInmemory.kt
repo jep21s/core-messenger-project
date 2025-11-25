@@ -4,6 +4,7 @@ import java.util.UUID
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
+import org.jep21s.messenger.core.service.common.model.chat.ChatLatestActivityUpdation
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 import org.jep21s.messenger.core.service.common.repo.IChatRepo
 import org.jep21s.messenger.core.service.repo.inmemory.EntityWrapper
@@ -28,6 +29,14 @@ class ChatRepoInmemory(
       ?.takeIf { it.communicationType == chatDeletion.communicationType }
       ?.also { db.remove(it.id) }
     return entity?.let { chatEntityMapper.mapToModel(it) }
+  }
+
+  override suspend fun updateLatestMessageDate(updation: ChatLatestActivityUpdation) {
+    val chat: ChatEntity = db[updation.chatId]?.entity
+      ?.takeIf { it.communicationType == updation.communicationType }
+      ?: return
+    db[chat.id] = chat.copy(latestMessageDate = updation.latestMessageDate)
+      .wrap()
   }
 
   override suspend fun search(chatSearch: ChatSearch): List<Chat> {

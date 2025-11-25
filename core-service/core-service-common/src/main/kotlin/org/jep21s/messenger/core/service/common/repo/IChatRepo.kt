@@ -3,6 +3,7 @@ package org.jep21s.messenger.core.service.common.repo
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatCreation
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
+import org.jep21s.messenger.core.service.common.model.chat.ChatLatestActivityUpdation
 import org.jep21s.messenger.core.service.common.model.chat.ChatSearch
 
 interface IChatRepo {
@@ -17,4 +18,6 @@ interface IChatRepo {
   suspend fun delete(chatDeletion: ChatDeletion): Chat?
 
   suspend fun search(chatSearch: ChatSearch): List<Chat>
+
+  suspend fun updateLatestMessageDate(updation: ChatLatestActivityUpdation)
 }
