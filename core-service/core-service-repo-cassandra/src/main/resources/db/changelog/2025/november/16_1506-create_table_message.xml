@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-messages-table" author="jep21s">
+        <sql>
+            CREATE TABLE messages (
+            chat_id uuid,
+            sent_date timestamp,
+            id uuid,
+            message_type text,
+            external_id text,
+            communication_type text,
+            created_at timestamp,
+            updated_at timestamp,
+            body text,
+            payload text,
+            PRIMARY KEY ((chat_id), sent_date, id)
+            ) WITH CLUSTERING ORDER BY (sent_date DESC, id ASC);
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_sasi_idx_ON_body_IN_messages" author="jep21s">
+        <sql>
+            <![CDATA[
+                    CREATE CUSTOM INDEX IF NOT EXISTS idx_messages_body
+                    ON messages(body)
+                    USING 'org.apache.cassandra.index.sasi.SASIIndex'
+                    WITH OPTIONS = {
+                        'mode': 'CONTAINS',
+                        'analyzer_class': 'org.apache.cassandra.index.sasi.analyzer.StandardAnalyzer',
+                        'tokenization_enable_stemming': 'true',
+                        'tokenization_normalize_lowercase': 'true',
+                        'tokenization_skip_stop_words': 'true'
+                    }
+                    ]]>
+        </sql>
+    </changeSet>
+    
+    <changeSet id="create_mat_view_messages_by_message_type" author="jep21s">
+        <sql>
+            CREATE MATERIALIZED VIEW messages_by_message_type AS
+            SELECT
+            chat_id,
+            message_type,
+            sent_date,
+            id
+            FROM messages
+            WHERE
+            chat_id IS NOT NULL AND
+            message_type IS NOT NULL AND
+            sent_date IS NOT NULL AND
+            id IS NOT NULL
+            PRIMARY KEY ((chat_id, message_type), sent_date, id)
+            WITH CLUSTERING ORDER BY (sent_date DESC, id ASC);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

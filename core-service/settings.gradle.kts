@@ -4,6 +4,7 @@ pluginManagement {
         id("build-jvm") apply false
         id("build-kmp") apply false
         id("konvert") apply false
+        id("idea-plugin") apply false
     }
     repositories {
         mavenCentral()
@@ -31,3 +32,6 @@ include("core-service-app-web")
 include("core-service-biz")
 include("core-service-app-kafka")
 include("core-service-app-common")
+include("core-service-repo-common")
+include("core-service-repo-inmemory")
+include("core-service-repo-cassandra")

@@ -8,7 +8,6 @@ data class Message(
   val chatId: UUID,
   val communicationType: String,
   val messageType: String,
-  val status: String,
   val sentDate: Instant,
   val createdAt: Instant,
   val updatedAt: Instant?,

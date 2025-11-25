@@ -5,10 +5,10 @@ import java.util.UUID
 import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.chainStub
+import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
-import org.jep21s.messenger.core.service.common.context.isRunning
 import org.jep21s.messenger.core.service.common.context.isStubSuccess
 import org.jep21s.messenger.core.service.common.model.chat.Chat
 import org.jep21s.messenger.core.service.common.model.chat.ChatDeletion
@@ -23,7 +23,7 @@ suspend fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubsChatDeletion() {
 
 private suspend fun ICorChainDsl<CSContext<ChatDeletion, Chat?>>.stubSuccessChatDeletion() = worker {
   this.title = "Кейс успеха для удаления чата"
-  on { workMode.isStubSuccess() && state.isRunning() }
+  onRunning { workMode.isStubSuccess() }
   handle {
     copy(
       modelResp = Chat(

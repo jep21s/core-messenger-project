@@ -12,4 +12,6 @@ data class MessageCreation(
   val body: String?,
   val externalId: String?,
   val payload: Map<String, Any?>?,
-)
+) {
+  fun getIdOrGenerate(): UUID = id ?: UUID.randomUUID()
+}

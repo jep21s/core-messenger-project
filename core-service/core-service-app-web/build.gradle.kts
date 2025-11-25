@@ -1,5 +1,6 @@
 plugins {
   id("build-jvm")
+  id("idea-plugin")
   alias(libs.plugins.ktor)
 }
 
@@ -35,8 +36,11 @@ dependencies {
   implementation(projects.coreServiceCommon)
   implementation(projects.coreServiceBiz)
   implementation(projects.coreServiceAppCommon)
+  implementation(projects.coreServiceRepoInmemory)
+  implementation(projects.coreServiceRepoCassandra)
 
   testImplementation(libs.bundles.junit)
+  testImplementation(libs.mockk)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.ktor.client.negotiation)
 
@@ -45,5 +49,8 @@ dependencies {
 }
 
 tasks.test {
+  jvmArgs = listOf(
+    "--add-opens=java.base/java.time=ALL-UNNAMED"
+  )
   useJUnitPlatform()
 }

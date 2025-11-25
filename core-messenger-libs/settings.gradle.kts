@@ -4,6 +4,7 @@ pluginManagement {
         id("build-jvm") apply false
         id("build-kmp") apply false
         id("konvert") apply false
+        id("idea-plugin") apply false
     }
     repositories {
         mavenCentral()

@@ -1,8 +1,8 @@
 plugins {
-  id("idea")
   id("build-jvm")
   id("com.google.devtools.ksp") version "2.1.21-2.0.2"
   id("konvert")
+  id("idea-plugin")
 }
 
 kotlin {
@@ -23,11 +23,4 @@ dependencies {
 
 tasks.test {
   useJUnitPlatform()
-}
-
-idea {
-  module {
-    isDownloadJavadoc = true
-    isDownloadSources = true
-  }
 }

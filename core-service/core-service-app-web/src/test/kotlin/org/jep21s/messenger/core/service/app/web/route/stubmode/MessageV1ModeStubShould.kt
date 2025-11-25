@@ -1,4 +1,4 @@
-package org.jep21s.messenger.core.service.app.web.route
+package org.jep21s.messenger.core.service.app.web.route.stubmode
 
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -25,10 +25,12 @@ import org.jep21s.messenger.core.lib.test.common.extention.toLinkedHashMap
 import org.jep21s.messenger.core.service.api.v1.models.CmDebug
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugMode
 import org.jep21s.messenger.core.service.api.v1.models.CmRequestDebugStubs
+import org.jep21s.messenger.core.service.api.v1.models.ComparableFilterReq
+import org.jep21s.messenger.core.service.api.v1.models.ConditionTypeDto
 import org.jep21s.messenger.core.service.app.web.test.util.testConfiguredApplication
 import org.junit.jupiter.api.assertAll
 
-class MessageV1Test {
+class MessageV1ModeStubShould {
   @Test
   fun `success delete message`() = testConfiguredApplication { client ->
     //Given
@@ -40,6 +42,7 @@ class MessageV1Test {
       ids = ids,
       chatId = chatId,
       communicationType = communicationType,
+      sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
       debug = CmDebug(
         mode = CmRequestDebugMode.STUB,
         stub = CmRequestDebugStubs.SUCCESS,
@@ -89,6 +92,10 @@ class MessageV1Test {
       messageFilter = MessageSearchReqAllOfMessageFilter(
         ids = listOf(UUIDValue.uuid1),
         messageTypes = listOf("simple"),
+        sentDate = ComparableFilterReq(
+          value = Instant.ofEpochSecond(1).toEpochMilli(),
+          direction = ConditionTypeDto.EQUAL,
+        )
       ),
       order = OrderTypeDto.DESC,
       limit = 10,
@@ -110,7 +117,6 @@ class MessageV1Test {
           body = "body",
           externalId = null,
           payload = null,
-          status = "CREATED",
           createdAt = Instant.ofEpochSecond(1).toEpochMilli(),
           updatedAt = null,
         ).toLinkedHashMap()

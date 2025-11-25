@@ -6,11 +6,11 @@ import org.jep21s.messenger.core.lib.cor.dsl.ICorChainDsl
 import org.jep21s.messenger.core.lib.cor.handler.worker
 import org.jep21s.messenger.core.service.biz.cor.chainStub
 import org.jep21s.messenger.core.service.biz.cor.fail
+import org.jep21s.messenger.core.service.biz.cor.onRunning
 import org.jep21s.messenger.core.service.common.context.CSContext
 import org.jep21s.messenger.core.service.common.context.CSContextState
 import org.jep21s.messenger.core.service.common.context.CSError
 import org.jep21s.messenger.core.service.common.context.CSWorkMode
-import org.jep21s.messenger.core.service.common.context.isRunning
 import org.jep21s.messenger.core.service.common.context.isStubDbError
 import org.jep21s.messenger.core.service.common.context.isStubNotFound
 import org.jep21s.messenger.core.service.common.context.isStubSuccess
@@ -29,7 +29,7 @@ suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubsMessageCreat
 
 private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSuccessMessageCreation() = worker {
   this.title = "Кейс успеха создания сообщения"
-  on { workMode.isStubSuccess() && state.isRunning() }
+  onRunning { workMode.isStubSuccess() }
   handle {
     copy(
       modelResp = Message(
@@ -37,7 +37,6 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSucce
         chatId = modelReq.chatId,
         communicationType = "TG",
         messageType = modelReq.messageType,
-        status = "CREATED",
         sentDate = modelReq.sentDate,
         createdAt = Instant.ofEpochSecond(1),
         updatedAt = null,
@@ -52,8 +51,8 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubSucce
 
 private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationNotFoundChat() = worker {
   this.title = "Кейс провала. Не найден чат для создания сообщения"
-  on {
-    workMode.isStubNotFound() && state.isRunning()
+  onRunning {
+    workMode.isStubNotFound()
         && modelReq.chatId == UUID.fromString("00000000-0000-0000-0000-000000000020")
   }
   handle {
@@ -70,7 +69,7 @@ private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessa
 
 private suspend fun ICorChainDsl<CSContext<MessageCreation, Message?>>.stubMessageCreationDBError() = worker {
   this.title = "Кейс провала создания сообщения. База данных недоступна"
-  on { workMode.isStubDbError() && state.isRunning() }
+  onRunning { workMode.isStubDbError() }
   handle {
     fail(
       CSError(

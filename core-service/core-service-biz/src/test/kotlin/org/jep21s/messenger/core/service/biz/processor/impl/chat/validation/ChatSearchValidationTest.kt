@@ -39,8 +39,8 @@ class ChatSearchValidationTest {
       )
     )
     val expectedError = CSError(
-      code = "validation-search",
-      group = "validation",
+      code = "chat-validation-search",
+      group = "chat-validation",
       field = ChatSearch::limit.name,
       message = "incorrect limit value [$incorrectLimit]",
     )

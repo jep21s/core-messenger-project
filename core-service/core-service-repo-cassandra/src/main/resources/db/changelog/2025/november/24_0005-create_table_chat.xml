@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create_table_chat" author="i.pleshanov">
+        <sql>
+            CREATE TABLE chats (
+            id uuid,
+            communication_type text,
+            chat_type text,
+            external_id text,
+            payload text,
+            created_at timestamp,
+            updated_at timestamp,
+            PRIMARY KEY ((id, communication_type), chat_type)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_table_chat_activity" author="i.pleshanov">
+        <sql>
+            CREATE TABLE chat_activity (
+            bucket_day text,
+            communication_type text,
+            latest_activity timestamp,
+            chat_id uuid,
+            PRIMARY KEY ((bucket_day, communication_type), latest_activity)
+            ) WITH CLUSTERING ORDER BY (latest_activity DESC);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

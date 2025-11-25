@@ -6,6 +6,7 @@ jvm-compiler = "21"
 assertj = "3.27.4"
 arrow = "2.1.2"
 binaryCompabilityValidator = "0.13.2"
+cassandra = "4.19.1"
 coroutines = "1.9.0"
 jackson = "2.18.3"
 junit-parametrized = "5.13.4"
@@ -17,19 +18,29 @@ kotlin-reflect = "2.2.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.6.2"
 ktor = "3.3.0"
+liquibase-core = "4.33.0"
+liquibase-cassandra = "4.33.0"
 logback = "1.5.3"
 logback-appenders = "1.8.8"
 logback-logstash = "7.4"
 logger-fluentd = "0.3.4"
 mockk = "1.14.6"
 openapi-generator = "7.14.0"
-testcontainers = "1.21.3"
+testcontainers = "2.0.2"
+testcontainers-junit = "1.21.3"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 arrow = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+
+db-cassandra-core = { module = "org.apache.cassandra:java-driver-core", version.ref = "cassandra" }
+db-cassandra-qbuilder = { module = "org.apache.cassandra:java-driver-query-builder", version.ref = "cassandra" }
+db-cassandra-kapt = { module = "org.apache.cassandra:java-driver-mapper-processor", version.ref = "cassandra" }
+db-cassandra-mapper = { module = "org.apache.cassandra:java-driver-mapper-runtime", version.ref = "cassandra" }
+
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+coroutines-jdk9 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk9", version.ref = "coroutines" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlinVersion" }
@@ -57,6 +68,9 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", versio
 ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+liquibase-cassandra = { module = "org.liquibase.ext:liquibase-cassandra", version.ref = "liquibase-cassandra" }
+
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logback-appenders = { module = "com.sndyuk:logback-more-appenders", version.ref = "logback-appenders" }
 logback-logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-logstash" }
@@ -65,19 +79,22 @@ logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-f
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
-testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-junit" }
 testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
+testcontainers-cassandra = { module = "org.testcontainers:testcontainers-cassandra", version.ref = "testcontainers" }
 
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }
 
 [bundles]
+cassandra = ["db-cassandra-core", "db-cassandra-mapper", "db-cassandra-qbuilder"]
 jackson = [ "jackson-kotlin", "jackson-datatype" ]
 junit = [ "junit-kotlin", "assertj", "junit-parametrized" ]
 kotlinx-coroutines = [ "kotlinx-coroutines-core", "kotlinx-coroutines-slf4j" ]
 testcontainers = [ "testcontainers-core", "testcontainers-junit" ]
 
 [plugins]
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlinVersion" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
