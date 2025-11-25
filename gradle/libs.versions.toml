@@ -26,7 +26,9 @@ logback-logstash = "7.4"
 logger-fluentd = "0.3.4"
 mockk = "1.14.6"
 openapi-generator = "7.14.0"
-testcontainers = "2.0.2"
+testcontainers-core = "2.0.2"
+testcontainers-cassandra = "2.0.2"
+testcontainers-kafka = "1.21.3"
 testcontainers-junit = "1.21.3"
 
 [libraries]
@@ -78,10 +80,10 @@ logger-fluentd = { module = "org.fluentd:fluent-logger", version.ref = "logger-f
 
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
-testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers-core" }
 testcontainers-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-junit" }
-testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
-testcontainers-cassandra = { module = "org.testcontainers:testcontainers-cassandra", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers-kafka" }
+testcontainers-cassandra = { module = "org.testcontainers:testcontainers-cassandra", version.ref = "testcontainers-cassandra" }
 
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 plugin-binaryCompatibilityValidator = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "binaryCompabilityValidator" }

@@ -48,8 +48,7 @@ private val scheduleScope = lazyScheduleScope {
 
 suspend fun Application.initializeRepos() {
   initInmemoryRepos()
-  initCassandraTestRepos()
-  initCassandraProdRepos()
+  initCassandraRepos()
 }
 
 suspend fun Application.initInmemoryRepos() {
@@ -58,35 +57,43 @@ suspend fun Application.initInmemoryRepos() {
 }
 
 private suspend fun initChatInmemoryRepo(scope: CoroutineScope) {
-  val db = mutableMapOf<UUID, EntityWrapper<ChatEntityInmemory>>()
+  val dbStub = mutableMapOf<UUID, EntityWrapper<ChatEntityInmemory>>()
+  val dbTest = mutableMapOf<UUID, EntityWrapper<ChatEntityInmemory>>()
   CSCorSettings.initialize(
-    chatRepoStub = ChatRepoInmemory(db)
+    chatRepoStub = ChatRepoInmemory(dbStub),
+    chatRepoTest = ChatRepoInmemory(dbTest)
   )
-  DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
-  println("----- ChatDBCleaner started")
+  DBCleaner(dbStub, scope).runScheduleDeleteOldRowsTask()
+  println("----- ChatDBCleaner stub started")
+  DBCleaner(dbTest, scope).runScheduleDeleteOldRowsTask()
+  println("----- ChatDBCleaner test started")
 }
 
 private suspend fun initMessageInmemoryRepo(scope: CoroutineScope) {
-  val db = mutableMapOf<UUID, EntityWrapper<MessageEntityInmemory>>()
+  val dbStub = mutableMapOf<UUID, EntityWrapper<MessageEntityInmemory>>()
+  val dbTest = mutableMapOf<UUID, EntityWrapper<MessageEntityInmemory>>()
   CSCorSettings.initialize(
-    messageRepoStub = MessageRepoInmemory(db)
+    messageRepoStub = MessageRepoInmemory(dbStub),
+    messageRepoTest = MessageRepoInmemory(dbTest),
   )
-  DBCleaner(db, scope).runScheduleDeleteOldRowsTask()
-  println("----- MessageDBCleaner started")
+  DBCleaner(dbStub, scope).runScheduleDeleteOldRowsTask()
+  println("----- MessageDBCleaner stub started")
+  DBCleaner(dbTest, scope).runScheduleDeleteOldRowsTask()
+  println("----- MessageDBCleaner test started")
 }
 
-suspend fun Application.initCassandraTestRepos() {
+suspend fun Application.initCassandraRepos() {
   val properties = CassandraProperties()
   val sessionProvider = CassandraSessionProvider(properties)
   LiquibaseConfig(properties).runMigrations()
   println("----- Liquibase migrations executed")
-  initChatCassandraTestRepo(properties, sessionProvider)
+  initChatCassandraRepo(properties, sessionProvider)
   println("----- Chat Cassandra Repo init")
-  initMessageCassandraTestRepo(properties, sessionProvider)
+  initMessageCassandraRepo(properties, sessionProvider)
   println("----- Message Cassandra Repo init")
 }
 
-private suspend fun initChatCassandraTestRepo(
+private suspend fun initChatCassandraRepo(
   properties: CassandraProperties,
   sessionProvider: CassandraSessionProvider,
 ) {
@@ -102,11 +109,11 @@ private suspend fun initChatCassandraTestRepo(
     )
 
   CSCorSettings.initialize(
-    chatRepoTest = ChatRepoCassandra(chatDao, chatActivityDao)
+    chatRepoProd = ChatRepoCassandra(chatDao, chatActivityDao)
   )
 }
 
-private suspend fun initMessageCassandraTestRepo(
+private suspend fun initMessageCassandraRepo(
   properties: CassandraProperties,
   sessionProvider: CassandraSessionProvider,
 ) {
@@ -122,10 +129,6 @@ private suspend fun initMessageCassandraTestRepo(
     )
 
   CSCorSettings.initialize(
-    messageRepoTest = MessageRepoCassandra(messageDao, messageByTypeDao)
+    messageRepoProd = MessageRepoCassandra(messageDao, messageByTypeDao)
   )
-}
-
-suspend fun Application.initCassandraProdRepos() {
-
 }
