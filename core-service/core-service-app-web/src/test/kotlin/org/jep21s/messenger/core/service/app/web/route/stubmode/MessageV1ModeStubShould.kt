@@ -112,6 +112,8 @@ class MessageV1ModeStubShould {
           id = UUIDValue.uuid1,
           chatId = UUIDValue.uuid2,
           messageType = "simple",
+          senderId = "1",
+          senderType = "EMPLOYEE",
           communicationType = "TG",
           sentDate = Instant.ofEpochSecond(1).toEpochMilli(),
           body = "body",

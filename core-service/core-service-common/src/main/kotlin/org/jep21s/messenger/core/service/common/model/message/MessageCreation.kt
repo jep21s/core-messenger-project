@@ -8,6 +8,8 @@ data class MessageCreation(
   val chatId: UUID,
   val communicationType: String,
   val messageType: String,
+  val senderId: String,
+  val senderType: String,
   val sentDate: Instant,
   val body: String?,
   val externalId: String?,

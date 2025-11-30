@@ -9,6 +9,8 @@ data class MessageEntity(
   val chatId: UUID,
   val communicationType: String,
   val messageType: String,
+  val senderId: String,
+  val senderType: String,
   val sentDate: Instant,
   val createdAt: Instant = Instant.now(),
   val updatedAt: Instant?,

@@ -5,8 +5,16 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <include file="16_1506-create_table_message.xml" relativeToChangelogFile="true"/>
-    <include file="24_0005-create_table_chat.xml" relativeToChangelogFile="true"/>
-    <include file="30_2308-add-column-sender.xml" relativeToChangelogFile="true"/>
+    <changeSet id="add_column_sender_id_IN_messages" author="jep21s">
+        <sql>
+            ALTER TABLE messages ADD sender_id text;
+        </sql>
+    </changeSet>
+
+    <changeSet id="add_column_sender_type_IN_messages" author="jep21s">
+        <sql>
+            ALTER TABLE messages ADD sender_type text;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
