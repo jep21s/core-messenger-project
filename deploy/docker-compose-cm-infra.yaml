@@ -1,6 +1,13 @@
 version: '3'
 services:
 
+  core-service:
+    image: core-service-app-web-x64:0.0.1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cassandra
+
   fluent-bit:
     container_name: fluent-bit
     image: fluent/fluent-bit
