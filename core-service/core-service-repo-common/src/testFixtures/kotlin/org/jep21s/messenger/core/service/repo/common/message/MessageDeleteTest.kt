@@ -38,6 +38,8 @@ abstract class MessageDeleteTest {
       chatId = UUID.randomUUID(),
       communicationType = "TG",
       messageType = "simple",
+      senderId = "1",
+      senderType = "EMPLOYEE",
       sentDate = instant,
       body = "bla-bla",
       externalId = null,

@@ -353,6 +353,10 @@ components:
           type: string
         messageType:
           type: string
+        senderId:
+          type: string
+        senderType:
+          type: string
         sentDate:
           type: long
         createdAt:
@@ -380,6 +384,10 @@ components:
             communicationType:
               type: string
             messageType:
+              type: string
+            senderId:
+              type: string
+            senderType:
               type: string
             sentDate:
               type: long

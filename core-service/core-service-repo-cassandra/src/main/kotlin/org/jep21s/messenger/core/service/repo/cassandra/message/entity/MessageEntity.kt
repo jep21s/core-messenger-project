@@ -24,6 +24,12 @@ data class MessageEntity(
   @field:CqlName(COLUMN_MESSAGE_TYPE)
   val messageType: String,
 
+  @field:CqlName(COLUMN_SENDER_ID)
+  val senderId: String,
+
+  @field:CqlName(COLUMN_SENDER_TYPE)
+  val senderType: String,
+
   @field:CqlName(COLUMN_EXTERNAL_ID)
   @Deprecated("field will be removed")
   val externalId: String?,
@@ -50,6 +56,8 @@ data class MessageEntity(
     const val COLUMN_SENT_DATE = "sent_date"
     const val COLUMN_ID = "id"
     const val COLUMN_MESSAGE_TYPE = "message_type"
+    const val COLUMN_SENDER_ID = "sender_id"
+    const val COLUMN_SENDER_TYPE = "sender_type"
     const val COLUMN_EXTERNAL_ID = "external_id"
     const val COLUMN_COMMUNICATION_TYPE = "communication_type"
     const val COLUMN_CREATED_AT = "created_at"

@@ -1,5 +1,6 @@
 package org.jep21s.messenger.core.service.repo.cassandra.chat.provider
 
+import java.time.LocalDate
 import java.util.UUID
 import kotlinx.coroutines.future.await
 import org.jep21s.messenger.core.service.common.model.OrderType
@@ -20,22 +21,38 @@ class ChatSearchService(
   private val chatActivityDao: ChatActivityDao,
   private val chatEntityMapper: ChatEntityMapper = ChatEntityMapperImpl,
 ) {
-  //TODO переписать на рекурсивную довыборку до необходимо лимита
+  //TODO передавать количество дней поиска из вне
   suspend fun search(
     chatSearch: ChatSearch,
-  ): List<Chat> = getChatActivities(chatSearch, 100)
-    .getUniqueByLatestActivity()
-    .findChats(chatSearch)
+    quantitySearchDays: Int = 2,
+  ): List<Chat> {
+    val startBucketDay = ChatActivityBucketCalculator
+      .calculateBucketDay(chatSearch.filter.latestMessageDate?.value)
+    //TODO искать при ASC сортировки дни вперед (+) от startBucketDay
+    return (0..quantitySearchDays - 1).map {
+      val bucketDay = if (it == 0) startBucketDay
+      else startBucketDay.minusDays(it.toLong())
+
+      getChatActivities(
+        chatSearch = chatSearch,
+        bucketDay = bucketDay,
+        limit = 100
+      )
+        .getUniqueByLatestActivity()
+    }
+      .flatten()
+      .findChats(chatSearch)
+  }
 
   private suspend fun getChatActivities(
     chatSearch: ChatSearch,
+    bucketDay: LocalDate,
     limit: Int,
   ): List<ChatActivityEntity> {
     val activities = chatActivityDao.search(
       ChatActivityEntityFilter(
         communicationType = chatSearch.filter.communicationType,
-        bucketDay = ChatActivityBucketCalculator
-          .calculateBucketDay(chatSearch.filter.latestMessageDate?.value),
+        bucketDay = bucketDay,
         limit = limit,
         order = Pagination.getChatOrder(chatSearch),
         sourceFilter = chatSearch,

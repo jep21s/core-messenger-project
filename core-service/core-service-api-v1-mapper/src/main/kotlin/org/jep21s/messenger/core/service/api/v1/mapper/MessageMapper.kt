@@ -42,10 +42,12 @@ interface MessageMapper {
     val communicationTypeKP = MessageCreateReq::communicationType
     val messageTypeKP = MessageCreateReq::messageType
     val sentDateKP = MessageCreateReq::sentDate
+    val senderIdKP = MessageCreateReq::senderId
+    val senderTypeKP = MessageCreateReq::senderType
 
     return buildEitherResult(
       request, fieldName,
-      chatIdKP, communicationTypeKP, messageTypeKP, sentDateKP
+      chatIdKP, communicationTypeKP, messageTypeKP, sentDateKP, senderIdKP, senderTypeKP,
     ) { nonNullRequest: MessageCreateReq ->
       modelReq {
         MessageCreation(
@@ -53,6 +55,8 @@ interface MessageMapper {
           chatId = chatIdKP.getNotNull(nonNullRequest),
           communicationType = communicationTypeKP.getNotNull(nonNullRequest),
           messageType = messageTypeKP.getNotNull(nonNullRequest),
+          senderId = senderIdKP.getNotNull(nonNullRequest),
+          senderType = senderTypeKP.getNotNull(nonNullRequest),
           sentDate = Instant.ofEpochMilli(sentDateKP.getNotNull(nonNullRequest)),
           body = nonNullRequest.body,
           externalId = nonNullRequest.externalId,
