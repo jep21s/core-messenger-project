@@ -59,13 +59,10 @@ tasks {
     manifest {
       attributes["Main-Class"] = "org.jep21s.messenger.core.service.app.web.ApplicationKt"
     }
-  }
-  distTar {
+
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
   }
-  distZip {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-  }
+
 
   // Если ошибка: "Entry application.yaml is a duplicate but no duplicate handling strategy has been set."
   withType(ProcessResources::class) {
