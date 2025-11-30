@@ -86,7 +86,7 @@ docker {
   imageName = "${project.name}-x64"
   dockerFile = "Dockerfile"
 //  imageTag = "${project.version}"
-  imageTag = "0.0.4"
+  imageTag = "0.0.5"
 }
 
 
