@@ -1,6 +1,7 @@
 plugins {
   id("build-jvm")
   id("idea-plugin")
+  id("build-docker")
   alias(libs.plugins.ktor)
 }
 
@@ -46,6 +47,40 @@ dependencies {
 
   testImplementation(testFixtures("org.jep21s.messenger.core.libs:core-messenger-lib-test-common"))
 
+}
+
+tasks {
+  shadowJar {
+    isZip64 = true
+    // Явно указываем, что нужно включать все зависимости
+    configurations = listOf(project.configurations.runtimeClasspath.get())
+    mergeServiceFiles()
+
+    manifest {
+      attributes["Main-Class"] = "org.jep21s.messenger.core.service.app.web.ApplicationKt"
+    }
+  }
+  distTar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+  }
+  distZip {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+  }
+
+  // Если ошибка: "Entry application.yaml is a duplicate but no duplicate handling strategy has been set."
+  withType(ProcessResources::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  }
+
+  dockerBuild {
+    doFirst {
+      copy {
+        from("Dockerfile") //.rename { "Dockerfile" }
+        println("BUILD CONTEXT: ${buildContext.get()}")
+        into(buildContext)
+      }
+    }
+  }
 }
 
 tasks.test {

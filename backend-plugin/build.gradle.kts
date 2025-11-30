@@ -20,6 +20,10 @@ gradlePlugin {
             id = "idea-plugin"
             implementationClass = "org.jep21s.messenger.core.plugins.IdeaPlugin"
         }
+        register("build-docker") {
+            id = "build-docker"
+            implementationClass = "org.jep21s.messenger.core.plugins.DockerPlugin"
+        }
     }
 }
 
