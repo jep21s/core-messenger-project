@@ -7,7 +7,7 @@ POST("$host/v1/chat/create") {
         {
           "requestType": "CREATE_CHAT",
           "debug": {
-            "mode": "test"
+            "mode": "prod"
           },
           "communicationType": "TG",
           "chatType": "simple"

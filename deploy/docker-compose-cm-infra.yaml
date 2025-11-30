@@ -1,6 +1,19 @@
 version: '3'
 services:
 
+  core-service:
+    image: core-service-app-web-x64:0.0.4
+    ports:
+      - "8080:8080"
+    environment:
+      - LOGS_FB_HOSTS=fluent-bit
+      - CASSANDRA_HOST=cassandra
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    networks:
+      - core-service-network
+
   fluent-bit:
     container_name: fluent-bit
     image: fluent/fluent-bit
@@ -18,6 +31,8 @@ services:
       - ./volumes/fluent-bit-etc/parsers.conf:/fluent-bit/etc/parsers.conf
     depends_on:
       - opensearch
+    networks:
+      - core-service-network
 
   opensearch:
     container_name: opensearch
@@ -49,6 +64,8 @@ services:
         hard: 65536
     volumes:
       - opensearch-data:/usr/share/opensearch/data
+    networks:
+      - core-service-network
 
   dashboards:
     image: opensearchproject/opensearch-dashboards:latest
@@ -64,6 +81,8 @@ services:
       OPENSEARCH_SSL_VERIFICATIONMODE: none
     depends_on:
       - opensearch
+    networks:
+      - core-service-network
 
   cassandra:
     image: cassandra:5.0.3
@@ -80,6 +99,8 @@ services:
       start_period: 120s
     volumes:
       - ./volumes/cassandra/cassandra.yaml:/opt/cassandra/conf/cassandra.yaml
+    networks:
+      - core-service-network
 
   cassandra-init:
     image: cassandra:5.0.3
@@ -89,6 +110,10 @@ services:
     depends_on:
       cassandra:
         condition: service_healthy
+    networks:
+      - core-service-network
 
+networks:
+  core-service-network:
 volumes:
   opensearch-data:

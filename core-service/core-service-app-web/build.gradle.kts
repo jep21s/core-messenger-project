@@ -73,12 +73,22 @@ tasks {
     doFirst {
       copy {
         from("Dockerfile") //.rename { "Dockerfile" }
+        from("build/libs/core-service-app-web-all.jar")
         println("BUILD CONTEXT: ${buildContext.get()}")
         into(buildContext)
       }
     }
   }
 }
+
+docker {
+  buildContext = project.layout.buildDirectory.dir("docker-x64").get().toString()
+  imageName = "${project.name}-x64"
+  dockerFile = "Dockerfile"
+//  imageTag = "${project.version}"
+  imageTag = "0.0.4"
+}
+
 
 tasks.test {
   jvmArgs = listOf(
