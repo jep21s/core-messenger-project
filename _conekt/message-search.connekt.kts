@@ -7,7 +7,7 @@ POST("$host/v1/message/search") {
         {
             "requestType": "SEARCH_MESSAGE",
             "chatFilter": {
-              "id": "98d4eab9-e2aa-42bd-9bab-6a280b56689d",
+              "id": "7a35d60b-c796-4c4a-96b0-77be74f3449a",
               "communicationType": "TG"
             },
             "messageFilter": {
@@ -16,7 +16,10 @@ POST("$host/v1/message/search") {
                 "value": 1765537908495
               }
             },
-            "order": "DESC"
+            "order": "DESC",
+            "debug": {
+            "mode": "test"
+          }
         }
         """.trimIndent()
     )

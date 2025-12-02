@@ -6,10 +6,13 @@ POST("$host/v1/message/delete") {
     """
         {
           "requestType": "DELETE_MESSAGE",
-          "ids": ["ac010544-394f-4ba0-b7aa-622cf01666dc"],
-          "chatId": "98d4eab9-e2aa-42bd-9bab-6a280b56689d",
+          "ids": ["2d8e61ca-37a6-427a-b9b9-f89dc47d9147"],
+          "chatId": "7a35d60b-c796-4c4a-96b0-77be74f3449a",
           "communicationType": "TG",
-          "sentDate": 1764537908495
+          "sentDate": 1764537908495,
+          "debug": {
+            "mode": "test"
+          }
 }
         """.trimIndent()
   )

@@ -12,7 +12,10 @@ POST("$host/v1/chat/search") {
             "sort": {
                 "sortField": "LATEST_MESSAGE_DATE", 
                 "order": "DESC"
-              }
+            },
+            "debug": {
+            "mode": "test"
+            }
         }
         """.trimIndent()
   )
