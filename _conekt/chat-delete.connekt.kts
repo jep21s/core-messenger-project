@@ -6,8 +6,11 @@ POST("$host/v1/chat/delete") {
     """
         {
           "requestType": "DELETE_CHAT",
-          "id": "b8a0b748-579e-48ad-aca5-6b13f37a238a",
-          "communicationType": "TG"
+          "id": "e599718a-bfe4-4f8c-bf28-e2822ff3d381",
+          "communicationType": "TG",
+          "debug": {
+            "mode": "test"
+          }
 }
         """.trimIndent()
   )

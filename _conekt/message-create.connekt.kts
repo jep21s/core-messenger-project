@@ -6,13 +6,16 @@ POST("$host/v1/message/create") {
         """
         {
           "requestType": "CREATE_MESSAGE",
-          "chatId": "98d4eab9-e2aa-42bd-9bab-6a280b56689d",
+          "chatId": "7a35d60b-c796-4c4a-96b0-77be74f3449a",
           "communicationType": "TG",
           "messageType": "simple",
           "senderId": "1",
           "senderType": "EMPLOYEE",
           "sentDate": 1764537908495,
-          "body": "some text"
+          "body": "some text",
+          "debug": {
+            "mode": "test"
+          }
 }
         """.trimIndent()
     )
